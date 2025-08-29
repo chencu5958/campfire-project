@@ -1,0 +1,8 @@
+-- ==================================================
+-- * Campfire Project | Config/Engine.lua
+-- *
+-- * Info:
+-- * Campfire Project Engine Config
+-- *
+-- * 2025 © RoidMC Studios | Powered by UniX SDK
+-- ==================================================

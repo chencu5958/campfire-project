@@ -1,5 +1,5 @@
 {
-    "lua_analyzer.codeLinting.ignoreGlobal": "UnityEngine;com;Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK",
+    "lua_analyzer.codeLinting.ignoreGlobal": "UnityEngine;com;Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK;Framework",
     "Lua.diagnostics.globals": [
         "Achievement",
         "AICharacter",
@@ -46,7 +46,8 @@
         "UI",
         "UMath",
         "Voice",
-        "UDK"
+        "UDK,",
+        "Framework"
     ],
     "Lua.completion.showWord": "Disable"
 }
