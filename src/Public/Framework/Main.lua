@@ -11,7 +11,9 @@
 
 local Framework = {
     Tools = require("Public.Framework.Tools.Main"),
-    Gamelogic = require("Public.Gamelogic.Main")
+    Server = require("Public.Framework.Server.Main"),
+    Client = require("Public.Framework.Client.Main"),
+    Common = require("Public.Framework.Common.Main")
 }
 
 return Framework

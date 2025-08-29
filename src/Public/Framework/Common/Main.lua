@@ -1,8 +1,8 @@
 -- ==================================================
--- * Campfire Project | Framework/Server/Main.lua
+-- * Campfire Project | Framework/Common/Main.lua
 -- *
 -- * Info:
--- * Campfire Project Framework Server Entry
+-- * Campfire Project Framework C/S Common Entry
 -- *
 -- * Framework Powered By UniX Architecture
 -- *
