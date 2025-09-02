@@ -8,6 +8,8 @@
 -- ==================================================
 
 local UtilsTools = {}
+local parsedToml = UDK.TomlUtils.Parse(Config.Toml.I18N)
+local LangStr = parsedToml.i18n
 
 local CommonConf = {
     EnvType = {
@@ -44,12 +46,16 @@ local function createFormatLog(msg)
     return log
 end
 
+local function getCurrentLang()
+    return "zh-CN"
+end
+
 ---| 🧰 - 环境是否为服务端
 ---<br>
 ---@return boolean isServer 是否为服务端
 function UtilsTools.EnvIsServer()
     local envInfo = envCheck()
-    if envInfo.envID == CommonConf.EnvType.Server.ID then
+    if envInfo.envID == CommonConf.EnvType.Server.ID or envInfo.isStandalone then
         return true
     else
         local log = createFormatLog("[Utils] 当前环境不是服务端")
@@ -63,13 +69,27 @@ end
 ---@return boolean isClient 是否为客户端
 function UtilsTools.EnvIsClient()
     local envInfo = envCheck()
-    if envInfo.envID == CommonConf.EnvType.Client.ID then
+    if envInfo.envID == CommonConf.EnvType.Client.ID or envInfo.isStandalone then
         return true
     else
         local log = createFormatLog("[Utils] 当前环境不是客户端")
         Log:PrintError(log)
         return false
     end
+end
+
+---| 🧰 - 获取I18N文本
+---<br>
+---| `范围`：`服务端` `客户端`
+---@param key string 键值
+---@param lang string? 语言（留空则根据玩家设置自动获取）
+---@return string langText 语言文本
+function UtilsTools.GetI18NKey(key, lang)
+    local queryLang = lang or getCurrentLang()
+    if type(queryLang) ~= "string" then
+        Log:PrintError("[Utils] I18N语言参数类型错误")
+    end
+    return UDK.I18N.I18NGetKey(key, queryLang, LangStr)
 end
 
 return UtilsTools

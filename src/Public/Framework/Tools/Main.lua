@@ -10,7 +10,9 @@
 -- ==================================================
 
 local Tools = {
-    Utils = require("Public.Framework.Tools.Utils")
+    UI = require("Public.Framework.Tools.UI"),
+    Utils = require("Public.Framework.Tools.Utils"),
+    LightDMS = require("Public.Framework.Tools.LightDMS")
 }
 
 return Tools

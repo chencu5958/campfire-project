@@ -10,11 +10,15 @@
 local Server = {}
 
 function Server.Init()
-
+    local envType = Framework.Tools.Utils.EnvIsServer()
+    if not envType then return end
+    Framework.Server.Init.InitGame()
 end
 
 function Server.Update()
-    Framework.Tools.Utils.EnvIsServer()
+    local envType = Framework.Tools.Utils.EnvIsServer()
+    if not envType then return end
+    --print("Server Update")
 end
 
 ---| 👾 - 断线重连事件
@@ -23,6 +27,8 @@ end
 ---@param player number 玩家ID
 ---@param levelID number 场景ID
 function Server.EventPlayerReconnectd(player, levelID)
+    local envType = Framework.Tools.Utils.EnvIsServer()
+    if not envType then return end
     UDK.Property.SyncAuthorityData(player)
 end
 

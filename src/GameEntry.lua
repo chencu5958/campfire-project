@@ -1,25 +1,22 @@
 ﻿------------------------------------------------- Game Require ------------------------------------------------------
 local UDK = require("Public.UniX-SDK.main")
-local Framework = require("Public.Framework.Main")
-local Config = require("Public.Config.Main")
-local Gamelogic = require("Public.Gamelogic.Main")
 _G.UDK = UDK
-_G.Framework = Framework
+local Config = require("Public.Config.Main")
 _G.Config = Config
+local Framework = require("Public.Framework.Main")
+_G.Framework = Framework
+local Gamelogic = require("Public.Gamelogic.Main")
 _G.Gamelogic = Gamelogic
 
 ------------------------------------------------- Game Life ---------------------------------------------------------
 
 function OnBeginPlay()
-    local parsedToml = UDK.TomlUtils.Parse(Config.Toml.I18N)
-    local LangStr = parsedToml.i18n
-    local str = UDK.I18N.I18NGetKey("language", "zh-CN", LangStr)
 
     if System:IsServer() then
         TimerManager:AddLoopTimer(0.5, function()
-            local number = math.random(1, 100)
+            --local number = math.random(1, 100)
             --UDK.Property.SetProperty("TEST", "Any", "EnvInfo", "Connected")
-            local result = UDK.Property.GetProperty("TEST", "Any", "EnvInfo")
+            --local result = UDK.Property.GetProperty("TEST", "Any", "EnvInfo")
             --Log:PrintLog(result)
             --UDK.Property.SyncAuthorityData(nil, "TEST", "Any", "EnvInfo", number)
             --Log:PrintLog(str)
@@ -40,7 +37,6 @@ function OnBeginPlay()
         Gamelogic.Server.Init()
         TimerManager:AddLoopTimer(0.2, function()
             Gamelogic.Server.Update()
-                    ServerLog("Server Log")
         end)
     end
 end
@@ -50,7 +46,7 @@ function OnEndPlay()
         Log:PrintLog("Client End")
     end
     if System:IsServer() then
-        Log:PrintServerLog("Server End")
+        Log:PrintLog("Server End")
     end
 end
 

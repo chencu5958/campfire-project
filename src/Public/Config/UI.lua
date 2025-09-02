@@ -67,12 +67,24 @@ UIConf.Core = {
         Tmp_Rank = {
             Grp_Root = 100069,
             Tmp_RedTeam = {
-                RankList1 = {}
+                RankList1 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList2 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
             },
             Tmp_BlueTeam = {
-
+                RankList1 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList2 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList3 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList4 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList5 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
+                RankList6 = { Fc_Avatar = 0, T_Number = 0, T_UserName = 0, T_Score = 0, T_Status = 0, Img_IconDead = 0, Img_IconExit = 0 },
             }
         },
+        Tmp_UIBase = {
+            T_Title = 100051,
+            T_AppInfo = 100050,
+            Btn_GRank = 100054,
+            Btn_Close = 100053,
+        }
     },
     ScoreBar = {
         Grp_Root = 100173,
@@ -92,6 +104,47 @@ UIConf.Core = {
             Btn_MainMenu = 100178,
             Btn_Rank = 100177
         },
+    },
+    TaskBar = {
+        Grp_Root = 101216,
+        Tmp_Expand = {
+            T_Title = 101222,
+            T_Content = 101221,
+            T_Footer = 101220
+        },
+        Tmp_UIBase = {
+            Btn_Expand = 101217,
+            Btn_Collapse = 101223
+        },
+    }
+}
+
+UIConf.UIAnim = {
+    -- 动画ID，
+    MainMenu = {
+        UIOpen = 1,
+        UIClose = 2,
+        Tmp_MyProfile = {
+            MenuCardScale = 1
+        },
+        Tmp_Settings = {
+            MenuCardScale = 1,
+            Tmp_BtnGroup = {
+                BtnPress = 1
+            },
+            Tmp_PageLayout  = {
+                MenuCardScale = 1
+            }
+        },
+        Tmp_RankList = {
+            MenuCardScale = 1
+        },
+        Tmp_MenuItem = {
+            BtnPress = 1
+        },
+        Tmp_UIBase = {
+            BtnPress = 1
+        }
     }
 }
 
