@@ -11,24 +11,9 @@ _G.Gamelogic = Gamelogic
 ------------------------------------------------- Game Life ---------------------------------------------------------
 
 function OnBeginPlay()
-
-    if System:IsServer() then
-        TimerManager:AddLoopTimer(0.5, function()
-            --local number = math.random(1, 100)
-            --UDK.Property.SetProperty("TEST", "Any", "EnvInfo", "Connected")
-            --local result = UDK.Property.GetProperty("TEST", "Any", "EnvInfo")
-            --Log:PrintLog(result)
-            --UDK.Property.SyncAuthorityData(nil, "TEST", "Any", "EnvInfo", number)
-            --Log:PrintLog(str)
-            --Log:PrintTable(LangStr)
-        end)
-    end
-
     if System:IsClient() then
         Gamelogic.Client.Init()
         TimerManager:AddLoopTimer(0.1, function()
-            local content = UDK.Property.GetProperty("TEST", "Any", "EnvInfo")
-            UDK.UI.SetUIText(100046, content)
             Gamelogic.Client.Update()
         end)
     end
@@ -46,7 +31,7 @@ function OnEndPlay()
         Log:PrintLog("Client End")
     end
     if System:IsServer() then
-        Log:PrintLog("Server End")
+        Log:PrintServerLog("Server End")
     end
 end
 

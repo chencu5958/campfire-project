@@ -2,7 +2,7 @@
 -- * Campfire Project | Framework/Client/Extent/TaskbarUI.lua
 -- *
 -- * Info:
--- * Campfire Project Framework Client UI - TaskbartUI
+-- * Campfire Project Framework Client UI - TaskbarUI
 -- * Managed by AnivaxUI Manager
 -- * !! This file does not expose external interfaces !!
 -- *

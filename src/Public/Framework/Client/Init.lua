@@ -8,9 +8,18 @@
 -- ==================================================
 
 local ClientInit = {}
+local KeyMap = Config.Engine.Property.KeyMap
 
+-- 初始化客户端属性数据
 local function clientPropretyInit()
-    Framework.Tools.LightDMS.SetCustomProperty()
+    -- 遍历 UIState 中的所有属性并初始化
+    for _, value in pairs(KeyMap.UIState) do
+        Framework.Tools.LightDMS.SetCustomProperty(
+            value[1],  -- 类型
+            value[2],  -- 属性名称
+            value[3]   -- 默认值
+        )
+    end
 end
 
 ---| 🎮 客户端UI初始化

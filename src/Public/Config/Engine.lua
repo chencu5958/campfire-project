@@ -21,7 +21,8 @@ EngineConf.GameUI = {
             "HealthBar",
             "Settings",
             "MapHint",
-            "EmotesAndActions"
+            "EmotesAndActions",
+            "MoreSetting"
         },
     },
     UI = {
@@ -29,6 +30,11 @@ EngineConf.GameUI = {
             MyProfile = 1,
             Settings = 2,
             RankList = 3
+        },
+        Layout_SettingMisc = {
+            Version = 1,
+            Credits = 2,
+            Feedback = 3
         }
     }
 }
@@ -39,12 +45,15 @@ EngineConf.AI = {}
 EngineConf.Property = {
     KeyMap = {
         PSetting = {
-            Lang = { "String", "PSetting_Lang", "zh-CN" }
+            Lang = { "String", "PSetting_Lang", "zh-CN" },
+            SFXSound = { "Boolean", "PSetting_SFXSound", true },
         },
+        -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
         UIState = {
-            MainMenu = { "Bool", "UIState_MainMenu", false },
-            MainMenuOpenPID = { "Int", "UIState_MainMenuOpenPID", 0 },
-            Taskbar = { "Bool", "UIState_Taskbar", false }
+            MainMenuIsOpen = { "Boolean", "UIState_MainMenuIsOpen", false },
+            MainMenuOpenPID = { "Number", "UIState_MainMenuOpenPID", 1 },
+            LayoutSettingMiscPID = {  "Number", "UIState_LayoutSettingMiscPID", 1 },
+            TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false }
         },
         ServerState = {
             NameSpace = "ServerState",
