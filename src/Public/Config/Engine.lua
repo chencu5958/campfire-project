@@ -41,12 +41,24 @@ EngineConf.GameUI = {
 
 EngineConf.AI = {}
 
+EngineConf.Sound = {
+    UI = {
+        CommonClick = 700125, -- 通用点击音效5
+        CommonClose = 700126, -- 通用返回按钮点击音效
+    }
+}
+
 -- 属性配置（1为类型，2为属性名称，3是默认值）
 EngineConf.Property = {
     KeyMap = {
         PSetting = {
             Lang = { "String", "PSetting_Lang", "zh-CN" },
             SFXSound = { "Boolean", "PSetting_SFXSound", true },
+            TeamMic = { "Boolean", "PSetting_TeamMic", true },
+            TeamChat = { "Boolean", "PSetting_TeamChat", true },
+        },
+        UserData = {
+            AccountProfile = { "Map", "UserData_AccountProfile"},
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
         UIState = {
@@ -57,7 +69,8 @@ EngineConf.Property = {
         },
         ServerState = {
             NameSpace = "ServerState",
-            GameState = { "Map", "ServerState_GameState" }
+            GameState = { "Map", "ServerState_GameState" },
+            RankList = { "Map", "ServerState_RankList" },
         },
     }
 }

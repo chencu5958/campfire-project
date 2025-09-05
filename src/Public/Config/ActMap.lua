@@ -17,6 +17,7 @@ ActMap.MainMenu = {
     -- MenuItem BtnGroup
     [CoreUI.MainMenu.Tmp_MenuItem.Btn_MyProfile]                = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.MyProfile)
             UDK.UI.SetUIVisibility(
                 { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root },
@@ -28,6 +29,7 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_MenuItem.Btn_Settings]                 = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.Settings)
             UDK.UI.SetUIVisibility(
                 { CoreUI.MainMenu.Tmp_Settings.Grp_Root },
@@ -39,6 +41,7 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_MenuItem.Btn_Rank]                     = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.RankList)
             UDK.UI.SetUIVisibility(
                 { CoreUI.MainMenu.Tmp_Rank.Grp_Root },
@@ -50,12 +53,22 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_MenuItem.Btn_EShop]                    = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
+        end
+    },
+    -- MyProfile Page (Btn Group / UIBase)
+    [CoreUI.MainMenu.Tmp_MyProfile.Btn_Help]                    = {
+        Pressed = function()
+            local msg = Framework.Tools.Utils.GetI18NKey("key.message.help")
+            UDK.UI.ShowMessageTip(msg)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
         end
     },
     -- Settings Page (Btn Group / UIBase)
     [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_General]     = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(
                 { CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root },
                 { CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root }
@@ -67,6 +80,7 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Misc]        = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(
                 { CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root },
                 { CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root }
@@ -79,27 +93,33 @@ ActMap.MainMenu = {
     [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Language]    = {
         Pressed = function(ItemUID)
             Framework.Tools.Utils.I18NLangToggle()
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Btn_Reset]                    = {
         Pressed = function()
-            UI:ShowMessageTip("RESET")
+            local msg = Framework.Tools.Utils.GetI18NKey("key.message.reset_setting")
+            UDK.UI.ShowMessageTip(msg)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
         end
     },
     -- Settings Page (General Page)
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_SFXSound] = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode]  = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_ChatMode] = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
@@ -131,11 +151,13 @@ ActMap.MainMenu = {
     -- UIBase
     [CoreUI.MainMenu.Tmp_UIBase.Btn_GRank]                      = {
         Pressed = function()
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             Rank:DspRankWind()
         end
     },
     [CoreUI.MainMenu.Tmp_UIBase.Btn_Close]                      = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClose)
             if Framework.Tools.UI.GetMainMenuUIOpenState() then
                 Framework.Tools.UI.SetMainMenuUIOpenState(false)
             end
@@ -151,6 +173,7 @@ ActMap.MainMenu = {
 ActMap.ScoreBar = {
     [CoreUI.ScoreBar.Tmp_ToolBar.Btn_MainMenu] = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(CoreUI.MainMenu.Grp_Root)
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
             UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)
@@ -159,6 +182,7 @@ ActMap.ScoreBar = {
     },
     [CoreUI.ScoreBar.Tmp_ToolBar.Btn_Rank] = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(CoreUI.MainMenu.Grp_Root)
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
             UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)

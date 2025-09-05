@@ -35,6 +35,9 @@ local function updateMainMenu()
     -- 基础面板（总是显示）
     MainMenuUI.BaseUI()
     MainMenuUI.UserAccountPanelUI()
+    --local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
+    --local value = Framework.Tools.UI.GetLayoutUIOpenPID(layoutProp)
+    --print('LayoutPID: ' .. value)
 
     -- 页面特定UI（按需显示）
     local currentPagePID = Framework.Tools.UI.GetMainMenuUIOpenPID()
@@ -42,11 +45,13 @@ local function updateMainMenu()
     if pageHandler then
         pageHandler()
     end
+    --print("当前页面PID：" .. currentPagePID)
 end
 
 local function updateTaskbar()
     if Framework.Tools.UI.GetTaskbarUIOpenState() then
         -- TODO: 任务栏处理逻辑
+        --print("任务栏处理逻辑")
     end
 end
 

@@ -12,8 +12,14 @@ local Toml = {}
 Toml.App = [[
 [app]
 name = "Campfire Project"
+version = "1.0.0"
+version.env = "Dev"
+version.ui = "2.0"
+version.sdk = "0.0.2"
+
 ]]
 
+-- 这次按照Toml规范来写了喵 =^•ω•^=
 Toml.I18N = [[
 [i18n]
 default = "zh-CN"
@@ -21,6 +27,9 @@ default = "zh-CN"
 [i18n.en-US]
 language = "English"
 key.account_info = { info1 = "LV.%s", info2 = "Coin %s" }
+key.message = { help = "View the rules or wiki.roidmc.com", wip = "Developing", reset_setting = "Reset Setting" }
+key.toggle = { on = "ON", off = "OFF", global = "All", team = "Team"}
+key.team = { red = "Red", blue = "Blue" }
 ptemplate.personal_data = """
 Personal Data
 ==================
@@ -79,6 +88,9 @@ FeedBack
 [i18n.zh-CN]
 language = "简体中文"
 key.account_info = { info1 = "等级LV.%s", info2 = "金币%s" }
+key.message = { help = "查看玩法说明或wiki.roidmc.com", wip = "开发中", reset_setting = "重置设置" }
+key.toggle = { on = "开启", off = "关闭", global = "全体", team = "队伍"}
+key.team = { red = "红队", blue = "蓝队" }
 ptemplate.personal_data = """
 个人数据
 ==================

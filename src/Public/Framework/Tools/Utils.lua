@@ -8,8 +8,9 @@
 -- ==================================================
 
 local UtilsTools = {}
-local parsedToml = UDK.TomlUtils.Parse(Config.Toml.I18N)
-local LangStr = parsedToml.i18n
+local parsedTomlI18N = UDK.TomlUtils.Parse(Config.Toml.I18N)
+local AppStr = UDK.TomlUtils.Parse(Config.Toml.App)
+local LangStr = parsedTomlI18N.i18n
 local KeyMap = Config.Engine.Property.KeyMap
 
 local CommonConf = {
@@ -49,7 +50,7 @@ end
 
 -- 获取当前语言
 local function getCurrentLang()
-   local value =  UDK.Property.GetProperty("1", KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2])
+    local value = UDK.Property.GetProperty("1", KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2])
     return value or "zh-CN"
 end
 
@@ -102,6 +103,10 @@ function UtilsTools.I18NLangToggle()
     local currentLang = getCurrentLang()
     local nextLang = currentLang == "zh-CN" and "en-US" or "zh-CN"
     UDK.Property.SetProperty("1", KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2], nextLang)
+end
+
+function UtilsTools.GetAppInfoKey(key)
+    return UDK.I18N.I18NGetKey(key, "App", AppStr)
 end
 
 return UtilsTools

@@ -13,7 +13,13 @@ local MainMenuUI = {}
 local UIConf, EngineConf = require("Public.Config.UI"), require("Public.Config.Engine")
 local CoreUI, KeyMap = UIConf.Core, EngineConf.Property.KeyMap
 
+-- 获取服务器玩家用户数据
 local function getServerPlayerProfileData()
+    local serverData = UDK.Property.GetProperty(
+        UDK.Player.GetLocalPlayerID(),
+        KeyMap.UserData.AccountProfile[1],
+        KeyMap.UserData.AccountProfile[2]
+    )
     local fallback = {
         Player = {
             ID = "NaN",
@@ -39,7 +45,19 @@ local function getServerPlayerProfileData()
         }
     }
 
-    return fallback
+    return serverData or fallback
+end
+
+-- 获取服务器排行榜数据
+local function getServerRankListData()
+    local serverData = UDK.Property.GetProperty(
+        KeyMap.ServerState.NameSpace,
+        KeyMap.ServerState.RankList[1],
+        KeyMap.ServerState.RankList[2]
+    )
+    local fallback = {}
+
+    return serverData or fallback
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
@@ -115,13 +133,47 @@ function MainMenuUI.UserProfileUI()
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_MyProfile.T_HistoryData, fmt_historyData_I18NKey)
 end
 
+---| 🔩 - 客户端UI更新（MainMenu）
+---<br>
+---| `范围`：`客户端`
+---<br>
+---| `功能`：`更新设置UI`
+---<br>
+---| `更新范围`：`MainMenu.Tmp_Settings` - `Settings`
+---<br>
+---| `是否从服务器获取数据`：`false`
 function MainMenuUI.UserSettingsUI()
-    local test                = Framework.Tools.Utils.GetI18NKey("ptemplate.credits")
     local currentLang         = Framework.Tools.Utils.GetI18NKey("language")
     local setting_I18NKey     = Framework.Tools.Utils.GetI18NKey("ptemplate.setting")
-    local fmt_setting_I18NKey = string.format(setting_I18NKey, "Test", "Test", "Test", currentLang)
+    local sound_enable_status = Framework.Tools.Sound.GetSoundEnableStatus()
+    local toggleKey, i18NKey, fmt_I18NKey
+    if sound_enable_status then
+        toggleKey = Framework.Tools.Utils.GetI18NKey("key.toggle.on")
+    else
+        toggleKey = Framework.Tools.Utils.GetI18NKey("key.toggle.off")
+    end
+    local fmt_setting_I18NKey = string.format(setting_I18NKey, toggleKey, "Test", "Test", currentLang)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.T_Content, fmt_setting_I18NKey)
-    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, test)
+    local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
+    local layoutID   = Config.Engine.GameUI.UI.Layout_SettingMisc
+    local openPID    = Framework.Tools.UI.GetLayoutUIOpenPID(layoutProp)
+    if openPID == layoutID.Version then
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.version")
+        fmt_I18NKey = string.format(
+            i18NKey,
+            Framework.Tools.Utils.GetAppInfoKey("version"),
+            Framework.Tools.Utils.GetAppInfoKey("version.env"),
+            Framework.Tools.Utils.GetAppInfoKey("version.ui"),
+            Framework.Tools.Utils.GetAppInfoKey("version.sdk")
+        )
+        UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, fmt_I18NKey)
+    elseif openPID == layoutID.Credits then
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.credits")
+        UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, i18NKey)
+    elseif openPID == layoutID.Feedback then
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.feedback")
+        UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, i18NKey)
+    end
 end
 
 function MainMenuUI.RankListUI()

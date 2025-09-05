@@ -12,6 +12,7 @@
 local Tools = {
     UI = require("Public.Framework.Tools.UI"),
     Utils = require("Public.Framework.Tools.Utils"),
+    Sound = require("Public.Framework.Tools.Sound"),
     LightDMS = require("Public.Framework.Tools.LightDMS")
 }
 

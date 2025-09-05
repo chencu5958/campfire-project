@@ -67,7 +67,7 @@ end
 ---| `范围`：`服务端` | `客户端`
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
----@param preferArray boolean 是否优先返回数组属性
+---@param preferArray boolean? 是否优先返回数组属性
 ---@return any result 属性值，如果不存在返回nil，数组属性不存在返回{}
 function LightDMS.GetCustomProperty(propertyType, propertyName, preferArray)
     local ElementId = System:GetScriptParentID()
