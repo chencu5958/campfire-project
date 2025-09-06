@@ -49,6 +49,9 @@ local function getServerPlayerProfileData()
     return serverData or fallback
 end
 
+-- 用于脏检查的变量
+local lastRankDataSerialized = ""
+
 -- 获取服务器排行榜数据
 local function getServerRankListData()
     local serverData = UDK.Property.GetProperty(
@@ -68,6 +71,22 @@ local function getServerRankListData()
     }
 
     return serverData or fallback
+end
+
+-- 序列化表为字符串用于比较
+local function serializeTable(tbl)
+    if type(tbl) ~= "table" then
+        return tostring(tbl)
+    end
+
+    local result = {}
+    for k, v in pairs(tbl) do
+        local keyStr = type(k) == "string" and '"' .. k .. '"' or tostring(k)
+        local valStr = type(v) == "table" and serializeTable(v) or
+            type(v) == "string" and '"' .. v .. '"' or tostring(v)
+        table.insert(result, "[" .. keyStr .. "]=" .. valStr)
+    end
+    return "{" .. table.concat(result, ",") .. "}"
 end
 
 -- 对排行榜数据按TeamID进行排序
@@ -105,7 +124,7 @@ end
 
 -- 根据状态码获取状态文本
 local function getStatusKeyByCode(code)
-    if type (code) ~= "string" then
+    if type(code) ~= "string" then
         Log:PrintError("[Framework:Client] [MainMenuUI.GetStatusKeyByCode] 无效的状态码，请检查状态码是否为字符串")
         return "InvalidCode"
     end
@@ -246,6 +265,39 @@ end
 ---| `是否从服务器获取数据`：`true`
 function MainMenuUI.RankListUI()
     local serverRankData = getServerRankListData()
+
+    -- 脏检查：只有当数据发生变化时才更新UI
+    local currentDataSerialized = serializeTable(serverRankData)
+    if lastRankDataSerialized == currentDataSerialized then
+        -- 即使数据未变化，也要更新状态文本（因为可能语言已切换）
+        local sortedData = sortRankListData(serverRankData)
+
+        -- 更新红队排行榜状态文本
+        local redTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_RedTeam
+        for i = 1, #sortedData.redTeam do
+            local item = redTeamUI["RankList" .. i]
+            if item then
+                local playerData = sortedData.redTeam[i]
+                UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+            end
+        end
+
+        -- 更新蓝队排行榜状态文本
+        local blueTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_BlueTeam
+        for i = 1, #sortedData.blueTeam do
+            local item = blueTeamUI["RankList" .. i]
+            if item then
+                local playerData = sortedData.blueTeam[i]
+                UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+            end
+        end
+
+        return -- 数据未变化，直接返回
+    end
+
+    -- 更新上次数据记录
+    lastRankDataSerialized = currentDataSerialized
+
     local sortedData = sortRankListData(serverRankData)
 
     -- 更新红队排行榜
