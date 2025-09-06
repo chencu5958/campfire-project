@@ -72,6 +72,9 @@ EngineConf.Property = {
             GameState = { "Map", "ServerState_GameState" },
             RankList = { "Map", "ServerState_RankList" },
         },
+        CloudData ={
+            InitStatus = { "Boolean", "CloudData_InitStatus", true },
+        },
     }
 }
 

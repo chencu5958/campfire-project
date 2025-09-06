@@ -68,7 +68,7 @@ UIConf.Core = {
                 T_Content = 100147,
                 Btn_Version = 100151,
                 Btn_Credits = 100150,
-                Btn_Feedback =100149
+                Btn_Feedback = 100149
             },
             Btn_Reset = 100144,
         },
@@ -113,6 +113,22 @@ UIConf.Core = {
             Btn_MainMenu = 100178,
             Btn_Rank = 100177
         },
+        Tmp_ContentBar = {
+            Grp_Root = 101617,
+            Fc_ProgressBar = 101285,
+            Tmp_TeamBar = {
+                Grp_Root = 101282,
+                Img_RedTeam = 101284,
+                Img_BlueTeam = 101283
+            },
+            Tmp_TipsBar = {
+                Grp_Root = 101269,
+                T_PlayerIDLeft = 101281,
+                T_PlayerIDRight = 101280,
+                T_Content = 101278,
+                Img_BG = 101277
+            }
+        }
     },
     TaskBar = {
         Grp_Root = 101216,

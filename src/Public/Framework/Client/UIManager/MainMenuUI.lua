@@ -23,6 +23,7 @@ local function getServerPlayerProfileData()
     local fallback = {
         Player = {
             ID = "NaN",
+            TeamID = Team:GetTeamById(UDK.Player.GetLocalPlayerID())
         },
         GameData = {
             Level = 0,
@@ -55,9 +56,62 @@ local function getServerRankListData()
         KeyMap.ServerState.RankList[1],
         KeyMap.ServerState.RankList[2]
     )
-    local fallback = {}
+    local fallback = {
+        [1] = { PlayerID = 0, Score = 1, Status = "NetError", TeamID = 0 },
+        [2] = { PlayerID = 1, Score = 0, Status = "NetError", TeamID = 0 },
+        [3] = { PlayerID = 2, Score = "NaN", Status = "NetError", TeamID = 1 },
+        [4] = { PlayerID = 3, Score = "NaN", Status = "NetError", TeamID = 1 },
+        [5] = { PlayerID = 4, Score = "NaN", Status = "NetError", TeamID = 1 },
+        [6] = { PlayerID = 5, Score = "NaN", Status = "NetError", TeamID = 1 },
+        [7] = { PlayerID = 6, Score = "NaN", Status = "NetError", TeamID = 1 },
+        [8] = { PlayerID = 7, Score = "NaN", Status = "NetError", TeamID = 1 }
+    }
 
     return serverData or fallback
+end
+
+-- 对排行榜数据按TeamID进行排序
+local function sortRankListData(rankData)
+    local sortedData = {
+        redTeam = {},
+        blueTeam = {}
+    }
+
+    -- 按队伍分类数据
+    for _, playerData in pairs(rankData) do
+        if playerData.TeamID == 0 then
+            table.insert(sortedData.redTeam, playerData)
+        elseif playerData.TeamID == 1 then
+            table.insert(sortedData.blueTeam, playerData)
+        end
+    end
+
+    -- 对红队按分数排序
+    table.sort(sortedData.redTeam, function(a, b)
+        local scoreA = tonumber(a.Score) or 0
+        local scoreB = tonumber(b.Score) or 0
+        return scoreA > scoreB
+    end)
+
+    -- 对蓝队按分数排序
+    table.sort(sortedData.blueTeam, function(a, b)
+        local scoreA = tonumber(a.Score) or 0
+        local scoreB = tonumber(b.Score) or 0
+        return scoreA > scoreB
+    end)
+
+    return sortedData
+end
+
+-- 根据状态码获取状态文本
+local function getStatusKeyByCode(code)
+    if type (code) ~= "string" then
+        Log:PrintError("[Framework:Client] [MainMenuUI.GetStatusKeyByCode] 无效的状态码，请检查状态码是否为字符串")
+        return "InvalidCode"
+    end
+    local queryCode = string.lower(code) or "missing"
+    local queryParam = string.format("%s.%s", "key.status", queryCode)
+    return Framework.Tools.Utils.GetI18NKey(queryParam)
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
@@ -70,9 +124,14 @@ end
 ---<br>
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.BaseUI()
-    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_AppInfo, "Campfire Project | UniX Framework")
+    local appInfo_Name = Framework.Tools.Utils.GetAppInfoKey("name")
+    local appInfo_Build = Framework.Tools.Utils.GetAppInfoKey("version.build")
+    local fmt_appInfo = string.format("%s | %s", appInfo_Name, appInfo_Build)
+    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_AppInfo, fmt_appInfo)
     local UID = UDK.Math.EncodeToUID(UDK.Player.GetLocalPlayerID())
-    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_UID, "UID " .. UID)
+    local UID_I18NKey = Framework.Tools.Utils.GetI18NKey("key.uid")
+    local fmt_UID_I18NKey = string.format(UID_I18NKey, UID)
+    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_UID, fmt_UID_I18NKey)
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
@@ -94,7 +153,7 @@ function MainMenuUI.UserAccountPanelUI()
     local fmt_accInfo2_I18NKey = string.format(accInfo2_I18NKey, serverData.GameData.Level)
     UDK.UI.SetPlayerIconAndName(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.Fc_Avatar, playerID, "Icon")
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_UserName, playerName)
-    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_ExtInfo, "Test Content")
+    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_ExtInfo, tostring(serverData.Player.TeamID))
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_AccountInfo.T_AccInfo1, fmt_accInfo1_I18NKey)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_AccountInfo.T_AccInfo2, fmt_accInfo2_I18NKey)
 end
@@ -176,18 +235,69 @@ function MainMenuUI.UserSettingsUI()
     end
 end
 
+---| 🔩 - 客户端UI更新（MainMenu）
+---<br>
+---| `范围`：`客户端`
+---<br>
+---| `功能`：`更新排行榜UI`
+---<br>
+---| `更新范围`：`MainMenu.Tmp_Rank` - `Rank List`
+---<br>
+---| `是否从服务器获取数据`：`true`
 function MainMenuUI.RankListUI()
+    local serverRankData = getServerRankListData()
+    local sortedData = sortRankListData(serverRankData)
+
+    -- 更新红队排行榜
     local redTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_RedTeam
+    for i = 1, #sortedData.redTeam do
+        local item = redTeamUI["RankList" .. i]
+        if item then
+            local playerData = sortedData.redTeam[i]
+            UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
+            UDK.UI.SetUIText(item.T_Number, "#" .. i)
+            UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
+            UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
+            UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+
+            -- 根据状态显示图标
+            if playerData.Status == "Dead" then
+                UDK.UI.SetUIVisibility(item.Img_IconDead)
+                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+            elseif playerData.Status == "Exit" then
+                UDK.UI.SetUIVisibility("", item.Img_IconDead)
+                UDK.UI.SetUIVisibility(item.Img_IconExit)
+            else
+                UDK.UI.SetUIVisibility("", item.Img_IconDead)
+                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+            end
+        end
+    end
+
+    -- 更新蓝队排行榜
     local blueTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_BlueTeam
-    local teamPlayer = UDK.Player.GetTeamPlayers(2)
-    local length = UDK.Array.GetLength(blueTeamUI)
-    --Log:PrintTable(teamPlayer)
-    --print(length)
-    for i = 1, length do
+    for i = 1, #sortedData.blueTeam do
         local item = blueTeamUI["RankList" .. i]
-        local playerID = UDK.Player.GetLocalPlayerID()
-        UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerID, "Icon")
-        UDK.UI.SetUIText(item.T_Status, "Test" .. i)
+        if item then
+            local playerData = sortedData.blueTeam[i]
+            UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
+            UDK.UI.SetUIText(item.T_Number, "#" .. i)
+            UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
+            UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
+            UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+
+            -- 根据状态显示图标
+            if playerData.Status == "Dead" then
+                UDK.UI.SetUIVisibility(item.Img_IconDead)
+                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+            elseif playerData.Status == "Exit" then
+                UDK.UI.SetUIVisibility("", item.Img_IconDead)
+                UDK.UI.SetUIVisibility(item.Img_IconExit)
+            else
+                UDK.UI.SetUIVisibility("", item.Img_IconDead)
+                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+            end
+        end
     end
 end
 
