@@ -133,6 +133,36 @@ local function getStatusKeyByCode(code)
     return Framework.Tools.Utils.GetI18NKey(queryParam)
 end
 
+-- 获取开关文本的I18NKey
+local function getToggleKeyByBool(boolean)
+    if type(boolean) ~= "boolean" then
+        Log:PrintError("[Framework:Client] [MainMenuUI.GetToggleKeyByBool] 无效的开关，请检查开关是否为布尔值")
+        return "InvalidBool"
+    end
+    local returnCode
+    if boolean then
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.on")
+    else
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.off")
+    end
+    return returnCode
+end
+
+-- 获取IM频道聊天范围的I18NKey
+local function getIMChannelAreaKeyByBool(boolean)
+    if type(boolean) ~= "boolean" then
+        Log:PrintError("[Framework:Client] [MainMenuUI.GetIMChannelToggleKeyByBool] 无效的IM频道开关，请检查开关是否为布尔值")
+        return "InvalidBool"
+    end
+    local returnCode
+    if boolean then
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.team")
+    else
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.global")
+    end
+    return returnCode
+end
+
 ---| 🔩 - 客户端UI更新（MainMenu）
 ---<br>
 ---| `范围`：`客户端`
@@ -168,8 +198,8 @@ function MainMenuUI.UserAccountPanelUI()
     local playerName = UDK.Player.GetPlayerNickName(playerID)
     local accInfo1_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info1")
     local accInfo2_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info2")
-    local fmt_accInfo1_I18NKey = string.format(accInfo1_I18NKey, serverData.GameData.Currency.Coin)
-    local fmt_accInfo2_I18NKey = string.format(accInfo2_I18NKey, serverData.GameData.Level)
+    local fmt_accInfo1_I18NKey = string.format(accInfo1_I18NKey, serverData.GameData.Level)
+    local fmt_accInfo2_I18NKey = string.format(accInfo2_I18NKey, serverData.GameData.Currency.Coin)
     UDK.UI.SetPlayerIconAndName(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.Fc_Avatar, playerID, "Icon")
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_UserName, playerName)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_ExtInfo, tostring(serverData.Player.TeamID))
@@ -221,16 +251,17 @@ end
 ---<br>
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.UserSettingsUI()
+    local playerID            = UDK.Player.GetLocalPlayerID()
     local currentLang         = Framework.Tools.Utils.GetI18NKey("language")
     local setting_I18NKey     = Framework.Tools.Utils.GetI18NKey("ptemplate.setting")
-    local sound_enable_status = Framework.Tools.Sound.GetSoundEnableStatus()
-    local toggleKey, i18NKey, fmt_I18NKey
-    if sound_enable_status then
-        toggleKey = Framework.Tools.Utils.GetI18NKey("key.toggle.on")
-    else
-        toggleKey = Framework.Tools.Utils.GetI18NKey("key.toggle.off")
-    end
-    local fmt_setting_I18NKey = string.format(setting_I18NKey, toggleKey, "Test", "Test", currentLang)
+    local i18NKey, fmt_I18NKey
+    local fmt_setting_I18NKey = string.format(
+        setting_I18NKey,
+        getToggleKeyByBool(Framework.Tools.Sound.GetSoundEnableStatus(playerID)),
+        getIMChannelAreaKeyByBool(Framework.Tools.Utils.GetIMVoiceIsTeamChannel(playerID)),
+        getIMChannelAreaKeyByBool(Framework.Tools.Utils.GetIMChatIsTeamChannel(playerID)),
+        currentLang
+    )
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.T_Content, fmt_setting_I18NKey)
     local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
     local layoutID   = Config.Engine.GameUI.UI.Layout_SettingMisc
