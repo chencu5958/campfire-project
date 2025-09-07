@@ -302,52 +302,72 @@ function MainMenuUI.RankListUI()
 
     -- 更新红队排行榜
     local redTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_RedTeam
-    for i = 1, #sortedData.redTeam do
+    local redTeamCount = #sortedData.redTeam
+    local redTeamTotalSlots = UDK.Array.GetLength(redTeamUI)
+
+    for i = 1, redTeamTotalSlots do
         local item = redTeamUI["RankList" .. i]
         if item then
-            local playerData = sortedData.redTeam[i]
-            UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
-            UDK.UI.SetUIText(item.T_Number, "#" .. i)
-            UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
-            UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
-            UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+            -- 如果有数据则显示，否则隐藏
+            if i <= redTeamCount then
+                local playerData = sortedData.redTeam[i]
+                UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
+                UDK.UI.SetUIText(item.T_Number, "#" .. i)
+                UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
+                UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
+                UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+                UDK.UI.SetUIVisibility(item.Grp_Root, true) -- 显示该项
 
-            -- 根据状态显示图标
-            if playerData.Status == "Dead" then
-                UDK.UI.SetUIVisibility(item.Img_IconDead)
-                UDK.UI.SetUIVisibility("", item.Img_IconExit)
-            elseif playerData.Status == "Exit" then
-                UDK.UI.SetUIVisibility("", item.Img_IconDead)
-                UDK.UI.SetUIVisibility(item.Img_IconExit)
+                -- 根据状态显示图标
+                if playerData.Status == "Dead" then
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, true)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, false)
+                elseif playerData.Status == "Exit" then
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, false)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, true)
+                else
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, false)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, false)
+                end
             else
-                UDK.UI.SetUIVisibility("", item.Img_IconDead)
-                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+                -- 没有数据的项隐藏
+                UDK.UI.SetUIVisibility(item.Grp_Root, false)
             end
         end
     end
 
     -- 更新蓝队排行榜
     local blueTeamUI = CoreUI.MainMenu.Tmp_Rank.Tmp_BlueTeam
-    for i = 1, #sortedData.blueTeam do
+    local blueTeamCount = #sortedData.blueTeam
+    local blueTeamTotalSlots = UDK.Array.GetLength(blueTeamUI)
+
+    for i = 1, blueTeamTotalSlots do
         local item = blueTeamUI["RankList" .. i]
         if item then
-            local playerData = sortedData.blueTeam[i]
-            UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
-            UDK.UI.SetUIText(item.T_Number, "#" .. i)
-            UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
-            UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
-            UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+            -- 如果有数据则显示，否则隐藏
+            if i <= blueTeamCount then
+                local playerData = sortedData.blueTeam[i]
+                UDK.UI.SetPlayerIconAndName(item.Fc_Avatar, playerData.PlayerID, "Icon")
+                UDK.UI.SetUIText(item.T_Number, "#" .. i)
+                UDK.UI.SetUIText(item.T_UserName, UDK.Player.GetPlayerNickName(playerData.PlayerID))
+                UDK.UI.SetUIText(item.T_Score, tostring(playerData.Score))
+                UDK.UI.SetUIText(item.T_Status, getStatusKeyByCode(playerData.Status))
+                UDK.UI.SetUIVisibility(item.Grp_Root, true) -- 显示该项
 
-            -- 根据状态显示图标
-            if playerData.Status == "Dead" then
-                UDK.UI.SetUIVisibility(item.Img_IconDead)
-                UDK.UI.SetUIVisibility("", item.Img_IconExit)
-            elseif playerData.Status == "Exit" then
-                UDK.UI.SetUIVisibility("", item.Img_IconDead)
-                UDK.UI.SetUIVisibility(item.Img_IconExit)
+                -- 根据状态显示图标
+                if playerData.Status == "Dead" then
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, true)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, false)
+                elseif playerData.Status == "Exit" then
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, false)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, true)
+                else
+                    UDK.UI.SetUIVisibility(item.Img_IconDead, false)
+                    UDK.UI.SetUIVisibility(item.Img_IconExit, false)
+                end
             else
-                UDK.UI.SetUIVisibility("", item.Img_IconDead)
-                UDK.UI.SetUIVisibility("", item.Img_IconExit)
+                -- 没有数据的项隐藏
+                UDK.UI.SetUIVisibility(item.Grp_Root, false)
             end
         end
     end
