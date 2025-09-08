@@ -49,8 +49,8 @@ local function createFormatLog(msg)
 end
 
 -- 获取当前语言
-local function getCurrentLang()
-    local value = UDK.Property.GetProperty("1", KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2])
+local function getCurrentLang(playerID)
+    local value = UDK.Property.GetProperty(playerID, KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2])
     return value or "zh-CN"
 end
 
@@ -99,14 +99,56 @@ end
 ---| 🧰 - 切换I18N语言
 ---<br>
 ---| `范围`：`服务端` | `客户端`
-function UtilsTools.I18NLangToggle()
-    local currentLang = getCurrentLang()
+---@param playerID number 玩家ID
+function UtilsTools.I18NLangToggle(playerID)
+    local currentLang = getCurrentLang(playerID)
     local nextLang = currentLang == "zh-CN" and "en-US" or "zh-CN"
-    UDK.Property.SetProperty("1", KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2], nextLang)
+    UDK.Property.SetProperty(playerID, KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2], nextLang)
+    UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2], nextLang)
 end
 
+---| 🧰 - 获取App信息文本
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param key string 键值
+---@return string langText 语言文本
 function UtilsTools.GetAppInfoKey(key)
     return UDK.I18N.I18NGetKey(key, "App", AppStr)
+end
+
+---| 🧰 - IM频道切换
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param playerID number 玩家ID
+---@param channelType string 频道类型 ("Voice", "Chat")
+function UtilsTools.IMChannelToggle(playerID, channelType)
+    
+end
+
+---| 🧰 - 获取IM语音是否为团队频道
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param playerID number 玩家ID
+---@return boolean isTeamChannel 是否为团队频道
+function UtilsTools.GetIMVoiceIsTeamChannel(playerID)
+    local value = UDK.Property.GetProperty(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2])
+    if value == nil then
+        value = false
+    end
+    return value
+end
+
+---| 🧰 - 获取IM聊天是否为团队频道
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param playerID number 玩家ID
+---@return boolean isTeamChannel 是否为团队频道
+function UtilsTools.GetIMChatIsTeamChannel(playerID)
+    local value = UDK.Property.GetProperty(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2])
+     if value == nil then
+        value = false
+    end
+    return value
 end
 
 return UtilsTools

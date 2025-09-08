@@ -13,52 +13,69 @@ local EngineConf = require("Public.Config.Engine")
 local CoreUI = UIConf.Core
 local UIAnim = UIConf.UIAnim
 
+-- 统一处理主菜单项按钮切换逻辑
+local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
+    Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
+    Framework.Tools.UI.SetMainMenuUIOpenPID(pagePID)
+    UDK.UI.SetUIVisibility(
+        { showGroup },
+        hideGroups
+    )
+    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
+    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
+end
+
+-- 统一处理设置页面按钮切换逻辑
+local function handleSettingsPageSwitch(itemUID, showGroup, hideGroup)
+    Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
+    UDK.UI.SetUIVisibility(
+        { showGroup },
+        { hideGroup }
+    )
+    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
+    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, 1)
+end
+
 ActMap.MainMenu = {
     -- MenuItem BtnGroup
-    [CoreUI.MainMenu.Tmp_MenuItem.Btn_MyProfile]                = {
+    [CoreUI.MainMenu.Tmp_MenuItem.Btn_MyProfile] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.MyProfile)
-            UDK.UI.SetUIVisibility(
-                { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root },
+            handleMainMenuSwitch(
+                ItemUID,
+                EngineConf.GameUI.UI.MainMenuPID.MyProfile,
+                CoreUI.MainMenu.Tmp_MyProfile.Grp_Root,
                 { CoreUI.MainMenu.Tmp_Settings.Grp_Root, CoreUI.MainMenu.Tmp_Rank.Grp_Root }
             )
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Tmp_MyProfile.Grp_Root, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_MenuItem.Btn_Settings]                 = {
+    [CoreUI.MainMenu.Tmp_MenuItem.Btn_Settings] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.Settings)
-            UDK.UI.SetUIVisibility(
-                { CoreUI.MainMenu.Tmp_Settings.Grp_Root },
+            handleMainMenuSwitch(
+                ItemUID,
+                EngineConf.GameUI.UI.MainMenuPID.Settings,
+                CoreUI.MainMenu.Tmp_Settings.Grp_Root,
                 { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root, CoreUI.MainMenu.Tmp_Rank.Grp_Root }
             )
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Tmp_Settings.Grp_Root, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_MenuItem.Btn_Rank]                     = {
+    [CoreUI.MainMenu.Tmp_MenuItem.Btn_Rank] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            Framework.Tools.UI.SetMainMenuUIOpenPID(EngineConf.GameUI.UI.MainMenuPID.RankList)
-            UDK.UI.SetUIVisibility(
-                { CoreUI.MainMenu.Tmp_Rank.Grp_Root },
+            handleMainMenuSwitch(
+                ItemUID,
+                EngineConf.GameUI.UI.MainMenuPID.RankList,
+                CoreUI.MainMenu.Tmp_Rank.Grp_Root,
                 { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root, CoreUI.MainMenu.Tmp_Settings.Grp_Root }
             )
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Tmp_Rank.Grp_Root, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_MenuItem.Btn_EShop]                    = {
+    [CoreUI.MainMenu.Tmp_MenuItem.Btn_EShop] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
         end
     },
     -- MyProfile Page (Btn Group / UIBase)
-    [CoreUI.MainMenu.Tmp_MyProfile.Btn_Help]                    = {
+    [CoreUI.MainMenu.Tmp_MyProfile.Btn_Help] = {
         Pressed = function()
             local msg = Framework.Tools.Utils.GetI18NKey("key.message.help")
             UDK.UI.ShowMessageTip(msg)
@@ -66,38 +83,32 @@ ActMap.MainMenu = {
         end
     },
     -- Settings Page (Btn Group / UIBase)
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_General]     = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_General] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            UDK.UI.SetUIVisibility(
-                { CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root },
-                { CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root }
+            handleSettingsPageSwitch(
+                ItemUID,
+                CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root,
+                CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root
             )
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root,
-                UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Misc]        = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Misc] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            UDK.UI.SetUIVisibility(
-                { CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root },
-                { CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root }
+            handleSettingsPageSwitch(
+                ItemUID,
+                CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root,
+                CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Grp_Root
             )
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Grp_Root,
-                UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Language]    = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_BtnGroup.Btn_Language] = {
         Pressed = function(ItemUID)
-            Framework.Tools.Utils.I18NLangToggle()
+            Framework.Tools.Utils.I18NLangToggle(UDK.Player.GetLocalPlayerID())
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Btn_Reset]                    = {
+    [CoreUI.MainMenu.Tmp_Settings.Btn_Reset] = {
         Pressed = function()
             local msg = Framework.Tools.Utils.GetI18NKey("key.message.reset_setting")
             UDK.UI.ShowMessageTip(msg)
@@ -107,11 +118,12 @@ ActMap.MainMenu = {
     -- Settings Page (General Page)
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_SFXSound] = {
         Pressed = function(ItemUID)
+            Framework.Tools.Sound.SoundToggle(UDK.Player.GetLocalPlayerID())
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode]  = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
@@ -124,7 +136,7 @@ ActMap.MainMenu = {
         end
     },
     -- Settings Page (Misc Page)
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Version]     = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Version] = {
         Pressed = function(ItemUID)
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Version
@@ -132,7 +144,7 @@ ActMap.MainMenu = {
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Credits]     = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Credits] = {
         Pressed = function(ItemUID)
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Credits
@@ -140,7 +152,7 @@ ActMap.MainMenu = {
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
-    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Feedback]    = {
+    [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Feedback] = {
         Pressed = function(ItemUID)
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Feedback
@@ -149,13 +161,13 @@ ActMap.MainMenu = {
         end
     },
     -- UIBase
-    [CoreUI.MainMenu.Tmp_UIBase.Btn_GRank]                      = {
+    [CoreUI.MainMenu.Tmp_UIBase.Btn_GRank] = {
         Pressed = function()
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             Rank:DspRankWind()
         end
     },
-    [CoreUI.MainMenu.Tmp_UIBase.Btn_Close]                      = {
+    [CoreUI.MainMenu.Tmp_UIBase.Btn_Close] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClose)
             if Framework.Tools.UI.GetMainMenuUIOpenState() then
@@ -178,6 +190,14 @@ ActMap.ScoreBar = {
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
             UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)
             UI:PlayUIAnimation(ItemUID, 1, 1)
+
+            -- 打开后切换到MyProfile子菜单
+            handleMainMenuSwitch(
+                ItemUID,
+                EngineConf.GameUI.UI.MainMenuPID.MyProfile,
+                CoreUI.MainMenu.Tmp_MyProfile.Grp_Root,
+                { CoreUI.MainMenu.Tmp_Settings.Grp_Root, CoreUI.MainMenu.Tmp_Rank.Grp_Root }
+            )
         end
     },
     [CoreUI.ScoreBar.Tmp_ToolBar.Btn_Rank] = {
@@ -187,6 +207,14 @@ ActMap.ScoreBar = {
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
             UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)
             UI:PlayUIAnimation(ItemUID, 1, 1)
+
+            -- 打开后切换到Rank子菜单
+            handleMainMenuSwitch(
+                ItemUID,
+                EngineConf.GameUI.UI.MainMenuPID.RankList,
+                CoreUI.MainMenu.Tmp_Rank.Grp_Root,
+                { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root, CoreUI.MainMenu.Tmp_Settings.Grp_Root }
+            )
         end
     }
 }
