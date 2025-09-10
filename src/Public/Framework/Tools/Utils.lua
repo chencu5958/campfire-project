@@ -51,7 +51,10 @@ end
 -- 获取当前语言
 local function getCurrentLang(playerID)
     local value = UDK.Property.GetProperty(playerID, KeyMap.PSetting.Lang[1], KeyMap.PSetting.Lang[2])
-    return value or "zh-CN"
+    if value == nil then
+        value = "zh-CN"
+    end
+    return value
 end
 
 ---| 🧰 - 环境是否为服务端
@@ -86,10 +89,11 @@ end
 ---<br>
 ---| `范围`：`服务端` | `客户端`
 ---@param key string 键值
+---@param playerID number 玩家ID
 ---@param lang string? 语言（留空则根据玩家设置自动获取）
 ---@return string langText 语言文本
-function UtilsTools.GetI18NKey(key, lang)
-    local queryLang = lang or getCurrentLang()
+function UtilsTools.GetI18NKey(key, playerID, lang)
+    local queryLang = lang or getCurrentLang(playerID)
     if type(queryLang) ~= "string" then
         Log:PrintError("[Utils] I18N语言参数类型错误")
     end
@@ -122,7 +126,18 @@ end
 ---@param playerID number 玩家ID
 ---@param channelType string 频道类型 ("Voice", "Chat")
 function UtilsTools.IMChannelToggle(playerID, channelType)
-    
+    if channelType == "Voice" then
+        local isTeamChannel = UtilsTools.GetIMVoiceIsTeamChannel(playerID)
+        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], not isTeamChannel)
+        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], not isTeamChannel)
+    elseif channelType == "Chat" then
+        local isTeamChannel = UtilsTools.GetIMChatIsTeamChannel(playerID)
+        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], not isTeamChannel)
+        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], not isTeamChannel)
+    else
+        local log = createFormatLog("[Utils] IM频道切换参数错误")
+        Log:PrintError(log)
+    end
 end
 
 ---| 🧰 - 获取IM语音是否为团队频道

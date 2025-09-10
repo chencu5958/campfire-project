@@ -60,37 +60,38 @@ local function getServerRankListData()
         KeyMap.ServerState.RankList[2]
     )
     local fallback = {
-        [1] = { PlayerID = 0, Score = 1, Status = "NetError", TeamID = 0 },
-        [2] = { PlayerID = 1, Score = 0, Status = "NetError", TeamID = 0 },
-        [3] = { PlayerID = 2, Score = "NaN", Status = "NetError", TeamID = 1 },
-        [4] = { PlayerID = 3, Score = "NaN", Status = "NetError", TeamID = 1 },
-        [5] = { PlayerID = 4, Score = "NaN", Status = "NetError", TeamID = 1 },
-        [6] = { PlayerID = 5, Score = "NaN", Status = "NetError", TeamID = 1 },
-        [7] = { PlayerID = 6, Score = "NaN", Status = "NetError", TeamID = 1 },
-        [8] = { PlayerID = 7, Score = "NaN", Status = "NetError", TeamID = 1 }
+        [1] = { PlayerID = 0, Score = 0, Status = "NetError", TeamID = 0 },
     }
 
     return serverData or fallback
 end
 
 -- 序列化表为字符串用于比较
-local function serializeTable(tbl)
+local function serializeTable(tbl, cache)
+    cache = cache or {}
     if type(tbl) ~= "table" then
         return tostring(tbl)
     end
 
+    if cache[tbl] then
+        return cache[tbl]
+    end
+
     local result = {}
+    cache[tbl] = true
+
     for k, v in pairs(tbl) do
         local keyStr = type(k) == "string" and '"' .. k .. '"' or tostring(k)
-        local valStr = type(v) == "table" and serializeTable(v) or
-            type(v) == "string" and '"' .. v .. '"' or tostring(v)
+        local valStr = serializeTable(v, cache)
         table.insert(result, "[" .. keyStr .. "]=" .. valStr)
     end
+
     return "{" .. table.concat(result, ",") .. "}"
 end
 
 -- 对排行榜数据按TeamID进行排序
 local function sortRankListData(rankData)
+    local TeamMap = Config.Engine.Map.Team
     local sortedData = {
         redTeam = {},
         blueTeam = {}
@@ -98,9 +99,9 @@ local function sortRankListData(rankData)
 
     -- 按队伍分类数据
     for _, playerData in pairs(rankData) do
-        if playerData.TeamID == 0 then
+        if playerData.TeamID == TeamMap.Red then
             table.insert(sortedData.redTeam, playerData)
-        elseif playerData.TeamID == 1 then
+        elseif playerData.TeamID == TeamMap.Blue then
             table.insert(sortedData.blueTeam, playerData)
         end
     end
@@ -128,9 +129,10 @@ local function getStatusKeyByCode(code)
         Log:PrintError("[Framework:Client] [MainMenuUI.GetStatusKeyByCode] 无效的状态码，请检查状态码是否为字符串")
         return "InvalidCode"
     end
+    local playerID = UDK.Player.GetLocalPlayerID()
     local queryCode = string.lower(code) or "missing"
     local queryParam = string.format("%s.%s", "key.status", queryCode)
-    return Framework.Tools.Utils.GetI18NKey(queryParam)
+    return Framework.Tools.Utils.GetI18NKey(queryParam, playerID)
 end
 
 -- 获取开关文本的I18NKey
@@ -140,10 +142,11 @@ local function getToggleKeyByBool(boolean)
         return "InvalidBool"
     end
     local returnCode
+    local playerID = UDK.Player.GetLocalPlayerID()
     if boolean then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.on")
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.on", playerID)
     else
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.off")
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.off", playerID)
     end
     return returnCode
 end
@@ -155,10 +158,27 @@ local function getIMChannelAreaKeyByBool(boolean)
         return "InvalidBool"
     end
     local returnCode
+    local playerID = UDK.Player.GetLocalPlayerID()
     if boolean then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.team")
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.team", playerID)
     else
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.global")
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.global", playerID)
+    end
+    return returnCode
+end
+
+-- 获取队伍描述文本的I18NKey
+local function getTeamdescByTeamID(teamID)
+    if type(teamID) ~= "number" then
+        Log:PrintError("[Framework:Client] [MainMenuUI.GetTeamdescByTeamID] 无效的队伍ID，请检查队伍ID是否为数字")
+        return "InvalidTeamID"
+    end
+    local TeamMap, returnCode = Config.Engine.Map.Team
+    local playerID = UDK.Player.GetLocalPlayerID()
+    if TeamMap.Red == teamID then
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.teamdesc.red", playerID)
+    elseif TeamMap.Blue == teamID then
+        returnCode = Framework.Tools.Utils.GetI18NKey("key.teamdesc.blue", playerID)
     end
     return returnCode
 end
@@ -173,12 +193,13 @@ end
 ---<br>
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.BaseUI()
+    local playerID = UDK.Player.GetLocalPlayerID()
     local appInfo_Name = Framework.Tools.Utils.GetAppInfoKey("name")
     local appInfo_Build = Framework.Tools.Utils.GetAppInfoKey("version.build")
     local fmt_appInfo = string.format("%s | %s", appInfo_Name, appInfo_Build)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_AppInfo, fmt_appInfo)
     local UID = UDK.Math.EncodeToUID(UDK.Player.GetLocalPlayerID())
-    local UID_I18NKey = Framework.Tools.Utils.GetI18NKey("key.uid")
+    local UID_I18NKey = Framework.Tools.Utils.GetI18NKey("key.uid", playerID)
     local fmt_UID_I18NKey = string.format(UID_I18NKey, UID)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_UID, fmt_UID_I18NKey)
 end
@@ -196,13 +217,14 @@ function MainMenuUI.UserAccountPanelUI()
     local serverData = getServerPlayerProfileData()
     local playerID = UDK.Player.GetLocalPlayerID()
     local playerName = UDK.Player.GetPlayerNickName(playerID)
-    local accInfo1_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info1")
-    local accInfo2_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info2")
+    local accInfo1_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info1", playerID)
+    local accInfo2_I18NKey = Framework.Tools.Utils.GetI18NKey("key.account_info.info2", playerID)
     local fmt_accInfo1_I18NKey = string.format(accInfo1_I18NKey, serverData.GameData.Level)
     local fmt_accInfo2_I18NKey = string.format(accInfo2_I18NKey, serverData.GameData.Currency.Coin)
+    local teamDesc = getTeamdescByTeamID(serverData.Player.TeamID)
     UDK.UI.SetPlayerIconAndName(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.Fc_Avatar, playerID, "Icon")
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_UserName, playerName)
-    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_ExtInfo, tostring(serverData.Player.TeamID))
+    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_UserInfo.T_ExtInfo, teamDesc)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_AccountInfo.T_AccInfo1, fmt_accInfo1_I18NKey)
     UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UserAccount.Tmp_AccountInfo.T_AccInfo2, fmt_accInfo2_I18NKey)
 end
@@ -218,8 +240,9 @@ end
 ---| `是否从服务器获取数据`：`true`
 function MainMenuUI.UserProfileUI()
     local serverData = getServerPlayerProfileData()
-    local historyData_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.history_data")
-    local personal_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.personal_data")
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local historyData_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.history_data", playerID)
+    local personal_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.personal_data", playerID)
     local fmt_personal_I18NKey = string.format(
         personal_I18NKey,
         serverData.GameData.Level,
@@ -252,8 +275,8 @@ end
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.UserSettingsUI()
     local playerID            = UDK.Player.GetLocalPlayerID()
-    local currentLang         = Framework.Tools.Utils.GetI18NKey("language")
-    local setting_I18NKey     = Framework.Tools.Utils.GetI18NKey("ptemplate.setting")
+    local currentLang         = Framework.Tools.Utils.GetI18NKey("language", playerID)
+    local setting_I18NKey     = Framework.Tools.Utils.GetI18NKey("ptemplate.setting", playerID)
     local i18NKey, fmt_I18NKey
     local fmt_setting_I18NKey = string.format(
         setting_I18NKey,
@@ -267,7 +290,7 @@ function MainMenuUI.UserSettingsUI()
     local layoutID   = Config.Engine.GameUI.UI.Layout_SettingMisc
     local openPID    = Framework.Tools.UI.GetLayoutUIOpenPID(layoutProp)
     if openPID == layoutID.Version then
-        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.version")
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.version", playerID)
         fmt_I18NKey = string.format(
             i18NKey,
             Framework.Tools.Utils.GetAppInfoKey("version"),
@@ -277,10 +300,10 @@ function MainMenuUI.UserSettingsUI()
         )
         UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, fmt_I18NKey)
     elseif openPID == layoutID.Credits then
-        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.credits")
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.credits", playerID)
         UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, i18NKey)
     elseif openPID == layoutID.Feedback then
-        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.feedback")
+        i18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.feedback", playerID)
         UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.T_Content, i18NKey)
     end
 end

@@ -31,8 +31,10 @@ key.account_info = { info1 = "LV.%s", info2 = "Coin %s" }
 key.message = { help = "View the rules or wiki.roidmc.com", wip = "Developing", reset_setting = "Reset Setting" }
 key.toggle = { on = "ON", off = "OFF", global = "All", team = "Team"}
 key.team = { red = "Red", blue = "Blue" }
-key.status = { dead = "Dead", alive = "Alive", escape = "Escape", win = "Win", exit = "Exit", neterror = "NetError", missing = "Missing" }
+key.teamdesc = { red= "Red Team Description", blue = "Blue Team Description" }
+key.status = { dead = "Dead", alive = "Alive", escape = "Escape", win = "Win", exit = "Exit", neterror = "NetError", missing = "Missing", uninit = "Uninit" }
 key.uid = "UID %s"
+key.copyright = { framework = "Powered By UniX SDK | UI | Framework" }
 ptemplate.personal_data = """
 Personal Data
 ==================
@@ -94,8 +96,10 @@ key.account_info = { info1 = "等级LV.%s", info2 = "金币%s" }
 key.message = { help = "查看玩法说明或wiki.roidmc.com", wip = "开发中", reset_setting = "重置设置" }
 key.toggle = { on = "开启", off = "关闭", global = "全体", team = "队伍"}
 key.team = { red = "红队", blue = "蓝队" }
-key.status = { dead = "死亡", alive = "存活", escape = "逃跑", win = "胜利", exit = "退出", neterror = "网络错误", missing = "缺失" }
+key.teamdesc = { red= "红队描述文本", blue = "蓝队描述文本" }
+key.status = { dead = "死亡", alive = "存活", escape = "逃跑", win = "胜利", exit = "退出", neterror = "网络错误", missing = "缺失", uninit = "未初始化" }
 key.uid = "UID %s"
+key.copyright = { framework = "基于UniX SDK | UI | Framework强力驱动" }
 ptemplate.personal_data = """
 个人数据
 ==================

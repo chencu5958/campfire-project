@@ -18,7 +18,11 @@
 -- * 2025 © RoidMC Studios | Powered by UniX SDK
 -- ==================================================
 
-local UIConf = {}
+local UIConf = {
+    Game = {
+        RoundTime = 1200,
+    }
+}
 
 UIConf.Core = {
     MainMenu = {
@@ -50,6 +54,7 @@ UIConf.Core = {
         },
         Tmp_Settings = {
             Grp_Root = 100139,
+            Btn_Reset = 100144,
             Tmp_BtnGroup = {
                 Grp_Root = 100159,
                 Btn_General = 100162,
@@ -70,21 +75,21 @@ UIConf.Core = {
                 Btn_Credits = 100150,
                 Btn_Feedback = 100149
             },
-            Btn_Reset = 100144,
         },
         Tmp_Rank = {
             Grp_Root = 100069,
+            Btn_Help = 100072,
             Tmp_RedTeam = {
-                RankList1 = { Fc_Avatar = 100766, T_Number = 100138, T_UserName = 100134, T_Score = 100133, T_Status = 100132, Img_IconDead = 100136, Img_IconExit = 100137 },
-                RankList2 = { Fc_Avatar = 100767, T_Number = 100130, T_UserName = 100126, T_Score = 100125, T_Status = 100124, Img_IconDead = 100128, Img_IconExit = 100129 },
+                RankList1 = { Grp_Root = 100131, Fc_Avatar = 100766, T_Number = 100138, T_UserName = 100134, T_Score = 100133, T_Status = 100132, Img_IconDead = 100136, Img_IconExit = 100137 },
+                RankList2 = { Grp_Root = 100123, Fc_Avatar = 100767, T_Number = 100130, T_UserName = 100126, T_Score = 100125, T_Status = 100124, Img_IconDead = 100128, Img_IconExit = 100129 },
             },
             Tmp_BlueTeam = {
-                RankList1 = { Fc_Avatar = 100768, T_Number = 100122, T_UserName = 100118, T_Score = 100117, T_Status = 100116, Img_IconDead = 100120, Img_IconExit = 100121 },
-                RankList2 = { Fc_Avatar = 100769, T_Number = 100114, T_UserName = 100110, T_Score = 100109, T_Status = 100108, Img_IconDead = 100112, Img_IconExit = 100113 },
-                RankList3 = { Fc_Avatar = 100770, T_Number = 100105, T_UserName = 100101, T_Score = 100100, T_Status = 100099, Img_IconDead = 100103, Img_IconExit = 100104 },
-                RankList4 = { Fc_Avatar = 100771, T_Number = 100097, T_UserName = 100093, T_Score = 100092, T_Status = 100091, Img_IconDead = 100095, Img_IconExit = 100096 },
-                RankList5 = { Fc_Avatar = 100772, T_Number = 100089, T_UserName = 100085, T_Score = 100084, T_Status = 100083, Img_IconDead = 100087, Img_IconExit = 100088 },
-                RankList6 = { Fc_Avatar = 100773, T_Number = 100081, T_UserName = 100077, T_Score = 100076, T_Status = 100075, Img_IconDead = 100079, Img_IconExit = 100080 },
+                RankList1 = { Grp_Root = 100115, Fc_Avatar = 100768, T_Number = 100122, T_UserName = 100118, T_Score = 100117, T_Status = 100116, Img_IconDead = 100120, Img_IconExit = 100121 },
+                RankList2 = { Grp_Root = 100107, Fc_Avatar = 100769, T_Number = 100114, T_UserName = 100110, T_Score = 100109, T_Status = 100108, Img_IconDead = 100112, Img_IconExit = 100113 },
+                RankList3 = { Grp_Root = 100098, Fc_Avatar = 100770, T_Number = 100105, T_UserName = 100101, T_Score = 100100, T_Status = 100099, Img_IconDead = 100103, Img_IconExit = 100104 },
+                RankList4 = { Grp_Root = 100090, Fc_Avatar = 100771, T_Number = 100097, T_UserName = 100093, T_Score = 100092, T_Status = 100091, Img_IconDead = 100095, Img_IconExit = 100096 },
+                RankList5 = { Grp_Root = 100082, Fc_Avatar = 100772, T_Number = 100089, T_UserName = 100085, T_Score = 100084, T_Status = 100083, Img_IconDead = 100087, Img_IconExit = 100088 },
+                RankList6 = { Grp_Root = 100074, Fc_Avatar = 100773, T_Number = 100081, T_UserName = 100077, T_Score = 100076, T_Status = 100075, Img_IconDead = 100079, Img_IconExit = 100080 },
             }
         },
         Tmp_UIBase = {
