@@ -127,11 +127,8 @@ UIConf.Core = {
                 Img_BlueTeam = 101283
             },
             Tmp_TipsBar = {
-                Grp_Root = 101269,
-                T_PlayerIDLeft = 101281,
-                T_PlayerIDRight = 101280,
-                T_Content = 101278,
-                Img_BG = 101277
+                TipsBar1 = { Grp_Root = 101279, T_PlayerIDLeft = 101281, T_PlayerIDRight = 101280, T_Content = 101278, Img_BG = 101277 },
+                TipsBar2 = { Grp_Root = 102372, T_PlayerIDLeft = 102370, T_PlayerIDRight = 102369, T_Content = 102371, Img_BG = 102368 }
             }
         }
     },

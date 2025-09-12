@@ -50,16 +50,17 @@ end
 
 local function updateTaskbar()
     if Framework.Tools.UI.GetTaskbarUIOpenState() then
-        -- TODO: 任务栏处理逻辑
-        --print("任务栏处理逻辑")
+        TaskbarUI.BaseUI()
     end
 end
 
--- 公共接口
+
+---| 🎮 更新UI
 function AnivaxUI.Update()
     -- 基础UI更新（总是显示）
     ScorebarUI.TimeCountUI()
     ScorebarUI.TeamScoreUI()
+    ScorebarUI.ContentBarUI()
 
     -- 条件性UI更新
     updateMainMenu()

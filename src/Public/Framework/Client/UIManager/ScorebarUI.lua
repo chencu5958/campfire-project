@@ -23,6 +23,8 @@ local function getServerData()
     local fallback = {
         Game = {
             PlayTime = 0,
+            TaskCount = 0,
+            TaskFinishedCount = 0,
         },
         Team = {
             RedTeam = {
@@ -36,19 +38,53 @@ local function getServerData()
     return serverData or fallback
 end
 
----| 🎮 更新计时器UI
+---| 🔩 - 客户端UI更新（Scorebar）
+---<br>
+---| `范围`：`客户端`
+---<br>
+---| `功能`：`更新基础UI`
+---<br>
+---| `更新范围`：`ScoreBar.Tmp_ToolBar.T_TimeCount` - `TimeCountUI`
+---<br>
+---| `是否从服务器获取数据`：`true`
 function ScorebarUI.TimeCountUI()
     local serverData = getServerData()
-    local time = UDK.Math.ConvertSecondsTohms(serverData.Game.PlayTime, "ms")
+    local time = UDK.Math.ConvertSecondsToHMS(serverData.Game.PlayTime, "ms")
     UDK.UI.SetUIText(CoreUI.ScoreBar.Tmp_ToolBar.T_TimeCount, time)
 end
 
----| 🎮 更新队伍计分UI
+---| 🔩 - 客户端UI更新（Scorebar）
+---<br>
+---| `范围`：`客户端`
+---<br>
+---| `功能`：`更新基础UI`
+---<br>
+---| `更新范围`：`ScoreBar.Tmp_*Team.T_ScoreCount` - `TeamScoreUI`
+---<br>
+---| `是否从服务器获取数据`：`true`
 function ScorebarUI.TeamScoreUI()
     local serverData = getServerData()
     local redScore, blueScore = tostring(serverData.Team.RedTeam.Score), tostring(serverData.Team.BlueTeam.Score)
     UDK.UI.SetUIText(CoreUI.ScoreBar.Tmp_RedTeam.T_ScoreCount, redScore)
     UDK.UI.SetUIText(CoreUI.ScoreBar.Tmp_BlueTeam.T_ScoreCount, blueScore)
+end
+
+---| 🔩 - 客户端UI更新（Scorebar）
+---<br>
+---| `范围`：`客户端`
+---<br>
+---| `功能`：`更新基础UI`
+---<br>
+---| `更新范围`：`ScoreBar.Tmp_ContentBar.Fc_ProgressBar` - `ContentBarUI`
+---<br>
+---| `是否从服务器获取数据`：`true`
+function ScorebarUI.ContentBarUI()
+    local serverData = getServerData()
+    local taskCount, taskFinishedCount = serverData.Game.TaskCount, serverData.Game.TaskFinishedCount
+    local progressCount = UDK.Math.Percentage(taskFinishedCount, taskCount)
+    --UDK.UI.SetUIProgressMaxValue(CoreUI.ScoreBar.Tmp_ContentBar.Fc_ProgressBar, taskCount)
+    UDK.UI.SetUIProgressCurrentValue(CoreUI.ScoreBar.Tmp_ContentBar.Fc_ProgressBar, math.ceil(progressCount))
+    --alizaNoticeXUIManager()
 end
 
 return ScorebarUI

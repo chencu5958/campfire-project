@@ -13,8 +13,19 @@ local EngineConf = require("Public.Config.Engine")
 local CoreUI = UIConf.Core
 local UIAnim = UIConf.UIAnim
 
+-- 按钮锁定状态控制变量
+local isMainMenuSwitching = false
+local isSettingsPageSwitching = false
+
 -- 统一处理主菜单项按钮切换逻辑
 local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
+    -- 如果正在切换中，则忽略新的切换请求
+    if isMainMenuSwitching then
+        return
+    end
+
+    isMainMenuSwitching = true
+
     Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
     Framework.Tools.UI.SetMainMenuUIOpenPID(pagePID)
     UDK.UI.SetUIVisibility(
@@ -23,10 +34,22 @@ local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
     )
     UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
     UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
+
+    -- 0.3秒后解锁
+    TimerManager:AddTimer(0.3, function()
+        isMainMenuSwitching = false
+    end)
 end
 
 -- 统一处理设置页面按钮切换逻辑
 local function handleSettingsPageSwitch(itemUID, showGroup, hideGroup)
+    -- 如果正在切换中，则忽略新的切换请求
+    if isSettingsPageSwitching then
+        return
+    end
+
+    isSettingsPageSwitching = true
+
     Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
     UDK.UI.SetUIVisibility(
         { showGroup },
@@ -34,6 +57,11 @@ local function handleSettingsPageSwitch(itemUID, showGroup, hideGroup)
     )
     UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
     UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, 1)
+
+    -- 0.3秒后解锁
+    TimerManager:AddTimer(0.3, function()
+        isSettingsPageSwitching = false
+    end)
 end
 
 ActMap.MainMenu = {
@@ -77,7 +105,8 @@ ActMap.MainMenu = {
     -- MyProfile Page (Btn Group / UIBase)
     [CoreUI.MainMenu.Tmp_MyProfile.Btn_Help] = {
         Pressed = function()
-            local msg = Framework.Tools.Utils.GetI18NKey("key.message.help")
+            local playerID = UDK.Player.GetLocalPlayerID()
+            local msg = Framework.Tools.Utils.GetI18NKey("key.message.help", playerID)
             UDK.UI.ShowMessageTip(msg)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
         end
@@ -110,8 +139,10 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_Settings.Btn_Reset] = {
         Pressed = function()
-            local msg = Framework.Tools.Utils.GetI18NKey("key.message.reset_setting")
+            local playerID = UDK.Player.GetLocalPlayerID()
+            local msg = Framework.Tools.Utils.GetI18NKey("key.message.reset_setting", playerID)
             UDK.UI.ShowMessageTip(msg)
+            Framework.Tools.GameState.SendToServer(playerID, "Act_ResetSetting")
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
         end
     },
@@ -126,12 +157,14 @@ ActMap.MainMenu = {
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
+            Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Voice")
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_ChatMode] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
+            Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Chat")
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
@@ -160,6 +193,15 @@ ActMap.MainMenu = {
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
+    -- Rank Page (Btn Group / UIBase)
+    [CoreUI.MainMenu.Tmp_Rank.Btn_Help] = {
+        Pressed = function()
+            local playerID = UDK.Player.GetLocalPlayerID()
+            local msg = Framework.Tools.Utils.GetI18NKey("key.copyright.framework", playerID)
+            UDK.UI.ShowMessageTip(msg)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
+        end
+    },
     -- UIBase
     [CoreUI.MainMenu.Tmp_UIBase.Btn_GRank] = {
         Pressed = function()
@@ -169,6 +211,11 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_UIBase.Btn_Close] = {
         Pressed = function(ItemUID)
+            -- 如果主菜单正在切换中，则忽略关闭请求
+            if isMainMenuSwitching then
+                return
+            end
+
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClose)
             if Framework.Tools.UI.GetMainMenuUIOpenState() then
                 Framework.Tools.UI.SetMainMenuUIOpenState(false)

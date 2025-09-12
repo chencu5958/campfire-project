@@ -173,7 +173,7 @@ local function getTeamdescByTeamID(teamID)
         Log:PrintError("[Framework:Client] [MainMenuUI.GetTeamdescByTeamID] 无效的队伍ID，请检查队伍ID是否为数字")
         return "InvalidTeamID"
     end
-    local TeamMap, returnCode = Config.Engine.Map.Team
+    local TeamMap, returnCode = Config.Engine.Map.Team, ""
     local playerID = UDK.Player.GetLocalPlayerID()
     if TeamMap.Red == teamID then
         returnCode = Framework.Tools.Utils.GetI18NKey("key.teamdesc.red", playerID)
@@ -250,7 +250,7 @@ function MainMenuUI.UserProfileUI()
         serverData.GameData.Exp,
         serverData.GameData.ReqExp
     )
-    local winRate = UDK.Math.CalcPercentage(serverData.CloudData.Match.TotalRound, serverData.CloudData.Match.Win)
+    local winRate = UDK.Math.Percentage(serverData.CloudData.Match.Win, serverData.CloudData.Match.TotalRound)
     local fmt_historyData_I18NKey = string.format(
         historyData_I18NKey,
         serverData.CloudData.Match.TotalRound,

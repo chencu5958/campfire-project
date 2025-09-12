@@ -85,6 +85,17 @@ function UtilsTools.EnvIsClient()
     end
 end
 
+---| 🧰 - 获取环境信息
+---<br>
+---@return table {
+---     envID: number,       -- 环境ID（Server=1, Client=2, Standalone=0）
+---     envName: string,     -- 环境名称（"Server", "Client", "Standalone"）
+---     isStandalone: boolean -- 是否为单机模式
+---}
+function UtilsTools.GetEnvInfo()
+    return envCheck()
+end
+
 ---| 🧰 - 获取I18N文本
 ---<br>
 ---| `范围`：`服务端` | `客户端`
