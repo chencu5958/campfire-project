@@ -10,6 +10,7 @@
 -- ==================================================
 local Client = {
     Init = require("Public.Framework.Client.Init"),
+    Aliza = require("Public.Framework.Client.AlizaClient"),
     AnivaxUI = require("Public.Framework.Client.UIManager.AnivaxUI"),
 }
 

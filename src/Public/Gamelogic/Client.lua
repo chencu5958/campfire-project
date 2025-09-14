@@ -16,6 +16,8 @@ function Client.Init()
     if not envType then return end
     Framework.Client.Init.InitUI()
     Framework.Client.Init.InitGame()
+    Framework.Client.Aliza.InitNet()
+    Framework.Tools.GameState.Init()
 end
 
 ---|
@@ -24,7 +26,6 @@ function Client.Update()
     local envType = Framework.Tools.Utils.EnvIsClient()
     if not envType then return end
     Framework.Client.AnivaxUI.Update()
-    --print("Client Update")
 end
 
 return Client
