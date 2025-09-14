@@ -1,10 +1,8 @@
 -- ==================================================
--- * Campfire Project | Framework/Common/Init.lua
+-- * Campfire Project | Framework/Client/AlizaClient.lua
 -- *
 -- * Info:
--- * Campfire Project Framework C/S Common Init
--- *
--- * Framework Powered By UniX Architecture
+-- * Campfire Project Framework AlizaNoticeX ClientSide Implement
 -- *
 -- * 2025 © RoidMC Studios | Powered by UniX SDK
 -- ==================================================
