@@ -46,7 +46,7 @@ local function generateUniqueMessageId(msgType, msgContent)
     return baseId
 end
 
----| 🎮  初始化Aliza通知系统客户端逻辑
+---| 🎮 初始化Aliza通知系统客户端逻辑
 function AlizaClient.InitNet()
     local isClient = Framework.Tools.Utils.EnvIsClient()
 
@@ -99,7 +99,7 @@ function AlizaClient.InitNet()
     end
 end
 
----| 🎮  添加消息到队列
+---| 🎮 添加消息到队列
 ---@param msgType string 消息类型
 ---@param msgData table 消息数据
 function AlizaClient.AddMessageToQueue(msgType, msgData)
@@ -186,7 +186,7 @@ function AlizaClient.AddMessageToQueue(msgType, msgData)
     AlizaClient.ProcessMessages()
 end
 
----| 🎮  处理消息队列
+---| 🎮 处理消息队列
 function AlizaClient.ProcessMessages()
     if #messageQueue == 0 then
         return
@@ -223,7 +223,7 @@ function AlizaClient.ProcessMessages()
     end
 end
 
----| 🎮  显示消息
+---| 🎮 显示消息
 ---@param msgData table 消息数据
 ---@param tipsBarElement table 提示栏元素
 ---@param barIndex number 提示栏索引
@@ -283,14 +283,14 @@ function AlizaClient.ShowMessage(msgData, tipsBarElement, barIndex, queueIndex)
     end)
 end
 
----| 🎮  清空所有队列
+---| 🎮 清空所有队列
 function AlizaClient.ClearAllQueues()
     messageQueue = {}
     recentMessages = {}
     Log:PrintLog("所有消息队列已清空")
 end
 
----| 🎮  获取队列状态
+---| 🎮 获取队列状态
 function AlizaClient.GetQueueStatus()
     local status = {
         messageQueueSize = #messageQueue,
@@ -304,10 +304,26 @@ function AlizaClient.GetQueueStatus()
     return status
 end
 
----| 🎮  重置消息计数器
+---| 🎮 重置消息计数器
 function AlizaClient.ResetMessageCounter()
     messageCounter = 0
     Log:PrintLog("消息计数器已重置")
 end
 
 return AlizaClient
+
+
+-- * 不要问为什么AlizaNoticeX的UI处理被单独拆出去了，嘻嘻OvO
+-- * 因为懒了不想和UIManager架构耦合到一起，作为单独的实现拆出去了
+-- * ⣿⣿⣿⠿⠿⣿⣿⡿⢋⣶⣶⣬⣙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+-- * ⣿⡿⢡⣿⣷⣶⣦⣥⣿⣿⣿⣿⣿⣷⣮⡛⢿⣿⣿⣿⣿⣿⣿⣿
+-- * ⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢮⡙⣿⣿⣯⢐⡎⣿
+-- * ⣿⢹⣿⣿⣿⣿⣿⣿⡿⣡⡬⢿⣿⣿⣿⣶⣶⣼⣦⠥⣖⣩⣾⣿
+-- * ⣿⢸⣿⣿⣿⡿⣿⣿⣿⣿⠇⣌⢛⣻⣿⣿⣟⣛⣿⣧⠹⣿⣿⣿
+-- * ⠏⣼⣿⣿⢏⣾⣿⣟⣩⣶⣶⣿⣿⣿⣿⣿⡟⡿⢸⡿⣡⣿⣿⣿
+-- * ⣼⣿⣿⠇⣼⣿⣿⢸⠋⠁⠉⢽⣿⣿⣿⣟⣠⣤⣆⢃⢻⣿⣿⣿
+-- * ⣿⣿⣿⣼⣿⣿⣿⡞⣿⣿⣷⣾⣿⣿⣿⣿⡿⠟⠛⠸⢦⣙⡋⣿
+-- * ⣿⣿⣿⠹⣿⣿⡿⠗⣈⣭⣭⣭⣉⠻⡟⣩⣶⣾⣿⣿⣶⡙⣱⣿
+-- * ⣿⣿⣿⣷⣌⡛⠠⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⢸⣿
+-- * ⣿⣿⣿⣿⢏⣴⣧⣴⡘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣱⣶⣴⡜⢸⣿
+-- * ⣿⣿⣿⢃⣾⣿⣿⣿⡷⠉⢿⣿⣿⣿⣿⣿⣿⢰⣾⣿⣿⣧⢸⣿

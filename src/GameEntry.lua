@@ -1,4 +1,18 @@
-﻿------------------------------------------------- Game Require ------------------------------------------------------
+﻿-- ==================================================
+-- * 咕噜咕噜，芝士可爱小猫
+-- * ⣿⣿⣿⣿⣿⣿⡿⣛⣭⣭⣛⢿⣿⣿⣿⣿⣿⣿⣿⣿⢟⣫⣭⣭⡻⣿⣿⣿⣿⣿
+-- * ⣿⣿⣿⣿⡿⢫⣾⣿⠿⢿⣛⣓⣪⣭⣭⣭⣭⣭⣭⣕⣛⡿⢿⣿⣿⣎⢿⣿⣿⣿
+-- * ⣿⣿⣿⡿⣱⢟⣫⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣮⣙⢿⡎⣿⣿⣿
+-- * ⣿⣿⣿⢑⣵⣿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢿⣷⣌⢸⣿⣿
+-- * ⣿⣿⢣⣿⠟⠁⠄⠄⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠄⠄⠙⣿⣧⢻⣿
+-- * ⣿⢧⣿⡏⠄⠄⠄⠄⣸⣿⣿⡟⣛⣛⣫⣬⣛⣛⢫⣿⣿⡇⠄⠄⠄⠄⣿⣿⡇⣿
+-- * ⣿⢸⣿⣧⡀⠄⠄⣰⣿⣿⣿⣧⢻⣿⣿⣿⣿⣿⢣⣿⣿⣿⣄⡀⠄⣠⣿⣿⣿⢹
+-- * ⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡜⣿⣿⣿⣿⡟⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸
+-- * ⣿⡸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣉⣭⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢇⣿
+-- * ⣿⣧⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⣼⣿
+-- ==================================================
+
+------------------------------------------------- Game Require ------------------------------------------------------
 local UDK = require("Public.UniX-SDK.main")
 _G.UDK = UDK
 local Config = require("Public.Config.Main")
@@ -39,6 +53,18 @@ end
 System:RegisterEvent(Events.ON_PLAYER_RECONNECTED,
     function(playerID, levelID)
         Gamelogic.Server.EventPlayerReconnectd(playerID, levelID)
+    end
+)
+
+System:RegisterEvent(Events.ON_CHARACTER_DESTROYED,
+    function(playerID)
+        print("OnCharacterDestroyed", playerID)
+    end
+)
+
+System:RegisterEvent(Events.ON_PLAYER_PRELEAVE,
+    function(playerID)
+        print("OnPlayerPreLeave", playerID)
     end
 )
 

@@ -13,7 +13,8 @@ local AppStr = UDK.TomlUtils.Parse(Config.Toml.App)
 local LangStr = parsedTomlI18N.i18n
 local KeyMap = Config.Engine.Property.KeyMap
 
-local CommonConf = {
+---| 🧰 - 通用配置
+UtilsTools.Conf = {
     EnvType = {
         Standalone = { ID = 0, Name = "Standalone" },
         Server = { ID = 1, Name = "Server" },
@@ -31,8 +32,8 @@ local CommonConf = {
 ---}
 local function envCheck()
     local isStandalone = System:IsStandalone()
-    local envType = isStandalone and CommonConf.EnvType.Standalone or
-        (System:IsServer() and CommonConf.EnvType.Server or CommonConf.EnvType.Client)
+    local envType = isStandalone and UtilsTools.Conf.EnvType.Standalone or
+        (System:IsServer() and UtilsTools.Conf.EnvType.Server or UtilsTools.Conf.EnvType.Client)
 
     return {
         envID = envType.ID,
@@ -62,7 +63,7 @@ end
 ---@return boolean isServer 是否为服务端
 function UtilsTools.EnvIsServer()
     local envInfo = envCheck()
-    if envInfo.envID == CommonConf.EnvType.Server.ID or envInfo.isStandalone then
+    if envInfo.envID == UtilsTools.Conf.EnvType.Server.ID or envInfo.isStandalone then
         return true
     else
         local log = createFormatLog("[Utils] 当前环境不是服务端")
@@ -76,7 +77,7 @@ end
 ---@return boolean isClient 是否为客户端
 function UtilsTools.EnvIsClient()
     local envInfo = envCheck()
-    if envInfo.envID == CommonConf.EnvType.Client.ID or envInfo.isStandalone then
+    if envInfo.envID == UtilsTools.Conf.EnvType.Client.ID or envInfo.isStandalone then
         return true
     else
         local log = createFormatLog("[Utils] 当前环境不是客户端")
@@ -136,19 +137,24 @@ end
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 ---@param channelType string 频道类型 ("Voice", "Chat")
+---@return boolean newValue 是否为团队频道
 function UtilsTools.IMChannelToggle(playerID, channelType)
+    local newValue
     if channelType == "Voice" then
         local isTeamChannel = UtilsTools.GetIMVoiceIsTeamChannel(playerID)
-        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], not isTeamChannel)
-        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], not isTeamChannel)
+        newValue = not isTeamChannel
+        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], newValue)
+        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamMic[1], KeyMap.PSetting.TeamMic[2], newValue)
     elseif channelType == "Chat" then
         local isTeamChannel = UtilsTools.GetIMChatIsTeamChannel(playerID)
-        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], not isTeamChannel)
-        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], not isTeamChannel)
+        newValue = not isTeamChannel
+        UDK.Property.SetProperty(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], newValue)
+        UDK.Storage.ArchiveUpload(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2], newValue)
     else
         local log = createFormatLog("[Utils] IM频道切换参数错误")
         Log:PrintError(log)
     end
+    return newValue
 end
 
 ---| 🧰 - 获取IM语音是否为团队频道
@@ -171,7 +177,7 @@ end
 ---@return boolean isTeamChannel 是否为团队频道
 function UtilsTools.GetIMChatIsTeamChannel(playerID)
     local value = UDK.Property.GetProperty(playerID, KeyMap.PSetting.TeamChat[1], KeyMap.PSetting.TeamChat[2])
-     if value == nil then
+    if value == nil then
         value = false
     end
     return value

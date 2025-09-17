@@ -12,6 +12,7 @@
 local ScorebarUI = {}
 local UIConf, EngineConf = require("Public.Config.UI"), require("Public.Config.Engine")
 local CoreUI, KeyMap = UIConf.Core, EngineConf.Property.KeyMap
+local TeamIDMap = EngineConf.Map.Team
 
 -- 获取服务器数据
 local function getServerData()
@@ -82,9 +83,21 @@ function ScorebarUI.ContentBarUI()
     local serverData = getServerData()
     local taskCount, taskFinishedCount = serverData.Game.TaskCount, serverData.Game.TaskFinishedCount
     local progressCount = UDK.Math.Percentage(taskFinishedCount, taskCount)
-    --UDK.UI.SetUIProgressMaxValue(CoreUI.ScoreBar.Tmp_ContentBar.Fc_ProgressBar, taskCount)
+    -- 根据玩家队伍自动判断TeamBar UI显示（这部分数据不重要，写在客户端内处理）
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local playerTeam = Team:GetTeamById(playerID)
+    if TeamIDMap.Red == playerTeam then
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_RedTeam, true)
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_BlueTeam, false)
+    elseif TeamIDMap.Blue == playerTeam then
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_RedTeam, false)
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_BlueTeam, true)
+    else
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_RedTeam, false)
+        UDK.UI.SetUIVisibility(CoreUI.ScoreBar.Tmp_ContentBar.Tmp_TeamBar.Img_BlueTeam, false)
+    end
+    -- 使用服务器数据，计算并设置进度条
     UDK.UI.SetUIProgressCurrentValue(CoreUI.ScoreBar.Tmp_ContentBar.Fc_ProgressBar, math.ceil(progressCount))
-    --alizaNoticeXUIManager()
 end
 
 return ScorebarUI
