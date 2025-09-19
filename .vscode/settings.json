@@ -52,5 +52,5 @@
         "Gamelogic"
     ],
     "Lua.completion.showWord": "Disable",
-    "lua_analyzer.codeLinting.maxLineLength": 150
+    "lua_analyzer.codeLinting.maxLineLength": 200
 }
