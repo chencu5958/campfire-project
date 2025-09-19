@@ -23,8 +23,14 @@ local function playerPropertyInit(playerID)
         -- 遍历PSetting中的所有属性并初始化
         for _, value in pairs(KeyMap.PSetting) do
             UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
-            print("玩家属性初始化: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
             UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
+            --print("玩家属性初始化: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
+        end
+        -- 遍历PState中的所有属性并初始化
+        for _, value in pairs(KeyMap.PState) do
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+            UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
+            --print("玩家状态初始化: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
         end
     else
         -- 遍历PSetting中的所有属性并初始化
@@ -32,13 +38,42 @@ local function playerPropertyInit(playerID)
             UDK.Storage.ArchiveGet(playerID, value[1], value[2])
             UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
         end
+        -- 遍历PState中的所有属性并初始化
+        for _, value in pairs(KeyMap.PState) do
+            UDK.Storage.ArchiveGet(playerID, value[1], value[2])
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+        end
     end
 end
 
 ---| 🎮 服务器游戏逻辑初始化
+---<br>
+---| `范围`：`服务端`
 function ServerInit.InitGame()
     for _, v in ipairs(UDK.Player.GetAllPlayers()) do
         playerPropertyInit(v)
+    end
+end
+
+---| 🎮 重置玩家设置属性数据
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param resetType string 重置类型（PSetting, PState, All）
+function ServerInit.ResetSetting(playerID, resetType)
+    if resetType == "PSetting" or resetType == "All" then
+        -- 遍历PSetting中的所有属性并初始化
+        for _, value in pairs(KeyMap.PSetting) do
+            UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+        end
+    end
+    if resetType == "PState" or resetType == "All" then
+        -- 遍历PState中的所有属性并初始化
+        for _, value in pairs(KeyMap.PState) do
+            UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+        end
     end
 end
 

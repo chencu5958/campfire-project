@@ -100,6 +100,7 @@ ActMap.MainMenu = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
+            UDK.Event.FireSignEvent(EngineConf.Map.SignalEvent.OpenStore)
         end
     },
     -- MyProfile Page (Btn Group / UIBase)
@@ -156,15 +157,27 @@ ActMap.MainMenu = {
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode] = {
         Pressed = function(ItemUID)
+            local playerID = UDK.Player.GetLocalPlayerID()
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Voice")
+            local value = Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Voice")
+            local reqMsg = {
+                channelType = "Voice",
+                isTeam = value
+            }
+            Framework.Tools.GameState.SendToServer(playerID, "Act_IMRecvToggle", reqMsg)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_ChatMode] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Chat")
+            local playerID = UDK.Player.GetLocalPlayerID()
+            local value = Framework.Tools.Utils.IMChannelToggle(UDK.Player.GetLocalPlayerID(), "Chat")
+            local reqMsg = {
+                channelType = "Chat",
+                isTeam = value
+            }
+            Framework.Tools.GameState.SendToServer(playerID, "Act_IMRecvToggle", reqMsg)
             UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
         end
     },
