@@ -12,6 +12,7 @@
 local MainMenuUI = {}
 local UIConf, EngineConf = require("Public.Config.UI"), require("Public.Config.Engine")
 local CoreUI, KeyMap = UIConf.Core, EngineConf.Property.KeyMap
+local StatusCodeMap = EngineConf.Map.Status
 
 -- 获取服务器玩家用户数据
 local function getServerPlayerProfileData()
@@ -125,11 +126,24 @@ end
 
 -- 根据状态码获取状态文本
 local function getStatusKeyByCode(code)
-    if type(code) ~= "string" then
-        Log:PrintError("[Framework:Client] [MainMenuUI.GetStatusKeyByCode] 无效的状态码，请检查状态码是否为字符串")
+    local playerID = UDK.Player.GetLocalPlayerID()
+
+    -- 如果传入的是数字ID，则先转换为对应的状态名称
+    if type(code) == "number" then
+        for _, statusData in pairs(StatusCodeMap) do
+            if statusData.ID == code then
+                code = statusData.Name
+                break
+            end
+        end
+        -- 如果没有找到匹配的ID，默认使用"missing"
+        if type(code) == "number" then
+            code = "Missing"
+        end
+    elseif type(code) ~= "string" then
+        Log:PrintError("[Framework:Client] [MainMenuUI.GetStatusKeyByCode] 无效的状态码，请检查状态码是否为字符串或数字")
         return "InvalidCode"
     end
-    local playerID = UDK.Player.GetLocalPlayerID()
     local queryCode = string.lower(code) or "missing"
     local queryParam = string.format("%s.%s", "key.status", queryCode)
     return Framework.Tools.Utils.GetI18NKey(queryParam, playerID)
@@ -373,10 +387,10 @@ function MainMenuUI.RankListUI()
                 UDK.UI.SetUIVisibility(item.Grp_Root, true) -- 显示该项
 
                 -- 根据状态显示图标
-                if playerData.Status == "Dead" then
+                if playerData.Status == StatusCodeMap.Dead.ID then
                     UDK.UI.SetUIVisibility(item.Img_IconDead, true)
                     UDK.UI.SetUIVisibility(item.Img_IconExit, false)
-                elseif playerData.Status == "Exit" then
+                elseif playerData.Status == StatusCodeMap.Exit.ID then
                     UDK.UI.SetUIVisibility(item.Img_IconDead, false)
                     UDK.UI.SetUIVisibility(item.Img_IconExit, true)
                 else
@@ -409,10 +423,10 @@ function MainMenuUI.RankListUI()
                 UDK.UI.SetUIVisibility(item.Grp_Root, true) -- 显示该项
 
                 -- 根据状态显示图标
-                if playerData.Status == "Dead" then
+                if playerData.Status == StatusCodeMap.Dead.ID then
                     UDK.UI.SetUIVisibility(item.Img_IconDead, true)
                     UDK.UI.SetUIVisibility(item.Img_IconExit, false)
-                elseif playerData.Status == "Exit" then
+                elseif playerData.Status == StatusCodeMap.Exit.ID then
                     UDK.UI.SetUIVisibility(item.Img_IconDead, false)
                     UDK.UI.SetUIVisibility(item.Img_IconExit, true)
                 else
