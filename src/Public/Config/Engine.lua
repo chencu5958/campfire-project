@@ -41,6 +41,10 @@ EngineConf.GameUI = {
             Version = 1,
             Credits = 2,
             Feedback = 3
+        },
+        IMUtilsPID = {
+            TChat = 1,
+            VChat = 2
         }
     }
 }
@@ -185,7 +189,9 @@ EngineConf.Property = {
             MainMenuIsOpen = { "Boolean", "UIState_MainMenuIsOpen", false },
             MainMenuOpenPID = { "Number", "UIState_MainMenuOpenPID", 1 },
             LayoutSettingMiscPID = { "Number", "UIState_LayoutSettingMiscPID", 1 },
-            TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false }
+            TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false },
+            IMUtilsIsOpen = { "Boolean", "UIState_IMUtilsIsOpen", false },
+            IMUtilsOpenPID = { "Number", "UIState_IMUtilsOpenPID", 1 },
         },
         ServerState = {
             NameSpace = "ServerState",

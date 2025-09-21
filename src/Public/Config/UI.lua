@@ -130,7 +130,12 @@ UIConf.Core = {
                 TipsBar1 = { Grp_Root = 101279, T_PlayerIDLeft = 101281, T_PlayerIDRight = 101280, T_Content = 101278, Img_BG = 101277 },
                 TipsBar2 = { Grp_Root = 102372, T_PlayerIDLeft = 102370, T_PlayerIDRight = 102369, T_Content = 102371, Img_BG = 102368 }
             }
-        }
+        },
+        Tmp_IMUtils = {
+            Grp_Root = 102423,
+            Btn_TChat = 102422,
+            Btn_VChat = 102399
+        },
     },
     TaskBar = {
         Grp_Root = 101216,
@@ -144,6 +149,20 @@ UIConf.Core = {
             Btn_Expand = 101217,
             Btn_Collapse = 101223
         },
+    },
+    IMUtils = {
+        Grp_Root = 102373,
+        Tmp_TChat = {
+            Grp_Root = 102379,
+            Btn_Close = 102382,
+            T_ChannelInfo = 102381,
+            Img_FuncDisable =103608
+        },
+        Tmp_VChat = {
+            Grp_Root = 102374,
+            Btn_Close = 102378,
+            T_ChannelInfo = 102376
+        }
     }
 }
 
@@ -176,6 +195,10 @@ UIConf.UIAnim = {
         }
     },
     TaskBar = {
+        UIOpen = 1,
+        UIClose = 2,
+    },
+    IMUtils = {
         UIOpen = 1,
         UIClose = 2,
     }

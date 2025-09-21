@@ -10,6 +10,7 @@
 local MainMenuUI = require("Public.Framework.Client.UIManager.MainMenuUI")
 local ScorebarUI = require("Public.Framework.Client.UIManager.ScorebarUI")
 local TaskbarUI = require("Public.Framework.Client.UIManager.TaskbarUI")
+local IMUtilsUI = require("Public.Framework.Client.UIManager.IMUtilsUI")
 local EngineConf = require("Public.Config.Engine")
 
 local AnivaxUI = {}
@@ -54,6 +55,11 @@ local function updateTaskbar()
     end
 end
 
+local function updateIMUtils()
+   if Framework.Tools.UI.GetIMUtilsUIOpenState() then
+       IMUtilsUI.BaseUI()
+   end
+end
 
 ---| 🎮 更新UI
 function AnivaxUI.Update()
@@ -65,6 +71,7 @@ function AnivaxUI.Update()
     -- 条件性UI更新
     updateMainMenu()
     updateTaskbar()
+    updateIMUtils()
 end
 
 -- 初始化

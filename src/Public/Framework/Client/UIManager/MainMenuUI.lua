@@ -155,14 +155,12 @@ local function getToggleKeyByBool(boolean)
         Log:PrintError("[Framework:Client] [MainMenuUI.GetToggleKeyByBool] 无效的开关，请检查开关是否为布尔值")
         return "InvalidBool"
     end
-    local returnCode
     local playerID = UDK.Player.GetLocalPlayerID()
     if boolean then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.on", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.toggle.on", playerID)
     else
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.off", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.toggle.off", playerID)
     end
-    return returnCode
 end
 
 -- 获取IM频道聊天范围的I18NKey
@@ -171,14 +169,12 @@ local function getIMChannelAreaKeyByBool(boolean)
         Log:PrintError("[Framework:Client] [MainMenuUI.GetIMChannelToggleKeyByBool] 无效的IM频道开关，请检查开关是否为布尔值")
         return "InvalidBool"
     end
-    local returnCode
     local playerID = UDK.Player.GetLocalPlayerID()
     if boolean then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.team", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.toggle.team", playerID)
     else
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.toggle.global", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.toggle.global", playerID)
     end
-    return returnCode
 end
 
 -- 获取队伍描述文本的I18NKey
@@ -187,14 +183,13 @@ local function getTeamdescByTeamID(teamID)
         Log:PrintError("[Framework:Client] [MainMenuUI.GetTeamdescByTeamID] 无效的队伍ID，请检查队伍ID是否为数字")
         return "InvalidTeamID"
     end
-    local TeamMap, returnCode = Config.Engine.Map.Team, ""
+    local TeamMap = Config.Engine.Map.Team
     local playerID = UDK.Player.GetLocalPlayerID()
     if TeamMap.Red == teamID then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.teamdesc.red", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.teamdesc.red", playerID)
     elseif TeamMap.Blue == teamID then
-        returnCode = Framework.Tools.Utils.GetI18NKey("key.teamdesc.blue", playerID)
+        return Framework.Tools.Utils.GetI18NKey("key.teamdesc.blue", playerID)
     end
-    return returnCode
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
@@ -208,6 +203,8 @@ end
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.BaseUI()
     local playerID = UDK.Player.GetLocalPlayerID()
+    local Menu_I18NKey = Framework.Tools.Utils.GetI18NKey("key.menu.mainmenu", playerID)
+    UDK.UI.SetUIText(CoreUI.MainMenu.Tmp_UIBase.T_Title, Menu_I18NKey)
     local appInfo_Name = Framework.Tools.Utils.GetAppInfoKey("name")
     local appInfo_Build = Framework.Tools.Utils.GetAppInfoKey("version.build")
     local fmt_appInfo = string.format("%s | %s", appInfo_Name, appInfo_Build)

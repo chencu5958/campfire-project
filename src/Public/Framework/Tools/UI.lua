@@ -48,6 +48,22 @@ function UI.GetTaskbarUIOpenState()
     return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.TaskbarIsOpen[1], KeyMap.UIState.TaskbarIsOpen[2])
 end
 
+---| 🧰 - 获取IMUtilsUI打开状态
+---<br>
+---| `范围`： `客户端`
+---@return boolean isOpen IMUtilsUI打开状态
+function UI.GetIMUtilsUIOpenState()
+    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.IMUtilsIsOpen[1], KeyMap.UIState.IMUtilsIsOpen[2])
+end
+
+---| 🧰 - 获取IMUtilsUI打开的页面ID
+---<br>
+---| `范围`： `客户端`
+---@return number pid 聊天工具UI打开的页面ID
+function UI.GetIMUtilsOpenPID()
+    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2])
+end
+
 ---| 🧰 - 设置主菜单UI打开状态
 ---<br>
 ---| `范围`： `客户端`
@@ -81,6 +97,22 @@ end
 ---@param pid number 页面ID
 function UI.SetLayoutUIOpenPID(layoutName, pid)
     Framework.Tools.LightDMS.SetCustomProperty(layoutName[1], layoutName[2], pid)
+end
+
+---| 🧰 - 设置IMUtilsUI打开状态
+---<br>
+---| `范围`： `客户端`
+---@param state boolean IMUtilsUI打开状态
+function UI.SetIMUtilsUIOpenState(state)
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.IMUtilsIsOpen[1], KeyMap.UIState.IMUtilsIsOpen[2], state)
+end
+
+---| 🧰 - 设置IMUtilsUI打开的页面ID
+---<br>
+---| `范围`： `客户端`
+---@param pid number 页面ID
+function UI.SetIMUtilsOpenPID(pid)
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2], pid)
 end
 
 return UI

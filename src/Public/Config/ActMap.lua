@@ -16,6 +16,7 @@ local UIAnim = UIConf.UIAnim
 -- 按钮锁定状态控制变量
 local isMainMenuSwitching = false
 local isSettingsPageSwitching = false
+local isIMUtilsSwitching = false
 
 -- 统一处理主菜单项按钮切换逻辑
 local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
@@ -62,6 +63,103 @@ local function handleSettingsPageSwitch(itemUID, showGroup, hideGroup)
     TimerManager:AddTimer(0.3, function()
         isSettingsPageSwitching = false
     end)
+end
+
+-- 统一处理IMUtils按钮切换逻辑
+local function handleIMUtilsSwitch(targetPID)
+    -- 如果正在切换中，则忽略新的切换请求
+    if isIMUtilsSwitching then
+        return
+    end
+
+    isIMUtilsSwitching = true
+    local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+
+    if targetPID == IMUtilsPID.TChat then
+        -- 切换到TCHAT
+        Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.TChat)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root)
+        TimerManager:AddTimer(0.3, function()
+            isIMUtilsSwitching = false
+        end)
+        --print("Switch to TChat")
+    elseif targetPID == IMUtilsPID.VChat then
+        -- 切换到VCHAT
+        Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.VChat)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_VChat.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root)
+        TimerManager:AddTimer(0.3, function()
+            isIMUtilsSwitching = false
+        end)
+        --print("Switch to VChat")
+    end
+end
+
+-- 统一处理IMUtils打开逻辑
+local function handleIMUtilsOpen(targetPID)
+    -- 如果正在切换中，则忽略新的切换请求
+    if isIMUtilsSwitching then
+        return
+    end
+
+    isIMUtilsSwitching = true
+    local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+
+    if targetPID == IMUtilsPID.TChat then
+        -- 打开TCHAT
+        Framework.Tools.UI.SetIMUtilsUIOpenState(true)
+        Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.TChat)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Grp_Root, true)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root)
+        TimerManager:AddTimer(0.3, function()
+            isIMUtilsSwitching = false
+        end)
+        --print("Open TChat")
+    elseif targetPID == IMUtilsPID.VChat then
+        -- 打开VCHAT
+        Framework.Tools.UI.SetIMUtilsUIOpenState(true)
+        Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.VChat)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Grp_Root, true)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_VChat.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root)
+        TimerManager:AddTimer(0.3, function()
+            isIMUtilsSwitching = false
+        end)
+        --print("Open VChat")
+    end
+end
+
+-- 统一处理IMUtils关闭逻辑
+local function handleIMUtilsClose(targetPID)
+    -- 如果正在切换中，则忽略新的切换请求
+    if isIMUtilsSwitching then
+        return
+    end
+
+    isIMUtilsSwitching = true
+    local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+
+    if targetPID == IMUtilsPID.TChat then
+        -- 关闭TCHAT
+        Framework.Tools.UI.SetIMUtilsUIOpenState(false)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIClose, 1)
+        TimerManager:AddTimer(0.3, function()
+            UDK.UI.SetUIVisibility("", { CoreUI.IMUtils.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root })
+            isIMUtilsSwitching = false
+        end)
+        --print("Close TChat")
+    elseif targetPID == IMUtilsPID.VChat then
+        -- 关闭VCHAT
+        Framework.Tools.UI.SetIMUtilsUIOpenState(false)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIClose, 1)
+        TimerManager:AddTimer(0.3, function()
+            UDK.UI.SetUIVisibility("", { CoreUI.IMUtils.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root })
+            isIMUtilsSwitching = false
+        end)
+        --print("Close VChat")
+    end
 end
 
 ActMap.MainMenu = {
@@ -276,7 +374,45 @@ ActMap.ScoreBar = {
                 { CoreUI.MainMenu.Tmp_MyProfile.Grp_Root, CoreUI.MainMenu.Tmp_Settings.Grp_Root }
             )
         end
-    }
+    },
+    [CoreUI.ScoreBar.Tmp_IMUtils.Btn_TChat] = {
+        Pressed = function()
+            local isOpen = Framework.Tools.UI.GetIMUtilsUIOpenState()
+            local currentPID = Framework.Tools.UI.GetIMUtilsOpenPID()
+            local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+
+            if isOpen and currentPID == IMUtilsPID.TChat then
+                -- 如果TCHAT已打开，点击则关闭
+                handleIMUtilsClose(IMUtilsPID.TChat)
+            elseif isOpen and currentPID == IMUtilsPID.VChat then
+                -- 如果VCHAT已打开，点击TCHAT按钮则切换到TCHAT
+                handleIMUtilsSwitch(IMUtilsPID.TChat)
+            else
+                -- 如果未打开或处于其他状态，则打开TCHAT
+                handleIMUtilsOpen(IMUtilsPID.TChat)
+            end
+        end
+    },
+
+    [CoreUI.ScoreBar.Tmp_IMUtils.Btn_VChat] = {
+        Pressed = function()
+            local isOpen = Framework.Tools.UI.GetIMUtilsUIOpenState()
+            local currentPID = Framework.Tools.UI.GetIMUtilsOpenPID()
+            local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+
+            if isOpen and currentPID == IMUtilsPID.VChat then
+                -- 如果VCHAT已打开，点击则关闭
+                handleIMUtilsClose(IMUtilsPID.VChat)
+            elseif isOpen and currentPID == IMUtilsPID.TChat then
+                -- 如果TCHAT已打开，点击VCHAT按钮则切换到VCHAT
+                handleIMUtilsSwitch(IMUtilsPID.VChat)
+            else
+                -- 如果未打开或处于其他状态，则打开VCHAT
+                handleIMUtilsOpen(IMUtilsPID.VChat)
+            end
+        end
+    },
+
 }
 
 ActMap.Taskbar = {
@@ -312,6 +448,19 @@ ActMap.Taskbar = {
     }
 }
 
+ActMap.IMUtils = {
+    [CoreUI.IMUtils.Tmp_TChat.Btn_Close] = {
+        Pressed = function()
+            handleIMUtilsClose(EngineConf.GameUI.UI.IMUtilsPID.TChat)
+        end
+    },
+    [CoreUI.IMUtils.Tmp_VChat.Btn_Close] = {
+        Pressed = function()
+            handleIMUtilsClose(EngineConf.GameUI.UI.IMUtilsPID.VChat)
+        end
+    }
+}
+
 ActMap.MapResult = {}
 
 local function mergeMappings(target, source)
@@ -325,6 +474,7 @@ local mapsToMerge = {
     ActMap.MainMenu,
     ActMap.ScoreBar,
     ActMap.Taskbar,
+    ActMap.IMUtils,
 }
 
 -- 合并所有表

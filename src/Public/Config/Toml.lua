@@ -32,10 +32,13 @@ key.message = { help = "View the rules or wiki.roidmc.com", wip = "Developing", 
 key.toggle = { on = "ON", off = "OFF", global = "All", team = "Team"}
 key.team = { red = "Red", blue = "Blue" }
 key.teamdesc = { red= "Red Team Description", blue = "Blue Team Description" }
-key.status = { dead = "Dead", alive = "Alive", escape = "Escape", win = "Win", exit = "Exit", neterror = "NetError", missing = "Missing", uninit = "Uninit" }
+key.killertip = { killer = "Killed", suicide = "不幸落入虚空死亡" }
+key.status = { dead = "Dead", alive = "Alive", escape = "Escape", win = "Win", exit = "Exit", neterror = "NetError", missing = "Missing"}
 key.uid = "UID %s"
 key.copyright = { framework = "Powered By UniX SDK | UI | Framework" }
 key.tasksys = { title = "Task System", unassigned = "No Task, Please Wait for System to Assign", taskprogress = "Destroy Progress: %s / %s"}
+key.imutils = { info = "Team: %s | Channel: %s | Switch in Setting", standalone =  "IMChat Disable in Signle Player Mode" }
+key.menu = { mainmenu = "Menu" }
 ptemplate.personal_data = """
 Personal Data
 ==================
@@ -98,10 +101,13 @@ key.message = { help = "查看玩法说明或wiki.roidmc.com", wip = "开发中"
 key.toggle = { on = "开启", off = "关闭", global = "全体", team = "队伍"}
 key.team = { red = "红队", blue = "蓝队" }
 key.teamdesc = { red= "红队描述文本", blue = "蓝队描述文本" }
-key.status = { dead = "死亡", alive = "存活", escape = "逃跑", win = "胜利", exit = "退出", neterror = "网络错误", missing = "缺失", uninit = "未初始化" }
+key.killertip = { killer = "击杀了", suicide = "不幸落入虚空死亡" }
+key.status = { dead = "死亡", alive = "存活", escape = "逃跑", win = "胜利", exit = "退出", neterror = "网络错误", missing = "缺失"}
 key.uid = "UID %s"
 key.copyright = { framework = "基于UniX SDK | UI | Framework强力驱动" }
 key.tasksys = { title = "任务系统", unassigned = "无任务，请等待系统分配", taskprogress = "破坏进度：%s / %s"}
+key.imutils = { info = "队伍：%s | 当前频道：%s | 设置内切换", standalone =  "单机模式，无法使用聊天频道" }
+key.menu = { mainmenu = "主菜单" }
 ptemplate.personal_data = """
 个人数据
 ==================
