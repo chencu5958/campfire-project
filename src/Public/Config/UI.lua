@@ -95,6 +95,7 @@ UIConf.Core = {
         Tmp_UIBase = {
             T_Title = 100051,
             T_AppInfo = 100050,
+            T_GameTitle = 100172,
             T_UID = 101550,
             Btn_GRank = 100054,
             Btn_Close = 100053,
@@ -163,6 +164,18 @@ UIConf.Core = {
             Btn_Close = 102378,
             T_ChannelInfo = 102376
         }
+    },
+    GameBtn = {
+        Grp_Root = 103609,
+        Fc_ProgresRing = 103610,
+        Btn_DoTask = 103611
+    },
+    TeamPop = {
+        Grp_Root = 103634,
+        Btn_Close =103637,
+        Img_RedTeam = 103640,
+        Img_BlueTeam = 103639,
+        T_TeamInfo = 103636
     }
 }
 

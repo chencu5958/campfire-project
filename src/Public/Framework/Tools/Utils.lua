@@ -12,6 +12,8 @@ local parsedTomlI18N = UDK.TomlUtils.Parse(Config.Toml.I18N)
 local AppStr = UDK.TomlUtils.Parse(Config.Toml.App)
 local LangStr = parsedTomlI18N.i18n
 local KeyMap = Config.Engine.Property.KeyMap
+local TeamIDMap, TeamHex = Config.Engine.Map.Team, Config.Engine.Map.TeamHex
+local GameStageMap = Config.Engine.Map.GameStage
 
 ---| 🧰 - 通用配置
 UtilsTools.Conf = {
@@ -104,6 +106,7 @@ end
 ---@param playerID number 玩家ID
 ---@param lang string? 语言（留空则根据玩家设置自动获取）
 ---@return string langText 语言文本
+---@return boolean isExist 键值是否存在
 function UtilsTools.GetI18NKey(key, playerID, lang)
     local queryLang = lang or getCurrentLang(playerID)
     if type(queryLang) ~= "string" then
@@ -128,6 +131,7 @@ end
 ---| `范围`：`服务端` | `客户端`
 ---@param key string 键值
 ---@return string langText 语言文本
+---@return boolean isExist 键值是否存在
 function UtilsTools.GetAppInfoKey(key)
     return UDK.I18N.I18NGetKey(key, "App", AppStr)
 end
@@ -181,6 +185,56 @@ function UtilsTools.GetIMChatIsTeamChannel(playerID)
         value = false
     end
     return value
+end
+
+---| 🧰 - 获取玩家队伍Hex代码
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param playerID number 玩家ID
+---@return string teamHex 队伍Hex代码
+function UtilsTools.GetTeamHexByPlayerID(playerID)
+    local playerTeam = Team:GetTeamById(playerID)
+    if playerTeam == TeamIDMap.Red then
+        return TeamHex.Red
+    elseif playerTeam == TeamIDMap.Blue then
+        return TeamHex.Blue
+    else
+        return TeamHex.None
+    end
+end
+
+---| 🧰 - 获取队伍名称Hex代码
+---<br>
+---| `范围`：`服务端` | `客户端`
+---@param code string 队伍名称
+---@return string teamHex 队伍Hex代码
+function UtilsTools.GetTeamHexByCode(code)
+    if type(code) ~= "string" then
+        Log:PrintError("[Utils] 获取队伍名称Hex代码参数错误")
+    end
+    if code == "Red" then
+        return TeamHex.Red
+    elseif code == "Blue" then
+        return TeamHex.Blue
+    elseif code == "NPC" then
+        return TeamHex.NPC
+    else
+        return TeamHex.None
+    end
+end
+
+---| 🧰 - 设置游戏阶段
+---<br>
+---| `范围`：`服务端`
+function UtilsTools.SetGameStage(stageCode)
+
+end
+
+---| 🧰 - 获取游戏阶段
+---<br>
+---| `范围`：`服务端`
+function UtilsTools.GetGameStage()
+
 end
 
 return UtilsTools

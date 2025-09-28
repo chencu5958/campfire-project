@@ -64,6 +64,14 @@ function UI.GetIMUtilsOpenPID()
     return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2])
 end
 
+---| 🧰 - 获取队伍信息弹出框打开状态
+---<br>
+---| `范围`： `客户端`
+---@return boolean isOpen 队伍信息弹出框打开状态
+function UI.GetTeamPopOpenState()
+    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.TeamPopIsOpen[1], KeyMap.UIState.TeamPopIsOpen[2])
+end
+
 ---| 🧰 - 设置主菜单UI打开状态
 ---<br>
 ---| `范围`： `客户端`
@@ -113,6 +121,14 @@ end
 ---@param pid number 页面ID
 function UI.SetIMUtilsOpenPID(pid)
     Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2], pid)
+end
+
+---| 🧰 - 设置队伍信息弹出框打开状态
+---<br>
+---| `范围`： `客户端`
+---@param state boolean 队伍信息弹出框打开状态
+function UI.SetTeamPopOpenState(state)
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.TeamPopIsOpen[1], KeyMap.UIState.TeamPopIsOpen[2], state)
 end
 
 return UI

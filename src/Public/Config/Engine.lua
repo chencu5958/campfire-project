@@ -13,6 +13,21 @@ EngineConf.Core = {
     Game = {
         RoundTime = 1200,
         RoundPreparationTime = 10
+    },
+    Level = {
+        BaseExp = 100,
+        Ratio = 1.2
+    },
+    Task = {
+        DoTaskCDTime = 5,
+        ClaimTimeLimit = 120,
+        AutoAssignTime = 8,
+        GuideShowLimit = 5,
+        GuideAutoDestory = 10
+    },
+    AI = {
+        SpawnLimit = 15,
+        SpawnCount = 0
     }
 }
 
@@ -28,6 +43,7 @@ EngineConf.GameUI = {
             "RemainingPlayers", -- FPS剩余人数
             "MapHint",          -- 通用地图提示
             "EmotesAndActions", -- 表情/动作
+            "QuickChat",        -- 快速聊天
             "MoreSetting"       -- 更多设置
         },
     },
@@ -87,20 +103,48 @@ EngineConf.Map = {
         Red = 0,
         Blue = 1
     },
+    TeamHex = {
+        Red = "#FF0000",
+        Blue = "#3661C6",
+        NPC = "#FFCC28",
+        None = "#FFFFFF"
+    },
     Timer = {
-        GameRound = "GamdRound_Timer"
+        GameRound = "GamdRound_Timer",
+        ClientMusicTimer = "ClientMusicTimer"
     },
     Status = {
         Alive = { ID = 0, Name = "Alive" },
         Dead = { ID = 1, Name = "Dead" },
-        Escape = { ID = 2, Name = "Escape" },
-        Win = { ID = 3, Name = "Win" },
-        Exit = { ID = 4, Name = "Exit" },
+        Exit = { ID = 2, Name = "Exit" },
+        Disconnect = { ID = 3, Name = "Disconnect" },
         NetError = { ID = 98, Name = "NetError" },
         Missing = { ID = 99, Name = "Missing" }
     },
     SignalEvent = {
         OpenStore = "OpenStore"
+    },
+    Rank = {
+        GRank_Economy = 1,
+        GRank_Level = 2,
+        GRank_Reserved = 3
+    },
+    GameStage = {
+        Ready = 0,
+        Start = 1,
+        End = 2,
+        Countdown = 3,
+        DisableGameFeature = 99
+    },
+    NexAnimate = {
+        Dance_Fun = "DanceSS",
+        Dance_JSC = "DanceJSC",
+        TouchHead = "TouchHead",
+        BastBallBat = "BastBallBat",
+        Stretch = "Stretch",
+        ChooseMale = "ChooseMale",
+        Drink001 = "Drink001",
+        SitThought = "SitThought"
     },
 }
 
@@ -146,6 +190,10 @@ EngineConf.NetMsg = {
     },
     AlizaNotice = {
         ServerBoardcast = 10002,
+    },
+    HeartBeat = {
+        Server = 10003,
+        Client = 10004
     }
 }
 
@@ -180,9 +228,11 @@ EngineConf.Property = {
         },
         -- GameState全部由服务端LightDMS管理，UDK Property不参与管理（需要使用玩家ID拼接名称）
         GameState = {
+            PlayerIsDisconnect = { "Boolean", "GameState_PlayerIsDisconnect" },
             PlayerStatus = { "Number", "GameState_PlayerStatus" },
             PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
-            PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" }
+            PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
+            GameStage = { "Number", "GameState_GameStage" },
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
         UIState = {
@@ -192,6 +242,7 @@ EngineConf.Property = {
             TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false },
             IMUtilsIsOpen = { "Boolean", "UIState_IMUtilsIsOpen", false },
             IMUtilsOpenPID = { "Number", "UIState_IMUtilsOpenPID", 1 },
+            TeamPopIsOpen = { "Boolean", "UIState_TeamPopIsOpen", true }
         },
         ServerState = {
             NameSpace = "ServerState",

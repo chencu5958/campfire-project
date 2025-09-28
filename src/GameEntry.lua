@@ -56,15 +56,45 @@ System:RegisterEvent(Events.ON_PLAYER_RECONNECTED,
     end
 )
 
+-- 监听玩家销毁角色事件
 System:RegisterEvent(Events.ON_CHARACTER_DESTROYED,
     function(playerID)
-        print("OnCharacterDestroyed", playerID)
+        Gamelogic.Server.EventPlayerDestory(playerID)
     end
 )
 
+-- 监听玩家受到致命伤害事件
+System:RegisterEvent(Events.ON_CHARACTER_TAKE_FATAL_DAMAGE,
+    function(playerID, killerID)
+        Gamelogic.Server.EventPlayerKilled(killerID, playerID)
+    end
+)
+
+-- 监听玩家离开事件
 System:RegisterEvent(Events.ON_PLAYER_PRELEAVE,
     function(playerID)
         print("OnPlayerPreLeave", playerID)
+    end
+)
+
+-- 监听玩家进入触发盒事件
+System:RegisterEvent(Events.ON_CHARACTER_ENTER_SIGNAL_BOX,
+    function(playerID, signalBoxID)
+        print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+    end
+)
+
+-- 监听玩家离开触发盒事件
+System:RegisterEvent(Events.ON_CHARACTER_LEAVE_SIGNAL_BOX,
+    function(playerID, signalBoxID)
+        print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+    end
+)
+
+-- 监听生物死亡事件
+System:RegisterEvent(Events.ON_CREATURE_KILLED,
+    function(creatureID, killerID)
+        Gamelogic.Server.EventCreatureKilled(creatureID, killerID)
     end
 )
 
@@ -73,3 +103,6 @@ System:RegisterEvent(Events.ON_BEGIN_PLAY, OnBeginPlay)
 
 -- 监听脚本结束事件
 System:RegisterEvent(Events.ON_END_PLAY, OnEndPlay)
+
+
+-- 咕咕，IMUtils等后面引擎接口能操作原生聊天语音频道后就重构，现在的IMUtilsUI方案只是临时方案

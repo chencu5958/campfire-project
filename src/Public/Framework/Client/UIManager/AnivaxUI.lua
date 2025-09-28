@@ -11,6 +11,8 @@ local MainMenuUI = require("Public.Framework.Client.UIManager.MainMenuUI")
 local ScorebarUI = require("Public.Framework.Client.UIManager.ScorebarUI")
 local TaskbarUI = require("Public.Framework.Client.UIManager.TaskbarUI")
 local IMUtilsUI = require("Public.Framework.Client.UIManager.IMUtilsUI")
+local GameBtn = require("Public.Framework.Client.UIManager.GameBtnUI")
+local TeamPopUI = require("Public.Framework.Client.UIManager.TeamPopUI")
 local EngineConf = require("Public.Config.Engine")
 
 local AnivaxUI = {}
@@ -19,7 +21,7 @@ local AnivaxUI = {}
 local MAIN_MENU_PAGE_HANDLERS
 local MAIN_MENU_UI_PID
 
-local function initializeMainMenuHandlers()
+local function initMainMenuHandlers()
     MAIN_MENU_UI_PID = EngineConf.GameUI.UI.MainMenuPID
     MAIN_MENU_PAGE_HANDLERS = {
         [MAIN_MENU_UI_PID.MyProfile] = MainMenuUI.UserProfileUI,
@@ -56,9 +58,15 @@ local function updateTaskbar()
 end
 
 local function updateIMUtils()
-   if Framework.Tools.UI.GetIMUtilsUIOpenState() then
-       IMUtilsUI.BaseUI()
-   end
+    if Framework.Tools.UI.GetIMUtilsUIOpenState() then
+        IMUtilsUI.BaseUI()
+    end
+end
+
+local function updateTeamPopUI()
+    if Framework.Tools.UI.GetTeamPopOpenState() then
+        TeamPopUI.BaseUI()
+    end
 end
 
 ---| 🎮 更新UI
@@ -67,14 +75,16 @@ function AnivaxUI.Update()
     ScorebarUI.TimeCountUI()
     ScorebarUI.TeamScoreUI()
     ScorebarUI.ContentBarUI()
+    GameBtn.BaseUI()
 
     -- 条件性UI更新
     updateMainMenu()
     updateTaskbar()
     updateIMUtils()
+    updateTeamPopUI()
 end
 
 -- 初始化
-initializeMainMenuHandlers()
+initMainMenuHandlers()
 
 return AnivaxUI

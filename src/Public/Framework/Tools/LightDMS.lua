@@ -40,6 +40,12 @@ local function ConvertPropertyType(propertyType)
     return propertyType
 end
 
+-- 根据玩家ID生成查询名称
+local function GenerateQueryNameByPlayerID(propertyName, playerID)
+    return propertyName .. "_" .. playerID
+    -- body
+end
+
 ---| 🧰 - 设置自定义属性
 ---<br>
 ---| `警告`：`该工具不支持C/S同步`
@@ -48,15 +54,20 @@ end
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
 ---@param value any 属性值
-function LightDMS.SetCustomProperty(propertyType, propertyName, value)
+---@param playerID number? 玩家ID，用于生成查询名称
+function LightDMS.SetCustomProperty(propertyType, propertyName, value, playerID)
     local ElementId = System:GetScriptParentID()
     -- 转换属性类型
-    local convertedType = ConvertPropertyType(propertyType)
+    local convertedType, queryName = ConvertPropertyType(propertyType), propertyName
+    if playerID then
+        -- 生成查询名称
+        queryName = GenerateQueryNameByPlayerID(propertyName, playerID)
+    end
 
     if type(value) == "table" then
-        CustomProperty:SetCustomPropertyArray(ElementId, propertyName, convertedType, value)
+        CustomProperty:SetCustomPropertyArray(ElementId, queryName, convertedType, value)
     else
-        CustomProperty:SetCustomProperty(ElementId, propertyName, convertedType, value)
+        CustomProperty:SetCustomProperty(ElementId, queryName, convertedType, value)
     end
 end
 
@@ -68,29 +79,32 @@ end
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
 ---@param preferArray boolean? 是否优先返回数组属性
+---@param playerID number? 玩家ID，用于生成查询名称
 ---@return any result 属性值，如果不存在返回nil，数组属性不存在返回{}
-function LightDMS.GetCustomProperty(propertyType, propertyName, preferArray)
+function LightDMS.GetCustomProperty(propertyType, propertyName, preferArray, playerID)
     local ElementId = System:GetScriptParentID()
     -- 转换属性类型
-    local convertedType = ConvertPropertyType(propertyType)
-
-    -- 获取普通属性和数组属性
-    local normalResult = CustomProperty:GetCustomProperty(ElementId, propertyName, convertedType)
-    local arrayResult = CustomProperty:GetCustomPropertyArray(ElementId, propertyName, convertedType)
-
-    -- 处理特殊情况：两种属性都存在
-    if normalResult ~= nil and arrayResult ~= nil then
-        -- 如果指定了优先返回数组，则返回数组属性
-        if preferArray then
-            return arrayResult
-        else
-            -- 默认返回普通属性
-            return normalResult
-        end
+    local convertedType, queryName = ConvertPropertyType(propertyType), propertyName
+    if playerID then
+        -- 生成查询名称
+        queryName = GenerateQueryNameByPlayerID(propertyName, playerID)
     end
 
-    -- 返回非nil的结果
-    return arrayResult ~= nil and arrayResult or normalResult
+    -- 获取普通属性和数组属性
+    local normalResult = CustomProperty:GetCustomProperty(ElementId, queryName, convertedType)
+    local arrayResult = CustomProperty:GetCustomPropertyArray(ElementId, queryName, convertedType)
+
+    -- 如果指定优先返回数组属性，则直接返回数组属性（引擎保证至少返回{}）
+    if preferArray then
+        return arrayResult
+    end
+
+    -- 默认情况下，如果有普通属性则返回普通属性，否则返回数组属性
+    if normalResult ~= nil then
+        return normalResult
+    else
+        return arrayResult
+    end
 end
 
 ---| 🧰 - 获取自定义属性数组
@@ -101,11 +115,16 @@ end
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
 ---@return any[] result 数组属性，如果不存在返回{}
-function LightDMS.GetCustomPropertyArray(propertyType, propertyName)
+function LightDMS.GetCustomPropertyArray(propertyType, propertyName, playerID)
     local ElementId = System:GetScriptParentID()
     -- 转换属性类型
-    local convertedType = ConvertPropertyType(propertyType)
-    return CustomProperty:GetCustomPropertyArray(ElementId, propertyName, convertedType)
+    local convertedType, queryName = ConvertPropertyType(propertyType), propertyName
+    if playerID then
+        -- 生成查询名称
+        queryName = GenerateQueryNameByPlayerID(propertyName, playerID)
+    end
+
+    return CustomProperty:GetCustomPropertyArray(ElementId, queryName, convertedType)
 end
 
 return LightDMS

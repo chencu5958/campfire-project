@@ -10,6 +10,7 @@
 local Rank = {}
 
 local KeyMap = Config.Engine.Property.KeyMap
+local StatusCodeMap = Config.Engine.Map.Status
 
 -- 存储上次排行榜数据的序列化字符串，用于比较数据变化
 local lastRankListDataSerialized = ""
@@ -35,9 +36,18 @@ end
 
 -- 生成排行榜数据列
 local function rankDataColumnGenerate(playerID)
+    local playerStatus = Framework.Tools.LightDMS.GetCustomProperty(
+        KeyMap.GameState.PlayerStatus[1],
+        KeyMap.GameState.PlayerStatus[2],
+        false,
+        playerID
+    )
+    local status = StatusCodeMap.Missing.ID
+    if type(playerStatus) == "number" then
+        status = playerStatus
+    end
     local score = Team:GetPlayerCurrentScore(playerID)
     local teamID = Team:GetTeamById(playerID)
-    local status = "NetError"
     return {
         PlayerID = playerID,
         Score = score,

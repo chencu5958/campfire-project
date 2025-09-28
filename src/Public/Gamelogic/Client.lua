@@ -9,7 +9,7 @@
 
 local Client = {}
 
----|
+---| 🎮 客户端初始化
 function Client.Init()
     -- 检查环境
     local envType = Framework.Tools.Utils.EnvIsClient()
@@ -20,7 +20,7 @@ function Client.Init()
     Framework.Tools.GameState.Init()
 end
 
----|
+---| 🎮 客户端更新
 function Client.Update()
     -- 检查环境
     local envType = Framework.Tools.Utils.EnvIsClient()

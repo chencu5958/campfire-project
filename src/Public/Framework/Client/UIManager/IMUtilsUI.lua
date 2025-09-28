@@ -45,7 +45,7 @@ end
 -- 更新频道信息显示
 local function updateChannelInfo(isTChat, playerIsTeamChannel, playerTeam, envInfo, playerID)
     local IMUtils_I18NKey
-    if not envInfo.isStandalone then
+    if envInfo.isStandalone then
         IMUtils_I18NKey = Framework.Tools.Utils.GetI18NKey("key.imutils.standalone", playerID)
     else
         IMUtils_I18NKey = Framework.Tools.Utils.GetI18NKey("key.imutils.info", playerID)
@@ -82,7 +82,7 @@ function IMUtilsUI.BaseUI()
     if IMUtilsPID == EngineConf.GameUI.UI.IMUtilsPID.TChat then
         local playerIsTeamChannel = Framework.Tools.Utils.GetIMChatIsTeamChannel(playerID)
         updateChannelInfo(true, playerIsTeamChannel, playerTeam, envInfo, playerID)
-        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Img_FuncDisable, not envInfo.isStandalone)
+        UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Img_FuncDisable, envInfo.isStandalone)
     end
 
     -- VChat

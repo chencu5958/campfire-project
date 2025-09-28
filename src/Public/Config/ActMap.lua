@@ -74,6 +74,7 @@ local function handleIMUtilsSwitch(targetPID)
 
     isIMUtilsSwitching = true
     local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+    Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
 
     if targetPID == IMUtilsPID.TChat then
         -- 切换到TCHAT
@@ -105,6 +106,7 @@ local function handleIMUtilsOpen(targetPID)
 
     isIMUtilsSwitching = true
     local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+    Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
 
     if targetPID == IMUtilsPID.TChat then
         -- 打开TCHAT
@@ -140,6 +142,7 @@ local function handleIMUtilsClose(targetPID)
 
     isIMUtilsSwitching = true
     local IMUtilsPID = EngineConf.GameUI.UI.IMUtilsPID
+    Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClose)
 
     if targetPID == IMUtilsPID.TChat then
         -- 关闭TCHAT
@@ -461,6 +464,24 @@ ActMap.IMUtils = {
     }
 }
 
+ActMap.InGameBtn = {
+    [CoreUI.GameBtn.Btn_DoTask] = {
+        Pressed = function()
+            print("DoTask")
+        end
+    }
+}
+
+ActMap.TeamPop = {
+    [CoreUI.TeamPop.Btn_Close] = {
+        Pressed = function ()
+            UDK.UI.SetUIVisibility(CoreUI.TeamPop.Grp_Root, false)
+            Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClose)
+            Framework.Tools.UI.SetTeamPopOpenState(false)
+        end
+    }
+}
+
 ActMap.MapResult = {}
 
 local function mergeMappings(target, source)
@@ -475,6 +496,8 @@ local mapsToMerge = {
     ActMap.ScoreBar,
     ActMap.Taskbar,
     ActMap.IMUtils,
+    ActMap.InGameBtn,
+    ActMap.TeamPop
 }
 
 -- 合并所有表

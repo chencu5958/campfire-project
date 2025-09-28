@@ -19,9 +19,16 @@ local messageCounter = 0
 local recentMessages = {}
 local MAX_RECENT_MESSAGES = 50
 
+-- 已显示完成的消息ID记录（用于防止短时间内重复显示相同消息）
+local displayedMessages = {}
+local MAX_DISPLAYED_MESSAGES = 50
+
 -- TipsBar状态标记
 AlizaClient.tipsBar1Busy = false
 AlizaClient.tipsBar2Busy = false
+
+-- 当前显示的消息定时器
+local activeTimers = {}
 
 -- 生成唯一消息ID
 local function generateUniqueMessageId(msgType, msgContent)
@@ -55,7 +62,7 @@ function AlizaClient.InitNet()
         local MsgId = Config.Engine.NetMsg.AlizaNotice.ServerBoardcast
 
         -- 使用增强的消息去重机制，防止重复处理相同消息
-        System:BindNotify(MsgId, function(playerID, Msg)
+        System:BindNotify(MsgId, function(MsgID, Msg)
             -- 生成消息唯一标识
             local msgId = generateUniqueMessageId(Msg.MsgType, Msg.MsgContent)
 
@@ -111,12 +118,9 @@ function AlizaClient.AddMessageToQueue(msgType, msgData)
         msgId = msgData.killer.playerID .. "_" .. msgData.victim.playerID .. "_" .. weaponType
 
         -- 添加序列号，确保即使相同玩家短时间内多次击杀也能区分
-        if not msgData.noticeId then
-            msgData.noticeId = msgId .. "_" .. UDK.Math.GetTimestamp() .. "_" .. messageCounter
-            messageCounter = messageCounter + 1
-        else
-            msgId = msgData.noticeId
-        end
+        msgData.noticeId = msgId .. "_" .. UDK.Math.GetTimestamp() .. "_" .. messageCounter
+        messageCounter = messageCounter + 1
+        msgId = msgData.noticeId
     elseif msgType == "SystemMsg" and msgData.message then
         -- 计算消息内容的简单哈希值
         local msgHash = 0
@@ -128,15 +132,18 @@ function AlizaClient.AddMessageToQueue(msgType, msgData)
         msgId = "sysMsg_" .. msgHash
 
         -- 添加序列号，确保相同内容的消息也能区分
-        if not msgData.msgId then
-            msgData.msgId = msgId .. "_" .. UDK.Math.GetTimestamp() .. "_" .. messageCounter
-            messageCounter = messageCounter + 1
-        else
-            msgId = msgData.msgId
-        end
+        msgData.msgId = msgId .. "_" .. UDK.Math.GetTimestamp() .. "_" .. messageCounter
+        messageCounter = messageCounter + 1
+        msgId = msgData.msgId
     end
 
-    -- 检查是否存在重复消息
+    -- 检查是否是刚显示完的消息（防止短时间内重复显示相同内容）
+    if msgId and displayedMessages[msgId] then
+        Log:PrintLog("忽略刚显示完的" .. msgType .. "消息ID: " .. msgId)
+        return
+    end
+
+    -- 检查是否存在重复消息在队列中
     if msgId then
         for _, existingMsg in ipairs(messageQueue) do
             if existingMsg.id and existingMsg.id == msgId then
@@ -231,13 +238,19 @@ end
 function AlizaClient.ShowMessage(msgData, tipsBarElement, barIndex, queueIndex)
     -- 根据消息类型显示不同内容
     if msgData.type == "KillNotice" then
-        local playerID = UDK.Player.GetLocalPlayerID()
-        local killMsg = Framework.Tools.Utils.GetI18NKey("key.killertip.killer", playerID)
+        local playerID, killMsg = UDK.Player.GetLocalPlayerID(), "未指定Type"
+        if msgData.data.killer.killerTipType == "KillPlayer" then
+            killMsg = Framework.Tools.Utils.GetI18NKey("key.killertip.killer", playerID)
+        elseif msgData.data.killer.killerTipType == "KillNPC" then
+            killMsg = Framework.Tools.Utils.GetI18NKey("key.killertip.killnpc", playerID)
+        elseif msgData.data.killer.killerTipType == "KillByVoid" then
+            killMsg = Framework.Tools.Utils.GetI18NKey("key.killertip.suicide", playerID)
+        end
         Log:PrintLog("Showing kill notice: " ..
             msgData.data.killer.playerName .. " killed " .. msgData.data.victim.playerName .. " on TipsBar" .. barIndex)
         UDK.UI.SetUIText(tipsBarElement.T_PlayerIDLeft, msgData.data.killer.playerName)
         UDK.UI.SetUITextColor(tipsBarElement.T_PlayerIDLeft, msgData.data.killer.playerColor or "#FFFFFF")
-        UDK.UI.SetUIText(tipsBarElement.T_PlayerIDRight, msgData.data.victim.playerName)
+        UDK.UI.SetUIText(tipsBarElement.T_PlayerIDRight, msgData.data.victim.playerName or "")
         UDK.UI.SetUITextColor(tipsBarElement.T_PlayerIDRight, msgData.data.victim.playerColor or "#FFFFFF")
         UDK.UI.SetUIText(tipsBarElement.T_Content, killMsg)
         UDK.UI.SetUITextColor(tipsBarElement.T_Content, msgData.data.killer.killerTipColor or "#FFFFFF")
@@ -253,13 +266,14 @@ function AlizaClient.ShowMessage(msgData, tipsBarElement, barIndex, queueIndex)
 
     -- 显示时间（击杀通知显示3秒，系统消息显示3秒）
     local displayTime = 3
-    if msgData.type == "KillNotice" then
-        displayTime = 3
-    elseif msgData.type == "SystemMsg" then
-        displayTime = 3
+
+    -- 清除可能存在的旧定时器
+    if activeTimers[barIndex] then
+        TimerManager:RemoveTimer(activeTimers[barIndex])
     end
 
-    TimerManager:AddTimer(displayTime, function()
+    -- 设置新的定时器
+    activeTimers[barIndex] = TimerManager:AddTimer(displayTime, function()
         local options = {
             onComplete = function()
                 -- 设置对应的通知栏为空闲状态
@@ -267,6 +281,31 @@ function AlizaClient.ShowMessage(msgData, tipsBarElement, barIndex, queueIndex)
                     AlizaClient.tipsBar1Busy = false
                 elseif barIndex == 2 then
                     AlizaClient.tipsBar2Busy = false
+                end
+
+                -- 清除定时器引用
+                activeTimers[barIndex] = nil
+
+                -- 记录已显示的消息ID，防止短时间内重复显示
+                if msgData.id then
+                    displayedMessages[msgData.id] = UDK.Math.GetTimestamp()
+
+                    -- 清理过期的显示记录
+                    local displayedCount = 0
+                    local oldestTimestamp = UDK.Math.GetTimestamp() + 1
+                    local oldestKey = nil
+
+                    for key, timestamp in pairs(displayedMessages) do
+                        displayedCount = displayedCount + 1
+                        if timestamp < oldestTimestamp then
+                            oldestTimestamp = timestamp
+                            oldestKey = key
+                        end
+                    end
+
+                    if displayedCount > MAX_DISPLAYED_MESSAGES and oldestKey then
+                        displayedMessages[oldestKey] = nil
+                    end
                 end
 
                 -- 从队列中移除已显示的消息（根据队列索引移除对应的消息）
@@ -285,8 +324,17 @@ end
 
 ---| 🎮 清空所有队列
 function AlizaClient.ClearAllQueues()
+    -- 清除所有活动定时器
+    for barIndex, timerId in pairs(activeTimers) do
+        TimerManager:RemoveTimer(timerId)
+        activeTimers[barIndex] = nil
+    end
+
     messageQueue = {}
     recentMessages = {}
+    displayedMessages = {}
+    AlizaClient.tipsBar1Busy = false
+    AlizaClient.tipsBar2Busy = false
     Log:PrintLog("所有消息队列已清空")
 end
 
@@ -294,7 +342,9 @@ end
 function AlizaClient.GetQueueStatus()
     local status = {
         messageQueueSize = #messageQueue,
-        recentMessagesCount = 0
+        recentMessagesCount = 0,
+        tipsBar1Busy = AlizaClient.tipsBar1Busy,
+        tipsBar2Busy = AlizaClient.tipsBar2Busy
     }
 
     for _ in pairs(recentMessages) do
@@ -317,7 +367,7 @@ return AlizaClient
 -- * 因为懒了不想和UIManager架构耦合到一起，作为单独的实现拆出去了
 -- * ⣿⣿⣿⠿⠿⣿⣿⡿⢋⣶⣶⣬⣙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 -- * ⣿⡿⢡⣿⣷⣶⣦⣥⣿⣿⣿⣿⣿⣷⣮⡛⢿⣿⣿⣿⣿⣿⣿⣿
--- * ⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢮⡙⣿⣿⣯⢐⡎⣿
+-- * ⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢮⡙⣿⣿⣯⢐⡎⣿
 -- * ⣿⢹⣿⣿⣿⣿⣿⣿⡿⣡⡬⢿⣿⣿⣿⣶⣶⣼⣦⠥⣖⣩⣾⣿
 -- * ⣿⢸⣿⣿⣿⡿⣿⣿⣿⣿⠇⣌⢛⣻⣿⣿⣟⣛⣿⣧⠹⣿⣿⣿
 -- * ⠏⣼⣿⣿⢏⣾⣿⣟⣩⣶⣶⣿⣿⣿⣿⣿⡟⡿⢸⡿⣡⣿⣿⣿

@@ -27,13 +27,14 @@ default = "zh-CN"
 
 [i18n.en-US]
 language = "English"
+key.mapname = "DIANA X"
 key.account_info = { info1 = "LV.%s", info2 = "Coin %s" }
 key.message = { help = "View the rules or wiki.roidmc.com", wip = "Developing", reset_setting = "Reset Setting" }
 key.toggle = { on = "ON", off = "OFF", global = "All", team = "Team"}
 key.team = { red = "Red", blue = "Blue" }
-key.teamdesc = { red= "Red Team Description", blue = "Blue Team Description" }
-key.killertip = { killer = "Killed", suicide = "不幸落入虚空死亡" }
-key.status = { dead = "Dead", alive = "Alive", escape = "Escape", win = "Win", exit = "Exit", neterror = "NetError", missing = "Missing"}
+key.teamdesc = { red= "Catch the troublemaker", blue = "Evade capture" }
+key.killertip = { killer = "Catch", killnpc = "Hurt NPC", suicide = "Fall into the void" }
+key.status = { dead = "Dead", alive = "Alive", exit = "Exit", disconnect = "Disconnet", error = "NetError", missing = "No Data"}
 key.uid = "UID %s"
 key.copyright = { framework = "Powered By UniX SDK | UI | Framework" }
 key.tasksys = { title = "Task System", unassigned = "No Task, Please Wait for System to Assign", taskprogress = "Destroy Progress: %s / %s"}
@@ -93,16 +94,21 @@ FeedBack
 ==================
 © RoidMC Studios
 """
+ptemplate.teampop = """
+Team: %s
+Target: %s
+"""
 
 [i18n.zh-CN]
 language = "简体中文"
+key.mapname = "DIANA X"
 key.account_info = { info1 = "等级LV.%s", info2 = "金币%s" }
 key.message = { help = "查看玩法说明或wiki.roidmc.com", wip = "开发中", reset_setting = "重置设置" }
 key.toggle = { on = "开启", off = "关闭", global = "全体", team = "队伍"}
 key.team = { red = "红队", blue = "蓝队" }
-key.teamdesc = { red= "红队描述文本", blue = "蓝队描述文本" }
-key.killertip = { killer = "击杀了", suicide = "不幸落入虚空死亡" }
-key.status = { dead = "死亡", alive = "存活", escape = "逃跑", win = "胜利", exit = "退出", neterror = "网络错误", missing = "缺失"}
+key.teamdesc = { red= "抓住躲在人群里的捣蛋鬼", blue = "完成破坏任务，躲避抓捕" }
+key.killertip = { killer = "抓住捣蛋鬼", killnpc = "误伤NPC" ,suicide = "不幸落入虚空死亡" }
+key.status = { dead = "死亡", alive = "存活", exit = "退出", disconnect = "掉线", neterror = "网络错误", missing = "无数据"}
 key.uid = "UID %s"
 key.copyright = { framework = "基于UniX SDK | UI | Framework强力驱动" }
 key.tasksys = { title = "任务系统", unassigned = "无任务，请等待系统分配", taskprogress = "破坏进度：%s / %s"}
@@ -161,6 +167,10 @@ ptemplate.feedback = """
 在星世界种草反馈
 ==================
 © RoidMC Studios
+"""
+ptemplate.teampop = """
+队伍：%s
+目标：%s
 """
 ]]
 
