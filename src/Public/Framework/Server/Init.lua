@@ -47,6 +47,9 @@ local function playerPropertyInit(playerID)
             UDK.Property.SetProperty(playerID, value[1], value[2], value[3], accessLevel)
         end
     end
+    -- GameState部分数据初始化
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerIsDisconnect[1],
+    KeyMap.GameState.PlayerIsDisconnect[2], false, playerID)
 end
 
 -- 玩家IM频道初始化

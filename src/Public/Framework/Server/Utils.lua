@@ -12,8 +12,16 @@ local KeyMap = Config.Engine.Property.KeyMap
 local TeamIDMap = Config.Engine.Map.Team
 local StatusCodeMap = Config.Engine.Map.Status
 
+-- 存储玩家心跳检测定时器ID的表
+local playerHeartbeatTimers = {}
+
 -- 玩家断线检查
 local function playerDisconnectCheck(playerID)
+    -- 检查是否已经存在该玩家的心跳检测定时器
+    if playerHeartbeatTimers[playerID] then
+        return
+    end
+
     local timeoutCallback = function()
         --print("Player:", playerID, "is disconnected")
         Framework.Tools.LightDMS.SetCustomProperty(
@@ -32,7 +40,12 @@ local function playerDisconnectCheck(playerID)
             playerID
         )
     end
+
+    -- 发送心跳检测，并设置定时器，5秒后再次检测
     UDK.Heartbeat.SendWithTracking(playerID, timeoutCallback, responseCallback)
+    playerHeartbeatTimers[playerID] = TimerManager:AddTimer(5, function()
+        playerHeartbeatTimers[playerID] = nil
+    end)
 end
 
 -- 玩家图标显示器位置修正
@@ -269,12 +282,14 @@ function Utils.PlayerLevelCheck(playerID)
     -- 确保数值非负
     playerLevel = math.max(0, playerLevel)
     playerExp = math.max(0, playerExp)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerExpReq[1], KeyMap.GameState.PlayerExpReq
-        [2], UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel), playerID)
     -- 如果已经满级，直接返回
     if playerLevelMax then
         return
     end
+
+    local expReq = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerExpReq[1],
+        KeyMap.GameState.PlayerExpReq[2], expReq, playerID)
 
     if playerLevel < levelMax then
         local reqExp = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
