@@ -73,6 +73,7 @@ System:RegisterEvent(Events.ON_CHARACTER_TAKE_FATAL_DAMAGE,
 -- 监听玩家离开事件
 System:RegisterEvent(Events.ON_PLAYER_PRELEAVE,
     function(playerID)
+        Gamelogic.Server.EventPlayerLeave(playerID)
         print("OnPlayerPreLeave", playerID)
     end
 )

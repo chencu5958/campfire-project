@@ -66,8 +66,22 @@ function DataManager.PlayerMatchDataManager(playerID, type, mode, value)
     updateMatchData(playerID, type, mode, value)
 end
 
-function DataManager.PlayerTeamScoreManager()
-
+---| 🎮 玩家团队分数管理
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param value number 玩家团队分数值
+---@param mode string 玩家团队分数模式（Add | Sub | Set）
+function DataManager.PlayerTeamScoreManager(playerID, value, mode)
+    local playerScore = Team:GetPlayerCurrentScore(playerID)
+    if mode == "Add" then
+        playerScore = playerScore + value
+    elseif mode == "Sub" then
+        playerScore = playerScore - value
+    elseif mode == "Set" then
+        playerScore = value
+    end
+    Team:SetPlayerScore(playerID, playerScore)
 end
 
 ---| 🎮 玩家等级经验管理
@@ -87,6 +101,34 @@ function DataManager.PlayerLevelExpManager(playerID, value, mode)
     end
     UDK.Property.SetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
     UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
+end
+
+---| 🎮 玩家存档上传
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function DataManager.PlayerArchiveUpload(playerID)
+    -- 遍历PSetting中的所有属性并上传
+    for _, value in pairs(KeyMap.PSetting) do
+        local uploadValue = UDK.Property.GetProperty(playerID, value[1], value[2])
+        UDK.Storage.ArchiveUpload(playerID, value[1], value[2], uploadValue)
+        --print("玩家属性上传云存档 " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
+    end
+    -- 遍历PState中的所有属性并上传
+    for _, value in pairs(KeyMap.PState) do
+        local uploadValue = UDK.Property.GetProperty(playerID, value[1], value[2])
+        UDK.Storage.ArchiveUpload(playerID, value[1], value[2], uploadValue)
+        if value == KeyMap.PState.PlayerLevel then
+            local playerLevel = UDK.Property.GetProperty(playerID, value[1], value[2])
+            local rankIndex = Config.Engine.Map.Rank.GRank_Level
+            Rank:SetRankById(rankIndex, playerID, playerLevel)
+        end
+        --print("玩家状态上传云存档: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
+    end
+
+    local playerCoin = Currency:GetCurrencyCount(playerID)
+    local rankIndex = Config.Engine.Map.Rank.GRank_Economy
+    Rank:SetRankById(rankIndex, playerID, playerCoin)
 end
 
 return DataManager

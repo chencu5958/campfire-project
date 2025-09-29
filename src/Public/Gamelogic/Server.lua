@@ -66,8 +66,8 @@ function Server.Update()
     end
 end
 
-function Server.EventPlayerLeave()
-
+function Server.EventPlayerLeave(playerID)
+    Framework.Server.DataManager.PlayerArchiveUpload(playerID)
 end
 
 function Server.EventPlayerDestory(playerID)
