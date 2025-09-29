@@ -16,6 +16,7 @@ local GameStageMap = Config.Engine.Map.GameStage
 local function playerPropertyInit(playerID)
     local cloudInitStatus = UDK.Storage.ArchiveGet(playerID, KeyMap.CloudData.InitStatus[1],
         KeyMap.CloudData.InitStatus[2])
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
     -- 如果玩家未初始化和云存储相关的持久化数据，则进行初始化，否则则读取数据并赋值给玩家
     if cloudInitStatus == nil or cloudInitStatus == false then
         cloudInitStatus = UDK.Property.SetProperty(playerID, KeyMap.CloudData.InitStatus[1],
@@ -30,7 +31,7 @@ local function playerPropertyInit(playerID)
         end
         -- 遍历PState中的所有属性并初始化
         for _, value in pairs(KeyMap.PState) do
-            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3], accessLevel)
             UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
             --print("玩家状态初始化: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
         end
@@ -43,7 +44,7 @@ local function playerPropertyInit(playerID)
         -- 遍历PState中的所有属性并初始化
         for _, value in pairs(KeyMap.PState) do
             UDK.Storage.ArchiveGet(playerID, value[1], value[2])
-            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3], accessLevel)
         end
     end
 end

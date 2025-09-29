@@ -59,6 +59,8 @@ function Server.Update()
             updateLock = true
             TimerManager:AddLoopTimer(0.5, function()
                 Framework.Server.Utils.PlayerStatusCheck(v)
+                Framework.Server.Utils.PlayerLevelCheck(v)
+                updateLock = false
             end)
         end
     end

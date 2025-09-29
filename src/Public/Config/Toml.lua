@@ -40,6 +40,7 @@ key.copyright = { framework = "Powered By UniX SDK | UI | Framework" }
 key.tasksys = { title = "Task System", unassigned = "No Task, Please Wait for System to Assign", taskprogress = "Destroy Progress: %s / %s"}
 key.imutils = { info = "Team: %s | Channel: %s | Switch in Setting", standalone =  "IMChat Disable in Signle Player Mode" }
 key.menu = { mainmenu = "Menu" }
+key.level = { max = "Max" }
 ptemplate.personal_data = """
 Personal Data
 ==================
@@ -114,6 +115,7 @@ key.copyright = { framework = "基于UniX SDK | UI | Framework强力驱动" }
 key.tasksys = { title = "任务系统", unassigned = "无任务，请等待系统分配", taskprogress = "破坏进度：%s / %s"}
 key.imutils = { info = "队伍：%s | 当前频道：%s | 设置内切换", standalone =  "单机模式，无法使用聊天频道" }
 key.menu = { mainmenu = "主菜单" }
+key.level = { max = "满级" }
 ptemplate.personal_data = """
 个人数据
 ==================

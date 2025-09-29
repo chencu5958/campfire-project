@@ -56,6 +56,8 @@ local function updateMatchData(updPlayerID, updType, updMode, updValue)
 end
 
 ---| 🎮 玩家对局数据管理
+---<br>
+---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param type string 玩家对局数据类型（Win | Lose | Draw | Escape）
 ---@param mode string 玩家对局数据模式（Add | Sub | Set）
@@ -68,8 +70,23 @@ function DataManager.PlayerTeamScoreManager()
 
 end
 
-function DataManager.PlayerLevel()
-    
+---| 🎮 玩家等级经验管理
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param value number 玩家等级经验值
+---@param mode string 玩家等级经验模式（Add | Sub | Set）
+function DataManager.PlayerLevelExpManager(playerID, value, mode)
+    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2])
+    if mode == "Add" then
+        playerExp = playerExp + value
+    elseif mode == "Sub" then
+        playerExp = playerExp - value
+    elseif mode == "Set" then
+        playerExp = value
+    end
+    UDK.Property.SetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
+    UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
 end
 
 return DataManager

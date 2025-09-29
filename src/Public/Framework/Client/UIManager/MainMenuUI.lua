@@ -28,6 +28,7 @@ local function getServerPlayerProfileData()
         },
         GameData = {
             Level = 0,
+            LevelIsMax = false,
             Exp = 0,
             ReqExp = 0,
             Currency = {
@@ -256,12 +257,18 @@ function MainMenuUI.UserProfileUI()
     local playerID = UDK.Player.GetLocalPlayerID()
     local historyData_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.history_data", playerID)
     local personal_I18NKey = Framework.Tools.Utils.GetI18NKey("ptemplate.personal_data", playerID)
+    local reqExp
+    if serverData.GameData.LevelIsMax then
+        reqExp = Framework.Tools.Utils.GetI18NKey("key.level.max", playerID)
+    else
+        reqExp = serverData.GameData.ReqExp
+    end
     local fmt_personal_I18NKey = string.format(
         personal_I18NKey,
         serverData.GameData.Level,
         serverData.GameData.Currency.Coin,
         serverData.GameData.Exp,
-        serverData.GameData.ReqExp
+        reqExp
     )
     local winRate = UDK.Math.Percentage(serverData.CloudData.Match.Win, serverData.CloudData.Match.TotalRound)
     local fmt_historyData_I18NKey = string.format(

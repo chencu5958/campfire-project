@@ -13,7 +13,7 @@ local TeamIDMap = Config.Engine.Map.Team
 local StatusCodeMap = Config.Engine.Map.Status
 
 -- 玩家断线检查
-local function playerDiscoonectCheck(playerID)
+local function playerDisconnectCheck(playerID)
     local timeoutCallback = function()
         --print("Player:", playerID, "is disconnected")
         Framework.Tools.LightDMS.SetCustomProperty(
@@ -99,16 +99,12 @@ local function playerBindDisplayUpdate(playerID)
     return isExist
 end
 
-function Utils.Update()
-
-end
-
 ---| 🎮 - 玩家状态检查
 ---<br>
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerStatusCheck(playerID)
-    playerDiscoonectCheck(playerID)
+    playerDisconnectCheck(playerID)
     local playerLife = Damage:GetCharacterLifeCount(playerID)
     local playerIsDisconnect = Framework.Tools.LightDMS.GetCustomProperty(
         KeyMap.GameState.PlayerIsDisconnect[1],
@@ -240,6 +236,69 @@ function Utils.PlayerWeaponAllocate(playerID)
     if TeamIDMap.Red == playerTeam then
         Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Hammer, 1)
         Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Gun, 1)
+    end
+end
+
+---| 🎮 - 玩家等级检查
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function Utils.PlayerLevelCheck(playerID)
+    -- 检查玩家是否存在
+    if not MiscService:IsObjectExist(MiscService.EQueryableObjectType.Player, playerID) then
+        return
+    end
+
+    local levelBaseExp = Config.Engine.Core.Level.BaseExp
+    local levelRatio = Config.Engine.Core.Level.Ratio
+    local levelMax = Config.Engine.Core.Level.MaxLevel
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+
+    -- 获取玩家等级属性
+    local playerLevel = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2])
+    local playerLevelMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
+        KeyMap.PState.PlayerLevelIsMax[2])
+    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2])
+
+    -- 检查属性是否有效
+    if type(playerLevel) ~= "number" or type(playerExp) ~= "number" then
+        print("玩家属性无效，无法进行等级检查")
+        return
+    end
+
+    -- 确保数值非负
+    playerLevel = math.max(0, playerLevel)
+    playerExp = math.max(0, playerExp)
+    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerExpReq[1], KeyMap.GameState.PlayerExpReq
+        [2], UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel), playerID)
+    -- 如果已经满级，直接返回
+    if playerLevelMax then
+        return
+    end
+
+    if playerLevel < levelMax then
+        local reqExp = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
+
+        -- 检查经验是否足够升级
+        if playerExp >= reqExp then
+            playerLevel = playerLevel + 1
+            playerExp = playerExp - reqExp
+
+            -- 更新玩家等级和经验
+            UDK.Property.SetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2], playerLevel,
+                accessLevel)
+            UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2], playerLevel)
+            UDK.Property.SetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp,
+                accessLevel)
+            UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
+        end
+    end
+
+    -- 检查是否达到最大等级
+    if playerLevel >= levelMax then
+        UDK.Property.SetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1], KeyMap.PState.PlayerLevelIsMax[2], true,
+            accessLevel)
+        UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerLevelIsMax[1], KeyMap.PState.PlayerLevelIsMax[2], true)
     end
 end
 

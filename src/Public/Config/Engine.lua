@@ -16,7 +16,8 @@ EngineConf.Core = {
     },
     Level = {
         BaseExp = 100,
-        Ratio = 1.2
+        Ratio = 1.2,
+        MaxLevel = 99999
     },
     Task = {
         DoTaskCDTime = 5,
@@ -223,8 +224,8 @@ EngineConf.Property = {
             GameRoundDraw = { "Number", "PState_GameRoundDraw", 0 },
             GameRoundEscape = { "Number", "PState_GameRoundTime", 0 },
             PlayerLevel = { "Number", "PState_PlayerLevel", 1 },
+            PlayerLevelIsMax = { "Boolean", "PState_PlayerLevelIsMax", false },
             PlayerExp = { "Number", "PState_PlayerExp", 0 },
-            PlayerReqExp = { "Number", "PState_PlayerReqExp", 0 },
         },
         -- GameState全部由服务端LightDMS管理，UDK Property不参与管理（需要使用玩家ID拼接名称）
         GameState = {
@@ -232,6 +233,7 @@ EngineConf.Property = {
             PlayerStatus = { "Number", "GameState_PlayerStatus" },
             PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
+            PlayerExpReq = { "Number", "GameState_PlayerExpRequire" },
             GameStage = { "Number", "GameState_GameStage" },
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理

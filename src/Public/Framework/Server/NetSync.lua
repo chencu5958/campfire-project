@@ -71,6 +71,25 @@ local function syncDataWithDirtyCheck(currentData, namespace, category, key,
     end
 end
 
+-- 获取玩家的经验需求值
+local function getPlayerExpReq(playerID)
+    local playerLevelIsMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
+        KeyMap.PState.PlayerLevelIsMax[2])
+    local playerExpReq = Framework.Tools.LightDMS.GetCustomProperty(
+        KeyMap.GameState.PlayerExpReq[1],
+        KeyMap.GameState.PlayerExpReq[2],
+        false,
+        playerID
+    )
+    if type(playerExpReq) == "number" then
+        if playerLevelIsMax then
+            return "Max"
+        end
+        return playerExpReq
+    end
+    return 0
+end
+
 ---| 🎮 - 同步服务器游戏状态数据
 ---<br>
 ---| `范围`：`服务端`
@@ -114,8 +133,10 @@ function NetSync.SyncUserProfile(playerID)
         },
         GameData = {
             Level = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2]),
+            LevelIsMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
+                KeyMap.PState.PlayerLevelIsMax[2]),
             Exp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2]),
-            ReqExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerReqExp[1], KeyMap.PState.PlayerReqExp[2]),
+            ReqExp = getPlayerExpReq(playerID),
             Currency = {
                 Coin = Currency:GetCurrencyCount(playerID),
                 StarCoin = 0,
