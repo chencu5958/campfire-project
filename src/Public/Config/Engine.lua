@@ -137,6 +137,17 @@ EngineConf.Map = {
         Countdown = 3,
         DisableGameFeature = 99
     },
+    GameReasonCode = {
+        PlayerCountCheck = {
+            NotEnough = 1,
+            CheckApproved = 2,
+            RedTeamNotEnough = 3,
+            BlueTeamNotEnough = 4,
+        },
+        Common = {
+            Unknown = 9999
+        }
+    },
     NexAnimate = {
         Dance_Fun = "DanceSS",
         Dance_JSC = "DanceJSC",

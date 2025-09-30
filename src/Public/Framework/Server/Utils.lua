@@ -317,4 +317,31 @@ function Utils.PlayerLevelCheck(playerID)
     end
 end
 
+---| 🎮 - 检查游戏玩家数量
+---<br>
+---| `范围`：`服务端`
+---@return boolean isEnough 是否足够
+---@return number reasonCode 原因
+function Utils.CheckGamePlayerCount()
+    local reasonCode = Config.Engine.Map.GameReasonCode.PlayerCountCheck
+    local commonCode = Config.Engine.Map.GameReasonCode.Common
+    local playerCount = UDK.Player.GetTotalPlayerCount()
+    local redTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Red)
+    local blueTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Blue)
+    if playerCount == 1 then
+        return false, reasonCode.NotEnough
+    elseif playerCount >= 2 then
+        if #redTeamCount >= 1 and #blueTeamCount >= 1 then
+            return true, reasonCode.CheckApproved
+        else
+            if #redTeamCount == 0 then
+                return false, reasonCode.RedTeamNotEnough
+            elseif #blueTeamCount == 0 then
+                return false, reasonCode.BlueTeamNotEnough
+            end
+        end
+    end
+    return false, commonCode.Unknown
+end
+
 return Utils

@@ -103,6 +103,26 @@ function DataManager.PlayerLevelExpManager(playerID, value, mode)
     UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], playerExp)
 end
 
+---| 🎮 玩家经济管理
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param type string 玩家经济类型（Coin）
+---@param value number 玩家经济值
+---@param mode string 玩家经济模式（Add | Sub）
+function DataManager.PlayerEcomonyManager(playerID, type, value, mode)
+    if mode == "Add" then
+        if type == "Coin" then
+            Currency:AddCurrencyCount(playerID, value)
+        end
+    end
+    if mode == "Sub" then
+        if type == "Coin" then
+            Currency:ReduceCurrencyCount(playerID, value)
+        end
+    end
+end
+
 ---| 🎮 玩家存档上传
 ---<br>
 ---| `范围`：`服务端`
