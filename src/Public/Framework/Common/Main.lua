@@ -8,3 +8,9 @@
 -- *
 -- * 2025 © RoidMC Studios | Powered by UniX SDK
 -- ==================================================
+
+local Common = {
+    Init = require("Public.Framework.Common.Init"),
+}
+
+return Common
