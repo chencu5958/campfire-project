@@ -36,15 +36,16 @@ end
 
 -- 生成排行榜数据列
 local function rankDataColumnGenerate(playerID)
-    local playerStatus = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerStatus = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerStatus[1],
-        KeyMap.GameState.PlayerStatus[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerStatus[2]
     )
-    local status = StatusCodeMap.Missing.ID
+    local status
     if type(playerStatus) == "number" then
         status = playerStatus
+    else
+        status = StatusCodeMap.Missing.ID
     end
     local score = Team:GetPlayerCurrentScore(playerID)
     local teamID = Team:GetTeamById(playerID)
@@ -69,8 +70,8 @@ local function rankDataGenerateByPlayerIDs(playerIDs)
     return result
 end
 
-function Rank.SyncRankListData()
-    local data = rankDataGenerateByPlayerIDs(UDK.Player.GetAllPlayers())
+function Rank.SyncRankListData(playerIDs)
+    local data = rankDataGenerateByPlayerIDs(playerIDs)
 
     -- 序列化当前数据用于比较
     local currentDataSerialized = serializeTable(data)

@@ -96,7 +96,7 @@ local function sortRankListData(rankData)
     local TeamMap = Config.Engine.Map.Team
     local sortedData = {
         redTeam = {},
-        blueTeam = {}
+        blueTeam = {},
     }
 
     -- 按队伍分类数据

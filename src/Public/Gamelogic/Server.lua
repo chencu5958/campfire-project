@@ -16,9 +16,9 @@ function Server.Init()
     if not envType then return end
     TimerManager:AddTimer(0.1, function()
         UDK.Heartbeat.SetAutoSend(false)
-        Framework.Server.Init.InitGame()
         Framework.Tools.GameState.Init()
         for _, v in ipairs(UDK.Player.GetAllPlayers()) do
+            Framework.Server.Init.InitGame(v)
             Framework.Server.Utils.PlayerWeaponAllocate(v)
             Framework.Server.Utils.PlayerInGameDisplay(v)
         end
@@ -47,29 +47,38 @@ end
 function Server.Update()
     local envType = Framework.Tools.Utils.EnvIsServer()
     if not envType then return end
+    local playerIDs = UDK.Player.GetAllPlayers()
     --Framework.Server.DataManager.PlayerMatchDataManager(v, "Win", "Add", 1)
     --Framework.Server.DataManager.PlayerMatchDataManager(v, "Lose", "Sub", 1)
     --Framework.Server.DataManager.PlayerMatchDataManager(v, "Draw", "Sub", 1)
     --Framework.Server.DataManager.PlayerMatchDataManager(v, "Escape", "Sub", 1)
     Framework.Server.NetSync.SyncServerGameState()
-    Framework.Server.NetSync.SyncRankListData()
-    for _, v in ipairs(UDK.Player.GetAllPlayers()) do
-        Framework.Server.NetSync.SyncUserProfile(v)
+    Framework.Server.NetSync.SyncRankListData(playerIDs)
+    for _, v in ipairs(playerIDs) do
         if not updateLock then
             updateLock = true
-            TimerManager:AddLoopTimer(0.5, function()
+            TimerManager:AddTimer(0.5, function()
                 Framework.Server.Utils.PlayerStatusCheck(v)
                 Framework.Server.Utils.PlayerLevelCheck(v)
+                Framework.Server.NetSync.SyncUserProfile(v)
                 updateLock = false
             end)
         end
     end
 end
 
+---| 👾 - 玩家离开事件
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
 function Server.EventPlayerLeave(playerID)
     Framework.Server.DataManager.PlayerArchiveUpload(playerID)
 end
 
+---| 👾 - 玩家销毁事件
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
 function Server.EventPlayerDestory(playerID)
     local killerData = {
         playerID = playerID,
@@ -84,6 +93,11 @@ function Server.EventPlayerDestory(playerID)
     Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
 end
 
+---| 👾 - 玩家死亡事件
+---<br>
+---| `范围`：`服务端`
+---@param killerID number 击杀者ID
+---@param victimID number 被击杀者ID
 function Server.EventPlayerKilled(killerID, victimID)
     local killerData = {
         playerID = killerID,
@@ -99,6 +113,11 @@ function Server.EventPlayerKilled(killerID, victimID)
     Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
 end
 
+---| 👾 - 生物死亡事件
+---<br>
+---| `范围`：`服务端`
+---@param creatureID number 生物ID
+---@param killerID number 击杀者ID
 function Server.EventCreatureKilled(creatureID, killerID)
     local killerData = {
         playerID = killerID,
@@ -114,6 +133,56 @@ function Server.EventCreatureKilled(creatureID, killerID)
     Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
 end
 
+---| 👾 - 玩家进入触发盒事件
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param signalBoxID number 触发盒ID
+function Server.EventPlayerEnterSignalBox(playerID, signalBoxID)
+    print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+end
+
+---| 👾 - 玩家离开触发盒事件
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param signalBoxID number 触发盒ID
+function Server.EventPlayerLeaveSignalBox(playerID, signalBoxID)
+    print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+end
+
+---| 👾 - 玩家受伤事件
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param killerID number 击杀者ID
+---@param damage number 伤害值
+function Server.EventPlayerTakeHurt(playerID, killerID, damage)
+    local gameFeatureName = Framework.Server.GameFeatureManager.Type.CharacterCanTakeHurt
+    local featureIsEnabled = Framework.Server.GameFeatureManager.IsFeatureEnabled(gameFeatureName)
+    if not featureIsEnabled then
+        Damage:SetCharacterFinalDamage(playerID, 0)
+        return
+    end
+    Framework.Server.Utils.CheckPlayerTakeHurt(playerID, killerID, damage)
+end
+
+---| 👾 - 生物受伤事件
+---<br>
+---| `范围`：`服务端`
+---@param creatureID number 生物ID
+---@param killerID number 击杀者ID
+---@param damage number 伤害值
+function Server.EventCreatureTakeHurt(creatureID, killerID, damage)
+    local gameFeatureName = Framework.Server.GameFeatureManager.Type.CreatureCanTakeHurt
+    local featureIsEnabled = Framework.Server.GameFeatureManager.IsFeatureEnabled(gameFeatureName)
+    if not featureIsEnabled then
+        Damage:SetCreatureFinalDamage(creatureID, 0)
+        return
+    end
+    Framework.Server.Utils.CheckCreatureTakeHurt(creatureID, killerID, damage)
+end
+
 ---| 👾 - 断线重连事件
 ---<br>
 ---| `范围`：`服务端`
@@ -123,6 +192,7 @@ function Server.EventPlayerReconnectd(player, levelID)
     local envType = Framework.Tools.Utils.EnvIsServer()
     if not envType then return end
     UDK.Property.SyncAuthorityData(player)
+    Framework.Tools.GameState.SendToClient(player, "Act_Client_ReconnectInit")
     Log:PrintServerLog("Player " .. player .. " reconnected")
 end
 

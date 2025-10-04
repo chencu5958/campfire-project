@@ -48,8 +48,11 @@ local function playerPropertyInit(playerID)
         end
     end
     -- GameState部分数据初始化
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerIsDisconnect[1],
-    KeyMap.GameState.PlayerIsDisconnect[2], false, playerID)
+    for _, value in pairs(KeyMap.GameState) do
+        if value[3] ~= nil then
+            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+        end
+    end
 end
 
 -- 玩家IM频道初始化
@@ -106,13 +109,11 @@ end
 ---| 🎮 服务器游戏逻辑初始化
 ---<br>
 ---| `范围`：`服务端`
-function ServerInit.InitGame()
+function ServerInit.InitGame(playerID)
     gameFeatureInit()
     gameTimeManagerInit()
-    for _, v in ipairs(UDK.Player.GetAllPlayers()) do
-        playerPropertyInit(v)
-        playerIMChannelInit(v)
-    end
+    playerPropertyInit(playerID)
+    playerIMChannelInit(playerID)
 end
 
 ---| 🎮 重置玩家设置属性数据

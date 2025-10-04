@@ -75,19 +75,19 @@ end
 local function getPlayerExpReq(playerID)
     local playerLevelIsMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
         KeyMap.PState.PlayerLevelIsMax[2])
-    local playerExpReq = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerExpReq = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerExpReq[1],
-        KeyMap.GameState.PlayerExpReq[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerExpReq[2]
     )
     if type(playerExpReq) == "number" then
         if playerLevelIsMax then
             return "Max"
         end
         return playerExpReq
+    else
+        return "Fail"
     end
-    return 0
 end
 
 ---| 🎮 - 同步服务器游戏状态数据
@@ -177,9 +177,9 @@ end
 ---| 🎮 - 同步局内排行榜数据
 ---<br>
 ---| `范围`：`服务端`
-function NetSync.SyncRankListData()
+function NetSync.SyncRankListData(playerIDs)
     -- 委托给Rank模块处理排行榜同步
-    Rank.SyncRankListData()
+    Rank.SyncRankListData(playerIDs)
 end
 
 return NetSync
