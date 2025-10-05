@@ -80,17 +80,7 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Server.EventPlayerDestory(playerID)
-    local killerData = {
-        playerID = playerID,
-        playerName = UDK.Player.GetPlayerNickName(playerID),
-        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(playerID),
-        killerTipType = "KillByVoid"
-    }
-    local victimData = {
-        playerID = 0,
-        playerName = ""
-    }
-    Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
+    Framework.Server.Aliza.CastKillBySelf(playerID)
 end
 
 ---| 👾 - 玩家死亡事件
@@ -99,18 +89,8 @@ end
 ---@param killerID number 击杀者ID
 ---@param victimID number 被击杀者ID
 function Server.EventPlayerKilled(killerID, victimID)
-    local killerData = {
-        playerID = killerID,
-        playerName = UDK.Player.GetPlayerNickName(killerID),
-        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(killerID),
-        killerTipType = "KillPlayer"
-    }
-    local victimData = {
-        playerID = victimID,
-        playerName = UDK.Player.GetPlayerNickName(victimID),
-        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(victimID),
-    }
-    Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
+    Framework.Server.Aliza.CastKillPlayer(killerID, victimID)
+    Framework.Server.Utils.CheckPlayerKilled(killerID, victimID)
 end
 
 ---| 👾 - 生物死亡事件
@@ -119,18 +99,8 @@ end
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
 function Server.EventCreatureKilled(creatureID, killerID)
-    local killerData = {
-        playerID = killerID,
-        playerName = UDK.Player.GetPlayerNickName(killerID),
-        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(killerID),
-        killerTipType = "KillNPC"
-    }
-    local victimData = {
-        playerID = creatureID,
-        playerName = Creature:GetName(creatureID),
-        playerColor = Framework.Tools.Utils.GetTeamHexByCode("NPC"),
-    }
-    Framework.Server.Aliza.BoardcastKillNotice(killerData, victimData)
+    Framework.Server.Aliza.CastKillCreature(creatureID, killerID)
+    Framework.Server.Utils.CheckCreatureKilled(creatureID, killerID)
 end
 
 ---| 👾 - 玩家进入触发盒事件
@@ -139,7 +109,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Server.EventPlayerEnterSignalBox(playerID, signalBoxID)
-    print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+    Framework.Server.Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
 end
 
 ---| 👾 - 玩家离开触发盒事件
@@ -148,7 +118,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Server.EventPlayerLeaveSignalBox(playerID, signalBoxID)
-    print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+    Framework.Server.Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
 end
 
 ---| 👾 - 玩家受伤事件

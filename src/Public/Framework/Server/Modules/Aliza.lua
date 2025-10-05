@@ -54,4 +54,56 @@ function Aliza.BoardcastSystemMsg(message, messageColor)
     return Aliza.BoardcastMsg(MsgContent, "SystemMsg")
 end
 
+---| 🎮 推送击杀玩家通知
+---@param killerID number 击杀者ID
+---@param victimID number 被击杀者ID
+function Aliza.CastKillPlayer(killerID, victimID)
+    local killerData = {
+        playerID = killerID,
+        playerName = UDK.Player.GetPlayerNickName(killerID),
+        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(killerID),
+        killerTipType = "KillPlayer"
+    }
+    local victimData = {
+        playerID = victimID,
+        playerName = UDK.Player.GetPlayerNickName(victimID),
+        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(victimID),
+    }
+    Aliza.BoardcastKillNotice(killerData, victimData)
+end
+
+---| 🎮 推送击杀生物通知
+---@param creatureID number 生物ID
+---@param killerID number 击杀者ID
+function Aliza.CastKillCreature(creatureID, killerID)
+    local killerData = {
+        playerID = killerID,
+        playerName = UDK.Player.GetPlayerNickName(killerID),
+        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(killerID),
+        killerTipType = "KillNPC"
+    }
+    local victimData = {
+        playerID = creatureID,
+        playerName = Creature:GetName(creatureID),
+        playerColor = Framework.Tools.Utils.GetTeamHexByCode("NPC"),
+    }
+    Aliza.BoardcastKillNotice(killerData, victimData)
+end
+
+---| 🎮 推送玩家自杀通知
+---@param playerID number 玩家ID
+function Aliza.CastKillBySelf(playerID)
+        local killerData = {
+        playerID = playerID,
+        playerName = UDK.Player.GetPlayerNickName(playerID),
+        playerColor = Framework.Tools.Utils.GetTeamHexByPlayerID(playerID),
+        killerTipType = "KillByVoid"
+    }
+    local victimData = {
+        playerID = 0,
+        playerName = ""
+    }
+    Aliza.BoardcastKillNotice(killerData, victimData)
+end
+
 return Aliza

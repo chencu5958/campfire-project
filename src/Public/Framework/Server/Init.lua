@@ -74,8 +74,21 @@ local function playerIMChannelInit(playerID)
     end
 end
 
--- 游戏时间管理器初始化
-local function gameTimeManagerInit()
+-- 游戏核心系统初始化（包括功能开关和时间管理器）
+local function gameCoreSystemInit()
+    local envInfo = Framework.Tools.Utils.GetEnvInfo()
+    if envInfo.isStandalone then
+        Framework.Server.Aliza.BoardcastSystemMsg("检测到单机环境，将禁用IM功能")
+        Framework.Server.Aliza.BoardcastSystemMsg("系统将禁用大部分功能，请创建房间后游玩")
+        Framework.Server.Aliza.BoardcastSystemMsg("该模式下您可以游览地图，但无法进行游戏")
+        --Framework.Tools.Utils.SetGameStage(GameStageMap.DisableGameFeature)
+    else
+        Framework.Tools.Utils.SetGameStage(GameStageMap.Ready)
+    end
+
+    -- 根据游戏阶段初始化功能开关
+    Framework.Server.GameFeatureManager.AutoInit(Framework.Tools.Utils.GetGameStage())
+    -- 初始化游戏时间管理器
     UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundPreparationTime)
     local timerID
     Framework.Server.Aliza.BoardcastSystemMsg("现在是准备阶段，10秒后开始游戏")
@@ -84,7 +97,7 @@ local function gameTimeManagerInit()
         if TimerTime <= 0 then
             TimerManager:RemoveTimer(timerID)
             TimerManager:AddTimer(3, function()
-                print("测试")
+                UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundTime, false, "s", true)
             end)
             print("游戏开始")
         else
@@ -93,25 +106,11 @@ local function gameTimeManagerInit()
     end)
 end
 
--- 游戏功能初始化
-local function gameFeatureInit()
-    local envInfo = Framework.Tools.Utils.GetEnvInfo()
-    if envInfo.isStandalone then
-        Framework.Server.Aliza.BoardcastSystemMsg("检测到单机环境，将禁用IM功能")
-        Framework.Server.Aliza.BoardcastSystemMsg("系统将禁用大部分功能，请创建房间后游玩")
-        Framework.Server.Aliza.BoardcastSystemMsg("该模式下您可以游览地图，但无法进行游戏")
-        Framework.Tools.Utils.SetGameStage(GameStageMap.DisableGameFeature)
-    else
-        Framework.Tools.Utils.SetGameStage(GameStageMap.Ready)
-    end
-end
-
 ---| 🎮 服务器游戏逻辑初始化
 ---<br>
 ---| `范围`：`服务端`
 function ServerInit.InitGame(playerID)
-    gameFeatureInit()
-    gameTimeManagerInit()
+    gameCoreSystemInit(playerID)
     playerPropertyInit(playerID)
     playerIMChannelInit(playerID)
 end

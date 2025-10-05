@@ -13,7 +13,6 @@ local AppStr = UDK.TomlUtils.Parse(Config.Toml.App)
 local LangStr = parsedTomlI18N.i18n
 local KeyMap = Config.Engine.Property.KeyMap
 local TeamIDMap, TeamHex = Config.Engine.Map.Team, Config.Engine.Map.TeamHex
-local GameStageMap = Config.Engine.Map.GameStage
 
 ---| 🧰 - 通用配置
 UtilsTools.Conf = {
@@ -227,14 +226,28 @@ end
 ---<br>
 ---| `范围`：`服务端`
 function UtilsTools.SetGameStage(stageCode)
-
+    if type(stageCode) ~= "number" then
+        Log:PrintError("[Utils] 设置游戏阶段参数错误")
+    end
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    UDK.Property.SetProperty(
+        KeyMap.GameState.NameSpace,
+        KeyMap.GameState.GameStage[1],
+        KeyMap.GameState.GameStage[2],
+        stageCode,
+        accessLevel
+    )
 end
 
 ---| 🧰 - 获取游戏阶段
 ---<br>
 ---| `范围`：`服务端`
 function UtilsTools.GetGameStage()
-
+    return UDK.Property.GetProperty(
+        KeyMap.GameState.NameSpace,
+        KeyMap.GameState.GameStage[1],
+        KeyMap.GameState.GameStage[2]
+    )
 end
 
 return UtilsTools

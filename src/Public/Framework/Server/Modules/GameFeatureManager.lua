@@ -8,17 +8,48 @@
 -- ==================================================
 
 local GameFeatureManager = {}
+local GameStageMap = Config.Engine.Map.GameStage
 
+-- 功能列表和默认值
 local gameFeatureList = {
     CharacterCanTakeHurt = true,
     CreatureCanTakeHurt = true,
-    TaskAreaCanInteract = false,
+    TaskAreaCanInteract = true,
+}
+
+-- 各阶段功能配置
+local stageFeatureConfig = {
+    [GameStageMap.Ready] = {  -- Ready
+        CharacterCanTakeHurt = false,
+        CreatureCanTakeHurt = false,
+        TaskAreaCanInteract = false
+    },
+    [GameStageMap.Start] = {  -- Start
+        CharacterCanTakeHurt = true,
+        CreatureCanTakeHurt = true,
+        TaskAreaCanInteract = true
+    },
+    [GameStageMap.End] = {  -- End
+        CharacterCanTakeHurt = false,
+        CreatureCanTakeHurt = false,
+        TaskAreaCanInteract = false
+    },
+    [GameStageMap.Countdown] = {  -- Countdown
+        CharacterCanTakeHurt = false,
+        CreatureCanTakeHurt = false,
+        TaskAreaCanInteract = false
+    },
+    [GameStageMap.DisableGameFeature] = { -- DisableGameFeature
+        CharacterCanTakeHurt = false,
+        CreatureCanTakeHurt = false,
+        TaskAreaCanInteract = false
+    }
 }
 
 GameFeatureManager.Type = {
     CharacterCanTakeHurt = "CharacterCanTakeHurt",
     CreatureCanTakeHurt = "CreatureCanTakeHurt",
-    TaskAreaCanInteract = "TaskAreaCanInteract",
+    TaskAreaCanInteract = "TaskAreaCanInteract"
 }
 
 ---| 🎮 获取功能列表
@@ -56,6 +87,32 @@ function GameFeatureManager.GetFeatureTypes()
         table.insert(types, key)
     end
     return types
+end
+
+---| 🎮 根据游戏阶段自动初始化功能开关
+---<br>
+---| `范围`：`服务端`
+---@param gameStage number 游戏阶段
+function GameFeatureManager.AutoInit(gameStage)
+    local config = stageFeatureConfig[gameStage]
+    if config then
+        for featureType, enabled in pairs(config) do
+            gameFeatureList[featureType] = enabled
+        end
+    else
+        -- 默认情况下启用所有功能
+        for featureType, _ in pairs(gameFeatureList) do
+            gameFeatureList[featureType] = true
+        end
+    end
+end
+
+---| 🎮 获取当前阶段的功能配置
+---<br>
+---| `范围`：`服务端`
+---@param gameStage number 游戏阶段
+function GameFeatureManager.GetStageConfig(gameStage)
+    return stageFeatureConfig[gameStage] or stageFeatureConfig[1] -- 默认返回Start阶段配置
 end
 
 return GameFeatureManager

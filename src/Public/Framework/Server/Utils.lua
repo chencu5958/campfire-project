@@ -19,31 +19,37 @@ local playerHeartbeatTimers = {}
 local function playerDisconnectCheck(playerID)
     -- 检查是否已经存在该玩家的心跳检测定时器
     if playerHeartbeatTimers[playerID] then
+        --Log:PrintServerLog("Heartbeat check already exists for player: " .. playerID)
         return
     end
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
 
     local timeoutCallback = function()
-        --print("Player:", playerID, "is disconnected")
-        Framework.Tools.LightDMS.SetCustomProperty(
+        --Log:PrintServerLog("Player:", UDK.Player.GetPlayerNickName(playerID), "is disconnected")
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerIsDisconnect[1],
             KeyMap.GameState.PlayerIsDisconnect[2],
             true,
-            playerID
+            accessLevel
         )
     end
     local responseCallback = function()
-        --print("Player:", playerID, "is still connected")
-        Framework.Tools.LightDMS.SetCustomProperty(
+        --Log:PrintServerLog("Player:", UDK.Player.GetPlayerNickName(playerID), "is still connected")
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerIsDisconnect[1],
             KeyMap.GameState.PlayerIsDisconnect[2],
             false,
-            playerID
+            accessLevel
         )
     end
 
     -- 发送心跳检测，并设置定时器，5秒后再次检测
     UDK.Heartbeat.SendWithTracking(playerID, timeoutCallback, responseCallback)
+    --Log:PrintServerLog("Setting up heartbeat check for player: " .. playerID)
     playerHeartbeatTimers[playerID] = TimerManager:AddTimer(5, function()
+        --Log:PrintServerLog("Removing heartbeat check for player: " .. playerID)
         playerHeartbeatTimers[playerID] = nil
     end)
 end
@@ -65,23 +71,20 @@ end
 -- 玩家图标显示器更新
 local function playerBindDisplayUpdate(playerID)
     local isExist = MiscService:IsObjectExist(MiscService.EQueryableObjectType.Player, playerID)
-    local playerStatus = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerStatus = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerStatus[1],
-        KeyMap.GameState.PlayerStatus[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerStatus[2]
     )
-    local playerHPTagID = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerHPTagID = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerBindHPBarID[1],
-        KeyMap.GameState.PlayerBindHPBarID[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerBindHPBarID[2]
     )
-    local playerTeamTagID = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerTeamTagID = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerBindTeamTagID[1],
-        KeyMap.GameState.PlayerBindTeamTagID[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerBindTeamTagID[2]
     )
     if type(playerHPTagID) == "number" and isExist then
         if playerStatus == StatusCodeMap.Alive.ID then
@@ -119,40 +122,44 @@ end
 function Utils.PlayerStatusCheck(playerID)
     playerDisconnectCheck(playerID)
     local playerLife = Damage:GetCharacterLifeCount(playerID)
-    local playerIsDisconnect = Framework.Tools.LightDMS.GetCustomProperty(
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    local playerIsDisconnect = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerIsDisconnect[1],
-        KeyMap.GameState.PlayerIsDisconnect[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerIsDisconnect[2]
     )
     local playerIsExist = MiscService:IsObjectExist(MiscService.EQueryableObjectType.Player, playerID)
     if playerLife <= 0 and not playerIsDisconnect then
-        Framework.Tools.LightDMS.SetCustomProperty(
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerStatus[1],
             KeyMap.GameState.PlayerStatus[2],
             StatusCodeMap.Dead.ID,
-            playerID
+            accessLevel
         )
     elseif playerLife > 0 and not playerIsDisconnect then
-        Framework.Tools.LightDMS.SetCustomProperty(
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerStatus[1],
             KeyMap.GameState.PlayerStatus[2],
             StatusCodeMap.Alive.ID,
-            playerID
+            accessLevel
         )
     elseif playerIsDisconnect then
-        Framework.Tools.LightDMS.SetCustomProperty(
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerStatus[1],
             KeyMap.GameState.PlayerStatus[2],
             StatusCodeMap.Disconnect.ID,
-            playerID
+            accessLevel
         )
     elseif not playerIsExist then
-        Framework.Tools.LightDMS.SetCustomProperty(
+        UDK.Property.SetProperty(
+            playerID,
             KeyMap.GameState.PlayerStatus[1],
             KeyMap.GameState.PlayerStatus[2],
             StatusCodeMap.Exit.ID,
-            playerID
+            accessLevel
         )
     end
 end
@@ -162,17 +169,19 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerInGameDisplay(playerID)
+    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
     -- 为不同元素创建专门的绑定回调函数
     local function createCallBack(elementType)
         return function(elementID)
             print("Spawned Element:", elementID, "for player:", playerID, "Type:", elementType)
             if elementType == "PlayerHP_Bar" then
                 -- 处理玩家HP条的特殊逻辑
-                Framework.Tools.LightDMS.SetCustomProperty(
+                UDK.Property.SetProperty(
+                    playerID,
                     KeyMap.GameState.PlayerBindHPBarID[1],
                     KeyMap.GameState.PlayerBindHPBarID[2],
                     elementID,
-                    playerID
+                    accessLevel
                 )
                 Element:BindingToCharacterOrNPC(
                     elementID,
@@ -181,11 +190,12 @@ function Utils.PlayerInGameDisplay(playerID)
                     Character.SOCKET_MODE.KeepWorld
                 )
             elseif elementType == "RedTeam" then
-                Framework.Tools.LightDMS.SetCustomProperty(
+                UDK.Property.SetProperty(
+                    playerID,
                     KeyMap.GameState.PlayerBindTeamTagID[1],
                     KeyMap.GameState.PlayerBindTeamTagID[2],
                     elementID,
-                    playerID
+                    accessLevel
                 )
                 Element:BindingToCharacterOrNPC(
                     elementID,
@@ -201,31 +211,30 @@ function Utils.PlayerInGameDisplay(playerID)
     local ScaleTeamIcon = Config.Engine.GameInstance.Scale.Icon_Dsp_Team
     local Replicate = true
     local playerPos = Character:GetPosition(playerID)
+    local playerTeam = Team:GetTeamById(playerID)
     local offsetPos_HPBar = Config.Engine.GameInstance.Offset.Icon_Dsp_PlayerHP_Bar
     local offsetPos_Team = Config.Engine.GameInstance.Offset.Icon_Dsp_Team
     local offsetPos_playerHP = UMath:GetPosOffset(playerPos, offsetPos_HPBar.X, offsetPos_HPBar.Y, offsetPos_HPBar.Z)
     local offsetPos_TeamIcon = UMath:GetPosOffset(playerPos, offsetPos_Team.X, offsetPos_Team.Y, offsetPos_Team.Z)
-    local playerHPTagID = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerHPTagID = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerBindHPBarID[1],
-        KeyMap.GameState.PlayerBindHPBarID[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerBindHPBarID[2]
     )
-    local playerTeamTagID = Framework.Tools.LightDMS.GetCustomProperty(
+    local playerTeamTagID = UDK.Property.GetProperty(
+        playerID,
         KeyMap.GameState.PlayerBindTeamTagID[1],
-        KeyMap.GameState.PlayerBindTeamTagID[2],
-        false,
-        playerID
+        KeyMap.GameState.PlayerBindTeamTagID[2]
     )
 
-    if type(playerHPTagID) ~= "number" then
+    if type(playerHPTagID) ~= "number" and playerTeam ~= TeamIDMap.Blue then
         Element:SpawnElement(
             Element.SPAWN_SOURCE.Scene, Config.Engine.GameInstance.Item.Icon_Dsp_PlayerHP_Bar,
             createCallBack("PlayerHP_Bar"),
             offsetPos_playerHP, Rot, Scale, Replicate
         )
     end
-    if type(playerTeamTagID) ~= "number" then
+    if type(playerTeamTagID) ~= "number" and playerTeam ~= TeamIDMap.Blue then
         Element:SpawnElement(
             Element.SPAWN_SOURCE.Scene, Config.Engine.GameInstance.Item.Icon_Dsp_RedTeam, createCallBack("RedTeam"),
             offsetPos_TeamIcon, Rot, ScaleTeamIcon, Replicate
@@ -272,6 +281,14 @@ function Utils.PlayerLevelCheck(playerID)
     local playerLevelMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
         KeyMap.PState.PlayerLevelIsMax[2])
     local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2])
+    local expReq = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
+    UDK.Property.SetProperty(
+        playerID,
+        KeyMap.GameState.PlayerExpReq[1],
+        KeyMap.GameState.PlayerExpReq[2],
+        expReq,
+        accessLevel
+    )
 
     -- 检查属性是否有效
     if type(playerLevel) ~= "number" or type(playerExp) ~= "number" then
@@ -286,10 +303,6 @@ function Utils.PlayerLevelCheck(playerID)
     if playerLevelMax then
         return
     end
-
-    local expReq = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.GameState.PlayerExpReq[1],
-        KeyMap.GameState.PlayerExpReq[2], expReq, playerID)
 
     if playerLevel < levelMax then
         local reqExp = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
@@ -342,6 +355,90 @@ function Utils.CheckGamePlayerCount()
         end
     end
     return false, commonCode.Unknown
+end
+
+---| 🎮 - 检查生物受击
+---<br>
+---| `范围`：`服务端`
+---@param creatureID number 生物ID
+---@param killerID number 击杀者ID
+---@param damage number 伤害值
+function Utils.CheckCreatureTakeHurt(creatureID, killerID, damage)
+    local playerTeamID = Team:GetTeamById(killerID)
+    if playerTeamID == TeamIDMap.Red then
+        Damage:SetCreatureFinalDamage(creatureID, damage)
+    elseif playerTeamID == TeamIDMap.Blue then
+        Damage:SetCreatureFinalDamage(creatureID, 0)
+    end
+end
+
+---| 🎮 - 检查生物击杀
+function Utils.CheckCreatureKilled(creatureID, killerID)
+    local playerTeamID = Team:GetTeamById(killerID)
+end
+
+---| 🎮 - 检查玩家受击
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param killerID number 击杀者ID
+---@param damage number 伤害值
+function Utils.CheckPlayerTakeHurt(playerID, killerID, damage)
+    local killerTeamID = Team:GetTeamById(killerID)
+    if killerTeamID == TeamIDMap.Red then
+        --Framework.Server.DataManager.PlayerEcomonyManager()
+        --Framework.Server.DataManager.PlayerTeamScoreManager(killerID, 1, "Add")
+    elseif killerTeamID == TeamIDMap.Blue then
+
+    end
+end
+
+---| 🎮 - 检查玩家击杀
+function Utils.CheckPlayerKilled(playerID, killerID)
+    local killerTeamID = Team:GetTeamById(killerID)
+    if killerTeamID == TeamIDMap.Red then
+        --Framework.Server.DataManager.PlayerEcomonyManager()
+        --Framework.Server.DataManager.PlayerTeamScoreManager(killerID, 1, "Add")
+    elseif killerTeamID == TeamIDMap.Blue then
+    end
+end
+
+---| 🎮 - 检查玩家进入触发盒
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param signalBoxID number 触发盒ID
+function Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
+        print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+end
+
+---| 🎮 - 检查玩家离开触发盒
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param signalBoxID number 触发盒ID
+function Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
+        print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+end
+
+---| 🎮 - 检查游戏胜利条件
+function Utils.CheckGameVictoryCondition(time)
+    local redTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Red)
+    local blueTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Blue)
+end
+
+function Utils.CheckGameTimeRemainder(time)
+
+end
+
+---| 🎮 - 随机分配玩家模型
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function Utils.RandomAllocatePlayerModel(playerID)
+    local modelArrayLength = UDK.Array.GetLength(Config.Engine.GameInstance.NPCModel)
+    local modelID = math.random(1, modelArrayLength)
+    print(modelArrayLength)
 end
 
 return Utils

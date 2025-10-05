@@ -144,6 +144,8 @@ EngineConf.Map = {
             RedTeamNotEnough = 3,
             BlueTeamNotEnough = 4,
         },
+        VictoryCondition = {},
+        GameTime = {},
         Common = {
             Unknown = 9999
         }
@@ -202,16 +204,12 @@ EngineConf.NetMsg = {
     },
     AlizaNotice = {
         ServerBoardcast = 10002,
-    },
-    HeartBeat = {
-        Server = 10003,
-        Client = 10004
     }
 }
 
 --- 属性配置（1为类型，2为属性名称，3是默认值）
 --- <br>
---- 说明：LightDMS如果管理玩家属性，对应调用名称为PlayerID_PropertyName拼接，例如：PlayerID_GameRoundTotal
+--- 说明：LightDMS如果管理玩家属性，对应调用名称为PropertyName_PlayerID拼接，例如：GameRoundTotal_PlayerID
 --- <br>
 --- 无特殊说明则使用属性名称，例如UIState下面的所有属性
 EngineConf.Property = {
@@ -227,7 +225,7 @@ EngineConf.Property = {
             AccountProfile = { "Map", "UserData_AccountProfile" },
             TaskData = { "Map", "UserData_TaskData" },
         },
-        -- 云存储同步
+        -- 云存储同步，ACL规则为ServerOnly
         PState = {
             GameRoundTotal = { "Number", "PState_GameRoundTotal", 0 },
             GameRoundWin = { "Number", "PState_GameRoundWin", 0 },
@@ -238,14 +236,15 @@ EngineConf.Property = {
             PlayerLevelIsMax = { "Boolean", "PState_PlayerLevelIsMax", false },
             PlayerExp = { "Number", "PState_PlayerExp", 0 },
         },
-        -- GameState全部由服务端LightDMS管理，UDK Property不参与管理（需要使用玩家ID拼接名称）
+        -- GameState由UDK Property管理，ACL规则ServerOnly
         GameState = {
-            PlayerIsDisconnect = { "Boolean", "GameState_PlayerIsDisconnect" },
-            PlayerStatus = { "Number", "GameState_PlayerStatus" },
+            NameSpace = "GameState",
+            PlayerIsDisconnect = { "Boolean", "GameState_PlayerIsDisconnect", false },
+            PlayerStatus = { "Number", "GameState_PlayerStatus", 0 },
             PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
-            PlayerExpReq = { "Number", "GameState_PlayerExpRequire" },
-            GameStage = { "Number", "GameState_GameStage" },
+            PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
+            GameStage = { "Number", "GameState_GameStage" } -- 由NameSpace管理
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
         UIState = {
@@ -256,6 +255,10 @@ EngineConf.Property = {
             IMUtilsIsOpen = { "Boolean", "UIState_IMUtilsIsOpen", false },
             IMUtilsOpenPID = { "Number", "UIState_IMUtilsOpenPID", 1 },
             TeamPopIsOpen = { "Boolean", "UIState_TeamPopIsOpen", true }
+        },
+        -- ClientState全部由客户端的LightDMS管理，UDK Property不参与管理
+        ClientState = {
+            ClientIsInit = { "Boolean", "ClientState_ClientIsInit" },
         },
         ServerState = {
             NameSpace = "ServerState",
