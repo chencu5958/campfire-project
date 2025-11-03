@@ -11,6 +11,7 @@ local ServerInit = {}
 local KeyMap = Config.Engine.Property.KeyMap
 local TimerMap = Config.Engine.Map.Timer
 local GameStageMap = Config.Engine.Map.GameStage
+local TeamIDMap = Config.Engine.Map.Team
 
 -- 玩家属性初始化
 local function playerPropertyInit(playerID)
@@ -33,18 +34,19 @@ local function playerPropertyInit(playerID)
         for _, value in pairs(KeyMap.PState) do
             UDK.Property.SetProperty(playerID, value[1], value[2], value[3], accessLevel)
             UDK.Storage.ArchiveUpload(playerID, value[1], value[2], value[3])
+            --local data = UDK.Storage.ArchiveGet(playerID, value[1], value[2])
             --print("玩家状态初始化: " .. value[1] .. " = " .. tostring(value[3]) .. " | " .. value[2])
         end
     else
         -- 遍历PSetting中的所有属性并初始化
         for _, value in pairs(KeyMap.PSetting) do
-            UDK.Storage.ArchiveGet(playerID, value[1], value[2])
-            UDK.Property.SetProperty(playerID, value[1], value[2], value[3])
+            local cloudValue = UDK.Storage.ArchiveGet(playerID, value[1], value[2])
+            UDK.Property.SetProperty(playerID, value[1], value[2], cloudValue)
         end
         -- 遍历PState中的所有属性并初始化
         for _, value in pairs(KeyMap.PState) do
-            UDK.Storage.ArchiveGet(playerID, value[1], value[2])
-            UDK.Property.SetProperty(playerID, value[1], value[2], value[3], accessLevel)
+            local cloudValue = UDK.Storage.ArchiveGet(playerID, value[1], value[2])
+            UDK.Property.SetProperty(playerID, value[1], value[2], cloudValue, accessLevel)
         end
     end
     -- GameState部分数据初始化
@@ -74,6 +76,21 @@ local function playerIMChannelInit(playerID)
     end
 end
 
+-- 玩家生命初始化
+local function playerLifeInit(playerID)
+    local playerTeam = Team:GetTeamById(playerID)
+    local lifeConf = Config.Engine.Core.Team
+    if playerTeam == TeamIDMap.Red then
+        Damage:ModifyCharacterMaxLifeCount(playerID, lifeConf.Red.MaxLife - 1)
+        Damage:ModifyCharacterLifeCount(playerID, lifeConf.Red.AddLife)
+        Damage:ModifyCharacterMaxHealth(playerID, lifeConf.Red.MaxHealth - 1)
+        Damage:ModifyCharacterHealth(playerID, lifeConf.Red.AddHealth)
+    elseif playerTeam == TeamIDMap.Blue then
+        Damage:ModifyCharacterMaxLifeCount(playerID, lifeConf.Blue.MaxLife - 1)
+        Damage:ModifyCharacterLifeCount(playerID, lifeConf.Blue.AddLife)
+    end
+end
+
 -- 游戏核心系统初始化（包括功能开关和时间管理器）
 local function gameCoreSystemInit()
     local envInfo = Framework.Tools.Utils.GetEnvInfo()
@@ -81,13 +98,17 @@ local function gameCoreSystemInit()
         Framework.Server.Aliza.BoardcastSystemMsg("检测到单机环境，将禁用IM功能")
         Framework.Server.Aliza.BoardcastSystemMsg("系统将禁用大部分功能，请创建房间后游玩")
         Framework.Server.Aliza.BoardcastSystemMsg("该模式下您可以游览地图，但无法进行游戏")
-        --Framework.Tools.Utils.SetGameStage(GameStageMap.DisableGameFeature)
+        Framework.Tools.Utils.SetGameStage(GameStageMap.DisableGameFeature)
     else
         Framework.Tools.Utils.SetGameStage(GameStageMap.Ready)
     end
 
     -- 根据游戏阶段初始化功能开关
     Framework.Server.GameFeatureManager.AutoInit(Framework.Tools.Utils.GetGameStage())
+    local gameStage = Framework.Tools.Utils.GetGameStage()
+    if gameStage == GameStageMap.DisableGameFeature then
+        return
+    end
     -- 初始化游戏时间管理器
     UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundPreparationTime)
     local timerID
@@ -96,10 +117,14 @@ local function gameCoreSystemInit()
         local TimerTime = UDK.Timer.GetTimerTime(TimerMap.GameRound)
         if TimerTime <= 0 then
             TimerManager:RemoveTimer(timerID)
-            TimerManager:AddTimer(3, function()
-                UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundTime, false, "s", true)
+            TimerManager:AddTimer(0.1, function()
+                local callback = function()
+                    --print("游戏开始")
+                    local isEnough, reasonCode = Framework.Server.Utils.CheckGamePlayerCount()
+                end
+                UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundTime, false, "s", true,
+                    callback)
             end)
-            print("游戏开始")
         else
             --print("游戏时间：" .. TimerTime)
         end
@@ -110,7 +135,8 @@ end
 ---<br>
 ---| `范围`：`服务端`
 function ServerInit.InitGame(playerID)
-    gameCoreSystemInit(playerID)
+    gameCoreSystemInit()
+    playerLifeInit(playerID)
     playerPropertyInit(playerID)
     playerIMChannelInit(playerID)
 end

@@ -1,5 +1,5 @@
 {
-    "lua_analyzer.codeLinting.ignoreGlobal": "UnityEngine;com;Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK;Framework;Config;Gamelogic",
+    "lua_analyzer.codeLinting.ignoreGlobal": ";Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK;Framework;Config;Gamelogic",
     "Lua.diagnostics.globals": [
         "Achievement",
         "AICharacter",
@@ -52,5 +52,9 @@
         "Gamelogic"
     ],
     "Lua.completion.showWord": "Disable",
-    "lua_analyzer.codeLinting.maxLineLength": 200
+    "lua_analyzer.codeLinting.maxLineLength": 200,
+    "emmylua.workspace.library": [
+        "c:/Users/chenc/.vscode/extensions/dreamhelper.dream-helper-1.4.0/res/lib",
+        "c:/Users/chenc/.vscode/extensions/dreamhelper.dream-helper-1.4.1/res/lib"
+    ]
 }
