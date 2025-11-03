@@ -82,4 +82,9 @@ function GState.CHandle_SetCharacterModelByNPC(playerID, data)
     Character:SetCharacterWithCreature(playerID, data.creatureID)
 end
 
+function GState.CHandle_ReconnectInit(playerID, data)
+    --Framework.Common.Init.OnBeginPlay()
+    --Gamelogic.Client.Init()
+end
+
 return GState

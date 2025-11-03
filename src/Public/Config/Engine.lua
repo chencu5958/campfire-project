@@ -11,7 +11,7 @@ local EngineConf = {}
 
 EngineConf.Core = {
     Game = {
-        RoundTime = 1200,
+        RoundTime = 900,
         RoundPreparationTime = 10
     },
     Level = {
@@ -29,6 +29,18 @@ EngineConf.Core = {
     AI = {
         SpawnLimit = 15,
         SpawnCount = 0
+    },
+    Team = {
+        Red = {
+            MaxLife = 3,
+            AddLife = 2,
+            MaxHealth = 3,
+            AddHealth = 1
+        },
+        Blue = {
+            MaxLife = 1,
+            AddLife = 0,
+        }
     }
 }
 
@@ -39,7 +51,6 @@ EngineConf.GameUI = {
             "Countdown",        -- 竞速的倒计时界面
             "TargetPoints",     -- 竞速目标积分
             "Leaderboard",      -- 竞速排行榜
-            "HealthBar",        -- 通用血条
             "Settings",         -- 通用设置
             "RemainingPlayers", -- FPS剩余人数
             "MapHint",          -- 通用地图提示
@@ -181,8 +192,14 @@ EngineConf.Task = {
     TaskList = {
         {
             ID = 1,
-            Name = "TestTask",
-            Desc = "This is a test task",
+            Name = {
+                Default = "TaskName",
+                I18NKey = ""
+            },
+            Desc = {
+                Default = "TaskDesc",
+                I18NKey = ""
+            },
             Reward = { Coin = 0, Exp = 0, Score = 0 },
             BindID = { Element = 1, SignalBox = 1 },
             Feature = { IsGuide = true, IsI18N = true, AlizaNotice = true },
@@ -231,7 +248,7 @@ EngineConf.Property = {
             GameRoundWin = { "Number", "PState_GameRoundWin", 0 },
             GameRoundLose = { "Number", "PState_GameRoundLose", 0 },
             GameRoundDraw = { "Number", "PState_GameRoundDraw", 0 },
-            GameRoundEscape = { "Number", "PState_GameRoundTime", 0 },
+            GameRoundEscape = { "Number", "PState_GameRoundEscape", 0 },
             PlayerLevel = { "Number", "PState_PlayerLevel", 1 },
             PlayerLevelIsMax = { "Boolean", "PState_PlayerLevelIsMax", false },
             PlayerExp = { "Number", "PState_PlayerExp", 0 },
@@ -244,6 +261,7 @@ EngineConf.Property = {
             PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
             PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
+            PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
             GameStage = { "Number", "GameState_GameStage" } -- 由NameSpace管理
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理

@@ -14,13 +14,15 @@ local GState = require("Public.Framework.Tools.Modules.GState")
 GameState.Type = {
     Act_ResetSetting = "Act_ResetSetting",
     Act_IMRecvToggle = "Act_IMRecvToggle",
-    Act_Client_SetCharacterModelByNPC = "Act_Client_SetCharacterModelByNPC"
+    Act_Client_SetCharacterModelByNPC = "Act_Client_SetCharacterModelByNPC",
+    Act_Client_ReconnectInit = "Act_Client_ReconnectInit"
 }
 
 local actionHandlers = {
     [GameState.Type.Act_ResetSetting] = GState.SHandle_ResetSetting,
     [GameState.Type.Act_IMRecvToggle] = GState.SHandle_IMRecvToggle,
-    [GameState.Type.Act_Client_SetCharacterModelByNPC] = GState.CHandle_SetCharacterModelByNPC
+    [GameState.Type.Act_Client_SetCharacterModelByNPC] = GState.CHandle_SetCharacterModelByNPC,
+    [GameState.Type.Act_Client_ReconnectInit] = GState.CHandle_ReconnectInit
 }
 
 GameState.Conf = {
@@ -109,7 +111,7 @@ end
 ---@param action string 状态动作
 ---@param ... any? 可变参数，包含需要同步的数据
 function GameState.SendToAllClients(playerID, action, ...)
-    local msgID = Config.EngineConfig.NetMsg.GameStateSync.Server
+    local msgID = Config.Engine.NetMsg.GameStateSync.Server
     local msg = {
         playerID = playerID,
         action = action,

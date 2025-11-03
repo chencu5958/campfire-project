@@ -41,7 +41,7 @@ end
 
 -- 通用的数据同步函数，支持脏检查和定时同步
 local function syncDataWithDirtyCheck(currentData, namespace, category, key,
-                                      stateRef, logMessage)
+                                      stateRef, _logMessage)
     -- 序列化当前数据用于比较
     local currentDataSerialized = serializeTable(currentData)
 
@@ -55,7 +55,7 @@ local function syncDataWithDirtyCheck(currentData, namespace, category, key,
 
         -- 立即发送数据
         UDK.Property.SetProperty(namespace, category, key, currentData)
-        --Log:PrintServerLog(logMessage .. " (Changed)")
+        --Log:PrintServerLog(_logMessage .. " (Changed)")
     end
 
     -- 如果数据没有变化且没有设置定时广播，则设置一个1秒后广播的定时器
@@ -63,7 +63,7 @@ local function syncDataWithDirtyCheck(currentData, namespace, category, key,
         stateRef.timerId = TimerManager:AddTimer(1, function()
             -- 发送当前数据
             UDK.Property.SetProperty(namespace, category, key, currentData)
-            --Log:PrintServerLog(logMessage .. " (Timer)")
+            --Log:PrintServerLog(_logMessage .. " (Timer)")
 
             -- 清除定时器ID
             stateRef.timerId = nil

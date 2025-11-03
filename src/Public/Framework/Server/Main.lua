@@ -10,6 +10,7 @@
 -- ==================================================
 
 local Server = {
+    AI = require("Public.Framework.Server.Modules.AI"),
     Init = require("Public.Framework.Server.Init"),
     Utils = require("Public.Framework.Server.Utils"),
     NetSync = require("Public.Framework.Server.NetSync"),

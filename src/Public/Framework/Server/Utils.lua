@@ -115,6 +115,20 @@ local function playerBindDisplayUpdate(playerID)
     return isExist
 end
 
+-- 玩家NPC模型ID生成
+local function playerModelIDGenerate()
+    local modelEntries = Config.Engine.GameInstance.NPCModel
+    -- 将关联数组的键收集到一个索引数组中，以便可以随机选择
+    local keys = {}
+    for key, _ in pairs(modelEntries) do
+        table.insert(keys, key)
+    end
+    -- 使用索引数组随机选择一个键
+    local randomKey = keys[math.random(#keys)]
+    local selectModel = modelEntries[randomKey]
+    return selectModel
+end
+
 ---| 🎮 - 玩家状态检查
 ---<br>
 ---| `范围`：`服务端`
@@ -173,7 +187,7 @@ function Utils.PlayerInGameDisplay(playerID)
     -- 为不同元素创建专门的绑定回调函数
     local function createCallBack(elementType)
         return function(elementID)
-            print("Spawned Element:", elementID, "for player:", playerID, "Type:", elementType)
+            --print("Spawned Element:", elementID, "for player:", playerID, "Type:", elementType)
             if elementType == "PlayerHP_Bar" then
                 -- 处理玩家HP条的特殊逻辑
                 UDK.Property.SetProperty(
@@ -258,6 +272,23 @@ function Utils.PlayerWeaponAllocate(playerID)
     if TeamIDMap.Red == playerTeam then
         Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Hammer, 1)
         Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Gun, 1)
+    end
+end
+
+---| 🎮 - 玩家模型分配
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function Utils.PlayerModelAllocate(playerID)
+    local selectID = playerModelIDGenerate()
+    local playerTeam = Team:GetTeamById(playerID)
+    if selectID and playerTeam == TeamIDMap.Blue then
+        UDK.Property.SetProperty(playerID, KeyMap.GameState.PlayerModelID[1], KeyMap.GameState.PlayerModelID[2], selectID)
+        local stateAction = Framework.Tools.GameState.Type.Act_Client_SetCharacterModelByNPC
+        local msg = {
+            creatureID = selectID
+        }
+        Framework.Tools.GameState.SendToAllClients(playerID, stateAction, msg)
     end
 end
 
@@ -409,7 +440,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
-        print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+    print("OnCharacterEnterSignalBox", playerID, signalBoxID)
 end
 
 ---| 🎮 - 检查玩家离开触发盒
@@ -418,7 +449,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
-        print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+    print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
 end
 
 ---| 🎮 - 检查游戏胜利条件
@@ -427,8 +458,8 @@ function Utils.CheckGameVictoryCondition(time)
     local blueTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Blue)
 end
 
-function Utils.CheckGameTimeRemainder(time)
-
+function Utils.CheckGameTimeRemainder(time, gameStage)
+    local gameTime = math.floor(time)
 end
 
 ---| 🎮 - 随机分配玩家模型
@@ -439,6 +470,11 @@ function Utils.RandomAllocatePlayerModel(playerID)
     local modelArrayLength = UDK.Array.GetLength(Config.Engine.GameInstance.NPCModel)
     local modelID = math.random(1, modelArrayLength)
     print(modelArrayLength)
+end
+
+---| 🎮 - 游戏对局数据自动管理
+function Utils.GameMatchDataAutoManager(playerID)
+
 end
 
 return Utils
