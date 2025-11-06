@@ -15,6 +15,7 @@ local gameFeatureList = {
     CharacterCanTakeHurt = true,
     CreatureCanTakeHurt = true,
     TaskAreaCanInteract = true,
+    GameMatchDataManager = true
 }
 
 -- 各阶段功能配置
@@ -22,7 +23,8 @@ local stageFeatureConfig = {
     [GameStageMap.Ready] = {  -- Ready
         CharacterCanTakeHurt = false,
         CreatureCanTakeHurt = false,
-        TaskAreaCanInteract = false
+        TaskAreaCanInteract = false,
+        GameMatchDataManager = false
     },
     [GameStageMap.Start] = {  -- Start
         CharacterCanTakeHurt = true,
@@ -42,14 +44,16 @@ local stageFeatureConfig = {
     [GameStageMap.DisableGameFeature] = { -- DisableGameFeature
         CharacterCanTakeHurt = false,
         CreatureCanTakeHurt = false,
-        TaskAreaCanInteract = false
+        TaskAreaCanInteract = false,
+        GameMatchDataManager = false
     }
 }
 
 GameFeatureManager.Type = {
     CharacterCanTakeHurt = "CharacterCanTakeHurt",
     CreatureCanTakeHurt = "CreatureCanTakeHurt",
-    TaskAreaCanInteract = "TaskAreaCanInteract"
+    TaskAreaCanInteract = "TaskAreaCanInteract",
+    GameMatchDataManager = "GameMatchDataManager"
 }
 
 ---| 🎮 获取功能列表

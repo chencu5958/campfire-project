@@ -62,9 +62,9 @@ local function playerBindDisplayPosCorr(playerID, displayID, displayType)
     local offsetPos_playerHP = UMath:GetPosOffset(playerPos, offsetPos_HPBar.X, offsetPos_HPBar.Y, offsetPos_HPBar.Z)
     local offsetPos_TeamIcon = UMath:GetPosOffset(playerPos, offsetPos_Team.X, offsetPos_Team.Y, offsetPos_Team.Z)
     if displayType == "PlayerHP_Bar" then
-        Element:SetPosition(displayID, offsetPos_playerHP, Element.COORDINATE.WORLD)
+        Element:SetPosition(displayID, offsetPos_playerHP, Element.COORDINATE.World)
     elseif displayType == "PlayerTeam_Tag" then
-        Element:SetPosition(displayID, offsetPos_TeamIcon, Element.COORDINATE.WORLD)
+        Element:SetPosition(displayID, offsetPos_TeamIcon, Element.COORDINATE.World)
     end
 end
 
@@ -359,6 +359,26 @@ function Utils.PlayerLevelCheck(playerID)
             accessLevel)
         UDK.Storage.ArchiveUpload(playerID, KeyMap.PState.PlayerLevelIsMax[1], KeyMap.PState.PlayerLevelIsMax[2], true)
     end
+end
+
+---| 🎮 - 玩家随机出生点
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function Utils.PlayerRandomSpawnPos(playerID)
+    local spawnPointList = Config.Engine.AI.SpawnPoint
+
+    -- 将所有的出生点放入一个数组中
+    local spawnPoints = {}
+    for _, point in pairs(spawnPointList) do
+        table.insert(spawnPoints, point.Pos)
+    end
+
+    -- 随机选择一个出生点
+    local randomIndex = math.random(1, #spawnPoints)
+    local pos = spawnPoints[randomIndex]
+
+    Character:SetPosition(playerID, pos)
 end
 
 ---| 🎮 - 检查游戏玩家数量

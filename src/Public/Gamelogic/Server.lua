@@ -17,29 +17,14 @@ function Server.Init()
     TimerManager:AddTimer(0.1, function()
         UDK.Heartbeat.SetAutoSend(false)
         Framework.Tools.GameState.Init()
+        Framework.Server.AI.Init()
         for _, v in ipairs(UDK.Player.GetAllPlayers()) do
             Framework.Server.Init.InitGame(v)
+            Framework.Server.Utils.PlayerRandomSpawnPos(v)
+            Framework.Server.Utils.PlayerModelAllocate(v)
             Framework.Server.Utils.PlayerWeaponAllocate(v)
             Framework.Server.Utils.PlayerInGameDisplay(v)
         end
-    end)
-    TimerManager:AddLoopTimer(3, function()
-        --Framework.Server.Aliza.BoardcastSystemMsg("Server Boardcast Test #" .. math.random(1, 100))
-        local data = {
-            killer = {
-                playerID = math.random(1, 100),
-                playerName = "Test",
-                playerColor = MiscService:RandomColor(),
-                killerTipColor = MiscService:RandomColor(),
-                killerTipType = "KillerTipType"
-            },
-            victim = {
-                playerID = 1,
-                playerName = "Test" .. math.random(1, 100),
-                playerColor = MiscService:RandomColor()
-            }
-        }
-        --Framework.Server.Aliza.BoardcastKillNotice(data.killer, data.victim)
     end)
 end
 
@@ -48,10 +33,6 @@ function Server.Update()
     local envType = Framework.Tools.Utils.EnvIsServer()
     if not envType then return end
     local playerIDs = UDK.Player.GetAllPlayers()
-    --Framework.Server.DataManager.PlayerMatchDataManager(v, "Win", "Add", 1)
-    --Framework.Server.DataManager.PlayerMatchDataManager(v, "Lose", "Sub", 1)
-    --Framework.Server.DataManager.PlayerMatchDataManager(v, "Draw", "Sub", 1)
-    --Framework.Server.DataManager.PlayerMatchDataManager(v, "Escape", "Sub", 1)
     Framework.Server.NetSync.SyncServerGameState()
     Framework.Server.NetSync.SyncRankListData(playerIDs)
     for _, v in ipairs(playerIDs) do
@@ -73,6 +54,11 @@ end
 ---@param playerID number 玩家ID
 function Server.EventPlayerLeave(playerID)
     Framework.Server.DataManager.PlayerArchiveUpload(playerID)
+    local gameFeatureName = Framework.Server.GameFeatureManager.Type.GameMatchDataManager
+    local featureIsEnabled = Framework.Server.GameFeatureManager.IsFeatureEnabled(gameFeatureName)
+    if not featureIsEnabled then return end
+    Framework.Server.Utils.GameMatchDataAutoManager(playerID)
+    Log:PrintLog("GameMatchData AutoManager")
 end
 
 ---| 👾 - 玩家销毁事件
@@ -80,7 +66,11 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Server.EventPlayerDestory(playerID)
+    --Character:SetPlayersVictory({ playerID })
     Framework.Server.Aliza.CastKillBySelf(playerID)
+    TimerManager:AddTimer(0.1, function()
+        Framework.Server.Utils.PlayerRandomSpawnPos(playerID)
+    end)
 end
 
 ---| 👾 - 玩家死亡事件
