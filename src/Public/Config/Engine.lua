@@ -173,7 +173,114 @@ EngineConf.Map = {
     },
 }
 
-EngineConf.AI = {}
+EngineConf.AI = {
+    PointType = {
+        LowPoint = {
+            PosZ = 100,
+        },
+        HighPoint = {
+            PosZ = 400,
+        }
+    },
+    SpawnPoint = {
+        Point_H_1 = {
+            Name = "Point_H_1",
+            Pos = { X = -420, Y = -4120, Z = 400 }
+        },
+        Point_H_2 = {
+            Name = "Point_H_2",
+            Pos = { X = -1850, Y = -4120, Z = 400 }
+        },
+        Point_H_3 = {
+            Name = "Point_H_3",
+            Pos = { X = -4120, Y = -4120, Z = 400 }
+        },
+        Point_H_4 = {
+            Name = "Point_H_4",
+            Pos = { X = -4120, Y = -2880, Z = 400 }
+        },
+        Point_H_5 = {
+            Name = "Point_H_5",
+            Pos = { X = -4120, Y = -1170, Z = 400 }
+        },
+        Point_H_6 = {
+            Name = "Point_H_6",
+            Pos = { X = -4320, Y = 170, Z = 400 }
+        },
+        Point_H_7 = {
+            Name = "Point_H_7",
+            Pos = { X = -3260, Y = 1980, Z = 400 }
+        },
+        Point_H_8 = {
+            Name = "Point_H_8",
+            Pos = { X = -1830, Y = 1980, Z = 400 }
+        },
+        Point_H_9 = {
+            Name = "Point_H_9",
+            Pos = { X = -1830, Y = -40, Z = 400 }
+        },
+        Point_H_10 = {
+            Name = "Point_H_10",
+            Pos = { X = -1850, Y = -1580, Z = 400 }
+        },
+        Point_H_11 = {
+            Name = "Point_H_11",
+            Pos = { X = -450, Y = -1580, Z = 400 }
+        },
+        Point_H_12 = {
+            Name = "Point_H_12",
+            Pos = { X = -450, Y = -40, Z = 400 }
+        },
+        Point_L_1 = {
+            Name = "Point_L_1",
+            Pos = { X = 170, Y = 910, Z = 100 }
+        },
+        Point_L_2 = {
+            Name = "Point_L_2",
+            Pos = { X = 170, Y = -450, Z = 100 }
+        },
+        Point_L_3 = {
+            Name = "Point_L_3",
+            Pos = { X = 170, Y = -1270, Z = 100 }
+        },
+        Point_L_4 = {
+            Name = "Point_L_4",
+            Pos = { X = 1310, Y = -450, Z = 100 }
+        }
+    },
+    RoutinePath = {
+        MapRoute_Full_1 = {
+            Type = "FullMapPath",
+            Name = "FullMapPath_01",
+            PointType = "High"
+        },
+        MapRoute_Full_2 = {
+            Type = "FullMapPath",
+            Name = "FullMapPath_02",
+            PointType = "High"
+        },
+        MapRoute_Routine_01 = {
+            Type = "RoutineMapPath",
+            Name = "RoutineMapPath_01",
+            PointType = "High"
+        },
+        MapRoute_Routine_02 = {
+            Type = "RoutineMapPath",
+            Name = "RoutineMapPath_02",
+            PointType = "High"
+        },
+        MapRoute_Routine_03= {
+            Type = "RoutineMapPath",
+            Name = "RoutineMapPath_L_01",
+            PointType = "Low"
+        },
+        MapRoute_Routine_04 = {
+            Type = "RoutineMapPath",
+            Name = "RoutineMapPath_L_02",
+            PointType = "Low"
+        },
+    }
+}
 
 EngineConf.Sound = {
     UI = {
@@ -262,7 +369,7 @@ EngineConf.Property = {
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
             PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
             PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
-            GameStage = { "Number", "GameState_GameStage" } -- 由NameSpace管理
+            GameStage = { "Number", "GameState_GameStage" }          -- 由NameSpace管理
         },
         -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
         UIState = {
