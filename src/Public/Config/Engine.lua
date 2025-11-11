@@ -27,8 +27,7 @@ EngineConf.Core = {
         GuideAutoDestory = 10
     },
     AI = {
-        SpawnLimit = 15,
-        SpawnCount = 0
+        SpawnLimit = 15
     },
     Team = {
         Red = {
