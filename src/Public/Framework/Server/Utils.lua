@@ -15,6 +15,8 @@ local StatusCodeMap = Config.Engine.Map.Status
 -- 存储玩家心跳检测定时器ID的表
 local playerHeartbeatTimers = {}
 
+local victoryCheckLock = false
+
 -- 玩家断线检查
 local function playerDisconnectCheck(playerID)
     -- 检查是否已经存在该玩家的心跳检测定时器
@@ -461,6 +463,7 @@ end
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
     print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+    Framework.Server.Task.AreaCheck(playerID, signalBoxID, "EnterSignalBox")
 end
 
 ---| 🎮 - 检查玩家离开触发盒
@@ -470,31 +473,110 @@ end
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
     print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+    Framework.Server.Task.AreaCheck(playerID, signalBoxID, "LeaveSignalBox")
 end
 
 ---| 🎮 - 检查游戏胜利条件
+---<br>
+---| `范围`：`服务端`
+---@param time number 游戏时间
 function Utils.CheckGameVictoryCondition(time)
     local redTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Red)
     local blueTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Blue)
-end
+    local gameTime = math.floor(time or 0)
+    local gameStage = Framework.Tools.Utils.GetGameStage()
+    local stageCodeMap = Config.Engine.Map.GameStage
+    local taskLimit = Config.Engine.Core.Task.TaskLimit
+    local taskCompleted = Config.Engine.Core.Task.TaskCompleted
+    local redTeamPlayerIDs = UDK.Player.GetTeamPlayers(TeamIDMap.Red)
+    local blueTeamPlayerIDs = UDK.Player.GetTeamPlayers(TeamIDMap.Blue)
+    local victoryTeam, fmt_Message, fmt_Message2
+    if gameStage ~= stageCodeMap.Ready and gameStage ~= stageCodeMap.DisableGameFeature and not victoryCheckLock then
+        if gameStage == stageCodeMap.Start then
+            victoryCheckLock = true
 
-function Utils.CheckGameTimeRemainder(time, gameStage)
-    local gameTime = math.floor(time)
-end
+            -- 优先检查任务完成条件（捣蛋鬼胜利条件）
+            if taskCompleted >= taskLimit then
+                fmt_Message = "捣蛋鬼完成所有任务，游戏胜利"
+                fmt_Message2 = "农场破坏任务完成，15秒后游戏结束"
+                victoryTeam = TeamIDMap.Blue
+                -- 检查时间结束条件
+            elseif gameTime <= 0 then
+                if taskCompleted > 0 then
+                    fmt_Message = "捣蛋鬼未在规定时间内完成所有任务"
+                    fmt_Message2 = "游戏失败，15秒后游戏结束"
+                    victoryTeam = TeamIDMap.Red
+                else
+                    fmt_Message = "捣蛋鬼未做任务，计时结束游戏平局"
+                    fmt_Message2 = "游戏平局，15秒后游戏结束"
+                end
+                -- 检查团队存活条件
+            elseif blueTeamCount == 0 and redTeamCount >= 1 then
+                fmt_Message = string.format("%s获得最终胜利，15秒后游戏结束", "农场主")
+                fmt_Message2 = "捣蛋鬼已被全部驱逐，游戏结束"
+                victoryTeam = TeamIDMap.Red
+            elseif redTeamCount == 0 and blueTeamCount >= 1 then
+                fmt_Message = string.format("%s获得最终胜利，15秒后游戏结束", "捣蛋鬼")
+                fmt_Message2 = "农场主驱逐捣蛋鬼失败，游戏结束"
+                victoryTeam = TeamIDMap.Blue
+            end
 
----| 🎮 - 随机分配玩家模型
----<br>
----| `范围`：`服务端`
----@param playerID number 玩家ID
-function Utils.RandomAllocatePlayerModel(playerID)
-    local modelArrayLength = UDK.Array.GetLength(Config.Engine.GameInstance.NPCModel)
-    local modelID = math.random(1, modelArrayLength)
-    print(modelArrayLength)
+            -- 如果有任何胜利/平局条件满足，则处理游戏结束逻辑
+            if fmt_Message then
+                -- 广播通知并结算对局数据
+                Framework.Tools.Utils.SetGameStage(stageCodeMap.End)
+                Framework.Server.GameFeatureManager.AutoInit(stageCodeMap.End)
+                Framework.Server.Aliza.BoardcastSystemMsg(fmt_Message)
+                Framework.Server.Aliza.BoardcastSystemMsg(fmt_Message2)
+                for _, playerID in pairs(redTeamPlayerIDs) do
+                    if victoryTeam == TeamIDMap.Red then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Win", "Add", 1)
+                    elseif victoryTeam == TeamIDMap.Blue then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Lose", "Add", 1)
+                    elseif victoryTeam == nil then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Draw", "Add", 1)
+                    end
+                end
+                for _, playerID in pairs(blueTeamPlayerIDs) do
+                    if victoryTeam == TeamIDMap.Red then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Lose", "Add", 1)
+                    elseif victoryTeam == TeamIDMap.Blue then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Win", "Add", 1)
+                    elseif victoryTeam == nil then
+                        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Draw", "Add", 1)
+                    end
+                end
+
+                -- 队伍胜利
+                TimerManager:AddTimer(15, function()
+                    if victoryTeam == nil then
+                        Character:SetCampVictory(TeamIDMap.Red)
+                        Character:SetCampVictory(TeamIDMap.Blue)
+                    elseif victoryTeam == TeamIDMap.Red then
+                        Character:SetCampVictory(TeamIDMap.Red)
+                    elseif victoryTeam == TeamIDMap.Blue then
+                        Character:SetCampVictory(TeamIDMap.Blue)
+                    end
+                    victoryCheckLock = false
+                end)
+            else
+                victoryCheckLock = false
+            end
+        end
+    end
 end
 
 ---| 🎮 - 游戏对局数据自动管理
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
 function Utils.GameMatchDataAutoManager(playerID)
-
+    local gameStage = Framework.Tools.Utils.GetGameStage()
+    local stageCodeMap = Config.Engine.Map.GameStage
+    -- 如果游戏阶段是开始阶段，则增加逃跑次数
+    if gameStage == stageCodeMap.Start then
+        Framework.Server.DataManager.PlayerMatchDataManager(playerID, "Escape", "Add", 1)
+    end
 end
 
 return Utils
