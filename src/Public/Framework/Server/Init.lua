@@ -144,11 +144,18 @@ local function gameCoreSystemInit()
             if TimerTime <= 0 then
                 TimerManager:RemoveTimer(timerID)
                 TimerManager:AddTimer(0.1, function()
+                    Framework.Tools.Utils.SetGameStage(GameStageMap.Start)
+                    Framework.Server.GameFeatureManager.AutoInit(GameStageMap.Start)
+                    Framework.Server.Aliza.BoardcastSystemMsg("当前人数满足游戏开始条件，游戏开始")
+                    Framework.Server.Aliza.BoardcastSystemMsg("点击右侧UI按钮展开查看任务目标")
                     local callback = function()
                         --print("游戏开始")
-                        Framework.Tools.Utils.SetGameStage(GameStageMap.Start)
-                        Framework.Server.Aliza.BoardcastSystemMsg("当前人数满足游戏开始条件，游戏开始")
-                        Framework.Server.Aliza.BoardcastSystemMsg("点击右侧UI按钮展开查看任务目标")
+                        local gameStageV = Framework.Tools.Utils.GetGameStage()
+                        local gameTime = UDK.Timer.GetTimerTime(TimerMap.GameRound)
+                        if gameTime == 0 and gameStageV == GameStageMap.Start then
+                            Framework.Tools.Utils.SetGameStage(GameStageMap.End)
+                            Framework.Server.GameFeatureManager.AutoInit(GameStageMap.End)
+                        end
                     end
                     UDK.Timer.StartBackwardTimer(TimerMap.GameRound, Config.Engine.Core.Game.RoundTime, false, "s", true,
                         callback)

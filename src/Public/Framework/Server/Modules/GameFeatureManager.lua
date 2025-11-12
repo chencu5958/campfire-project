@@ -15,6 +15,7 @@ local gameFeatureList = {
     CharacterCanTakeHurt = true,
     CreatureCanTakeHurt = true,
     TaskAreaCanInteract = true,
+    TaskAutoAssign = true,
     GameMatchDataManager = true
 }
 
@@ -24,27 +25,28 @@ local stageFeatureConfig = {
         CharacterCanTakeHurt = false,
         CreatureCanTakeHurt = false,
         TaskAreaCanInteract = false,
+        TaskAutoAssign = false,
         GameMatchDataManager = false
     },
     [GameStageMap.Start] = {  -- Start
         CharacterCanTakeHurt = true,
         CreatureCanTakeHurt = true,
-        TaskAreaCanInteract = true
+        TaskAreaCanInteract = true,
+        TaskAutoAssign = true,
+        GameMatchDataManager = true
     },
     [GameStageMap.End] = {  -- End
         CharacterCanTakeHurt = false,
         CreatureCanTakeHurt = false,
-        TaskAreaCanInteract = false
-    },
-    [GameStageMap.Countdown] = {  -- Countdown
-        CharacterCanTakeHurt = false,
-        CreatureCanTakeHurt = false,
-        TaskAreaCanInteract = false
+        TaskAreaCanInteract = false,
+        TaskAutoAssign = false,
+        GameMatchDataManager = true
     },
     [GameStageMap.DisableGameFeature] = { -- DisableGameFeature
         CharacterCanTakeHurt = false,
         CreatureCanTakeHurt = false,
         TaskAreaCanInteract = false,
+        TaskAutoAssign = false,
         GameMatchDataManager = false
     }
 }

@@ -24,7 +24,9 @@ EngineConf.Core = {
         ClaimTimeLimit = 120,
         AutoAssignTime = 8,
         GuideShowLimit = 5,
-        GuideAutoDestory = 10
+        GuideAutoDestory = 10,
+        TaskLimit = 15,
+        TaskCompleted = 0,
     },
     AI = {
         SpawnLimit = 15
@@ -87,7 +89,8 @@ EngineConf.GameInstance = {
     },
     Scale = {
         Icon_Dsp_Team = { X = 0.1, Y = 0.35, Z = 0.17 },
-        Icon_Dsp_PlayerHP_Bar = { X = 0.1, Y = 0.74, Z = 0.1 }
+        Icon_Dsp_PlayerHP_Bar = { X = 0.1, Y = 0.74, Z = 0.1 },
+        Element_CommonGuide = { X = 1, Y = 1, Z = 1 }
     },
     Offset = {
         Icon_Dsp_Team = { X = 0, Y = 0, Z = 185 },
@@ -122,7 +125,8 @@ EngineConf.Map = {
     },
     Timer = {
         GameRound = "GamdRound_Timer",
-        ClientMusicTimer = "ClientMusicTimer"
+        ClientMusicTimer = "ClientMusicTimer",
+        TaskAutoAssign = "TaskAutoAssignTimer"
     },
     Status = {
         Alive = { ID = 0, Name = "Alive" },
@@ -144,7 +148,6 @@ EngineConf.Map = {
         Ready = 0,
         Start = 1,
         End = 2,
-        Countdown = 3,
         DisableGameFeature = 99
     },
     GameReasonCode = {
@@ -154,8 +157,6 @@ EngineConf.Map = {
             RedTeamNotEnough = 3,
             BlueTeamNotEnough = 4,
         },
-        VictoryCondition = {},
-        GameTime = {},
         Common = {
             Unknown = 9999
         }
@@ -268,7 +269,7 @@ EngineConf.AI = {
             Name = "RoutineMapPath_02",
             PointType = "High"
         },
-        MapRoute_Routine_03= {
+        MapRoute_Routine_03 = {
             Type = "RoutineMapPath",
             Name = "RoutineMapPath_L_01",
             PointType = "Low"
@@ -307,7 +308,7 @@ EngineConf.Task = {
                 I18NKey = ""
             },
             Reward = { Coin = 0, Exp = 0, Score = 0 },
-            BindID = { Element = 1, SignalBox = 1 },
+            BindID = { Element = 5187, SignalBox = 752 },
             Feature = { IsGuide = true, IsI18N = true, AlizaNotice = true },
             AlizaNotice = {
                 Type    = "SystemMsg",
@@ -367,6 +368,8 @@ EngineConf.Property = {
             PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
             PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
+            PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0 },
+            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 },
             PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
             GameStage = { "Number", "GameState_GameStage" }          -- 由NameSpace管理
         },
