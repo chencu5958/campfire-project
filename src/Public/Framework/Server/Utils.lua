@@ -426,8 +426,18 @@ function Utils.CheckCreatureTakeHurt(creatureID, killerID, damage)
 end
 
 ---| 🎮 - 检查生物击杀
+---<br>
+---| `范围`：`服务端`
+---@param creatureID number 生物ID
+---@param killerID number 击杀者ID
 function Utils.CheckCreatureKilled(creatureID, killerID)
     local playerTeamID = Team:GetTeamById(killerID)
+    if playerTeamID == TeamIDMap.Red then
+        Framework.Server.Aliza.CastKillCreature(creatureID, killerID)
+        Damage:ApplyDamageToCharacter(killerID, creatureID, 1)
+    elseif playerTeamID == TeamIDMap.Blue then
+
+    end
 end
 
 ---| 🎮 - 检查玩家受击
@@ -439,20 +449,26 @@ end
 function Utils.CheckPlayerTakeHurt(playerID, killerID, damage)
     local killerTeamID = Team:GetTeamById(killerID)
     if killerTeamID == TeamIDMap.Red then
-        --Framework.Server.DataManager.PlayerEcomonyManager()
-        --Framework.Server.DataManager.PlayerTeamScoreManager(killerID, 1, "Add")
+        Damage:SetCharacterFinalDamage(playerID, 1)
     elseif killerTeamID == TeamIDMap.Blue then
-
+        Damage:SetCharacterFinalDamage(playerID, 0)
     end
 end
 
 ---| 🎮 - 检查玩家击杀
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param killerID number 击杀者ID
 function Utils.CheckPlayerKilled(playerID, killerID)
     local killerTeamID = Team:GetTeamById(killerID)
-    if killerTeamID == TeamIDMap.Red then
-        --Framework.Server.DataManager.PlayerEcomonyManager()
-        --Framework.Server.DataManager.PlayerTeamScoreManager(killerID, 1, "Add")
-    elseif killerTeamID == TeamIDMap.Blue then
+    local isPlayer = MiscService:IsObjectExist(MiscService.EQueryableObjectType.Character, playerID)
+    if killerTeamID == TeamIDMap.Red and isPlayer and playerID ~= killerID then
+        Framework.Server.Aliza.CastKillPlayer(killerID, playerID)
+        Framework.Server.DataManager.PlayerLevelExpManager(killerID, 15, "Add")
+        Framework.Server.DataManager.PlayerEcomonyManager(killerID, "Coin", 15, "Add")
+        Framework.Server.DataManager.PlayerTeamScoreManager(killerID, 1, "Add")
+    elseif killerTeamID == TeamIDMap.Blue and isPlayer and playerID ~= killerID then
     end
 end
 
