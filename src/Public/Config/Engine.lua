@@ -21,12 +21,12 @@ EngineConf.Core = {
     },
     Task = {
         DoTaskCDTime = 5,
-        ClaimTimeLimit = 120,
+        ClaimTimeLimit = 120, -- 保留，暂未启用
         AutoAssignTime = 8,
         GuideShowLimit = 5,
         GuideAutoDestory = 10,
-        TaskLimit = 15,
-        TaskCompleted = 0,
+        TaskLimit = 15,    -- 数据同步Task系统
+        TaskCompleted = 0, -- 数据同步Task系统
     },
     AI = {
         SpawnLimit = 15
@@ -105,9 +105,9 @@ EngineConf.GameInstance = {
         NPC_6 = 265,
     },
     GuideIcon = {
-        Icon_Target = 120000001,
+        Icon_Target = 10001, -- 120000001
         Icon_Target_Hex = "#FFFF00",
-        Icon_Warning = 120000015,
+        Icon_Warning = 50002, --120000015
         Icon_Warning_Hex = "#FF0000"
     },
 }
@@ -126,7 +126,8 @@ EngineConf.Map = {
     Timer = {
         GameRound = "GamdRound_Timer",
         ClientMusicTimer = "ClientMusicTimer",
-        TaskAutoAssign = "TaskAutoAssignTimer"
+        TaskAutoAssign = "TaskAutoAssignTimer",
+        DoTaskTime = "DoTaskTime",
     },
     Status = {
         Alive = { ID = 0, Name = "Alive" },
@@ -296,27 +297,27 @@ EngineConf.Task = {
         Completed = "Completed", -- 已完成
         Recycled = "Recycled"    -- 已回收（未使用）
     },
+    -- 不做I18N 了，炫技功能做了意义不大
     TaskList = {
         {
             ID = 1,
             Name = {
                 Default = "TaskName",
-                I18NKey = ""
             },
             Desc = {
                 Default = "TaskDesc",
-                I18NKey = ""
             },
-            Reward = { Coin = 0, Exp = 0, Score = 0 },
-            BindID = { Element = 5187, SignalBox = 752 },
-            Feature = { IsGuide = true, IsI18N = true, AlizaNotice = true },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4125, SignalBox = 752, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
             AlizaNotice = {
                 Type    = "SystemMsg",
-                Message = "This is a test task",
+                Message = "玩家完成了测试任务",
                 Color   = "#FFFFFF"
             },
-            Location = { Offset = { X = 0, Y = 0, Z = 0 }, },
-            Status = { IsClamed = false, ClamedUIN = 0, TaskCode = 0 }
+            Location = { Offset = { X = 0, Y = 0, Z = 100 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4165, 4166, 4167 },
         }
     }
 }
@@ -369,7 +370,10 @@ EngineConf.Property = {
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
             PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
             PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0 },
-            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 },
+            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 },  -- 暂时不使用
+            PlayerIsInTaskArea = { "Number", "GameState_PlayerIsInTaskArea", 0 },
+            PlayerClaimTaskInfo = { "Map", "GameState_PlayerTaskClaimInfo" },
+            PlayerIsDoTask = { "Number", "GameState_PlayerIsDoTask", 0 },
             PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
             GameStage = { "Number", "GameState_GameStage" }          -- 由NameSpace管理
         },

@@ -15,6 +15,7 @@ local Server = {
     Utils = require("Public.Framework.Server.Utils"),
     NetSync = require("Public.Framework.Server.NetSync"),
     Aliza = require("Public.Framework.Server.Modules.Aliza"),
+    Task = require("Public.Framework.Server.Modules.Task"),
     DataManager = require("Public.Framework.Server.Modules.DataManager"),
     GameFeatureManager = require("Public.Framework.Server.Modules.GameFeatureManager"),
 }

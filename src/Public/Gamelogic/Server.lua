@@ -33,8 +33,10 @@ function Server.Update()
     local envType = Framework.Tools.Utils.EnvIsServer()
     if not envType then return end
     local playerIDs = UDK.Player.GetAllPlayers()
+    local gameTime = UDK.Timer.GetTimerTime(Config.Engine.Map.Timer.GameRound)
     Framework.Server.NetSync.SyncServerGameState()
     Framework.Server.NetSync.SyncRankListData(playerIDs)
+    Framework.Server.Utils.CheckGameVictoryCondition(gameTime)
     for _, v in ipairs(playerIDs) do
         if not updateLock then
             updateLock = true
@@ -42,6 +44,7 @@ function Server.Update()
                 Framework.Server.Utils.PlayerStatusCheck(v)
                 Framework.Server.Utils.PlayerLevelCheck(v)
                 Framework.Server.NetSync.SyncUserProfile(v)
+                Framework.Server.Task.Update(v)
                 updateLock = false
             end)
         end
@@ -79,7 +82,6 @@ end
 ---@param killerID number 击杀者ID
 ---@param victimID number 被击杀者ID
 function Server.EventPlayerKilled(killerID, victimID)
-    Framework.Server.Aliza.CastKillPlayer(killerID, victimID)
     Framework.Server.Utils.CheckPlayerKilled(killerID, victimID)
 end
 
@@ -89,7 +91,6 @@ end
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
 function Server.EventCreatureKilled(creatureID, killerID)
-    Framework.Server.Aliza.CastKillCreature(creatureID, killerID)
     Framework.Server.Utils.CheckCreatureKilled(creatureID, killerID)
 end
 

@@ -55,6 +55,7 @@ GameFeatureManager.Type = {
     CharacterCanTakeHurt = "CharacterCanTakeHurt",
     CreatureCanTakeHurt = "CreatureCanTakeHurt",
     TaskAreaCanInteract = "TaskAreaCanInteract",
+    TaskAutoAssign = "TaskAutoAssign",
     GameMatchDataManager = "GameMatchDataManager"
 }
 

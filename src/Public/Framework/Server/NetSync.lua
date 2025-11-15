@@ -99,7 +99,7 @@ function NetSync.SyncServerGameState()
             PlayTime = UDK.Timer.GetTimerTime(TimerMap.GameRound) or 0,
             GameStage = Framework.Tools.Utils.GetGameStage(),
             TaskCount = UDK.Array.GetLength(Config.Engine.Task.TaskList) or 0,
-            TaskFinishedCount = 0,
+            TaskFinishedCount = Config.Engine.Core.Task.TaskCompleted,
         },
         Team = {
             RedTeam = {
