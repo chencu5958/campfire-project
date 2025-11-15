@@ -14,6 +14,7 @@ local GState = require("Public.Framework.Tools.Modules.GState")
 GameState.Type = {
     Act_ResetSetting = "Act_ResetSetting",
     Act_IMRecvToggle = "Act_IMRecvToggle",
+    Act_TaskSysDoTask = "Act_TaskSysDoTask",
     Act_Client_SetCharacterModelByNPC = "Act_Client_SetCharacterModelByNPC",
     Act_Client_ReconnectInit = "Act_Client_ReconnectInit"
 }
@@ -21,12 +22,13 @@ GameState.Type = {
 local actionHandlers = {
     [GameState.Type.Act_ResetSetting] = GState.SHandle_ResetSetting,
     [GameState.Type.Act_IMRecvToggle] = GState.SHandle_IMRecvToggle,
+    [GameState.Type.Act_TaskSysDoTask] = GState.SHandle_TaskSysDoTask,
     [GameState.Type.Act_Client_SetCharacterModelByNPC] = GState.CHandle_SetCharacterModelByNPC,
     [GameState.Type.Act_Client_ReconnectInit] = GState.CHandle_ReconnectInit
 }
 
 GameState.Conf = {
-    DebugLog = true
+    DebugLog = false
 }
 
 -- 游戏状态处理函数

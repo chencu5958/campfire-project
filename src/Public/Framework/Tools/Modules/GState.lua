@@ -4,7 +4,6 @@
 -- * Info:
 -- * Campfire Project Framework GameState Implement
 -- *
--- *
 -- * 2025 © RoidMC Studios | Powered by UniX SDK
 -- ==================================================
 
@@ -25,6 +24,11 @@ local function GStateLogGenerate(log)
     end
 end
 
+---| 🎮 - 游戏设置 - 重置设置
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param data table 请求数据
 function GState.SHandle_ResetSetting(playerID, data)
     local envInfo = Framework.Tools.Utils.GetEnvInfo()
     local reqData = data or {}
@@ -53,6 +57,11 @@ function GState.SHandle_ResetSetting(playerID, data)
     Framework.Server.Init.ResetSetting(playerID, reqData.type)
 end
 
+---| 🎮 - 聊天系统 - 聊天范围切换
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+---@param data table 请求数据
 function GState.SHandle_IMRecvToggle(playerID, data)
     if data.channelType == "Chat" then
         local playerTeam, teamPlayerIDs = Team:GetTeamById(playerID)
@@ -78,6 +87,36 @@ function GState.SHandle_IMRecvToggle(playerID, data)
     end
 end
 
+---| 🎮 - 任务系统 - 做任务
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function GState.SHandle_TaskSysDoTask(playerID)
+    local isClaim = UDK.Property.GetProperty(
+        playerID,
+        KeyMap.GameState.PlayerTaskClaimStatus[1],
+        KeyMap.GameState.PlayerTaskClaimStatus[2]
+    )
+    local isInTaskArea = UDK.Property.GetProperty(
+        playerID,
+        KeyMap.GameState.PlayerIsInTaskArea[1],
+        KeyMap.GameState.PlayerIsInTaskArea[2]
+    )
+    if isClaim == 1 and isInTaskArea == 1 then
+        UDK.Property.SetProperty(
+            playerID,
+            KeyMap.GameState.PlayerIsDoTask[1],
+            KeyMap.GameState.PlayerIsDoTask[2],
+            1
+        )
+    end
+end
+
+---| 🎮 - 角色系统 - 设置角色模型
+---<br>
+---| `范围`：`客户端`
+---@param playerID number 玩家ID
+---@param data table 请求数据
 function GState.CHandle_SetCharacterModelByNPC(playerID, data)
     Character:SetCharacterWithCreature(playerID, data.creatureID)
 end

@@ -467,7 +467,8 @@ ActMap.IMUtils = {
 ActMap.InGameBtn = {
     [CoreUI.GameBtn.Btn_DoTask] = {
         Pressed = function()
-            print("DoTask")
+            local playerID = UDK.Player.GetLocalPlayerID()
+            Framework.Tools.GameState.SendToServer(playerID, "Act_TaskSysDoTask")
         end
     }
 }
