@@ -12,6 +12,7 @@
 local TaskbarUI = {}
 local UIConf, EngineConf = require("Public.Config.UI"), require("Public.Config.Engine")
 local CoreUI, KeyMap = UIConf.Core, EngineConf.Property.KeyMap
+local TeamIDMap = EngineConf.Map.Team
 
 -- 获取服务器数据
 local function getServerData()
@@ -64,6 +65,7 @@ end
 ---| `是否从服务器获取数据`：`true`
 function TaskbarUI.BaseUI()
     local playerID = UDK.Player.GetLocalPlayerID()
+    local playerTeam = Team:GetTeamById(playerID)
     local taskData = getServerTaskData()
     local serverData = getServerData()
     local isAssigned = taskData.Task.IsAssigned
@@ -73,9 +75,14 @@ function TaskbarUI.BaseUI()
     local taskProgress = UDK.Math.Percentage(serverData.Game.TaskFinishedCount, serverData.Game.TaskCount)
     local fmt_taskSys_Footer_I18NKey = string.format(taskSys_Footer_I18NKey, math.ceil(taskProgress), 100)
     if isAssigned then
-        taskSys_Content_I18NKey = "分配任务"
+        -- 这里直接在Config里获取但是Add和Remove在服务端侧执行，数据会不一致，不过暂时没使用API的需求，所以暂时不处理
+        taskSys_Content_I18NKey = Config.Engine.Task.TaskList[taskData.Task.TaskID].Name.Default
     else
-        taskSys_Content_I18NKey = Framework.Tools.Utils.GetI18NKey("key.tasksys.unassigned", playerID)
+        if playerTeam == TeamIDMap.Red then
+            taskSys_Content_I18NKey = Framework.Tools.Utils.GetI18NKey("key.teamdesc.red", playerID)
+        else
+            taskSys_Content_I18NKey = Framework.Tools.Utils.GetI18NKey("key.tasksys.unassigned", playerID)
+        end
     end
     UDK.UI.SetUIText(CoreUI.TaskBar.Tmp_Expand.T_Title, taskSys_Title_I18NKey)
     UDK.UI.SetUIText(CoreUI.TaskBar.Tmp_Expand.T_Content, taskSys_Content_I18NKey)
