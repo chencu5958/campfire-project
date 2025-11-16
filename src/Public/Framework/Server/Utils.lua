@@ -434,7 +434,7 @@ function Utils.CheckCreatureKilled(creatureID, killerID)
     local playerTeamID = Team:GetTeamById(killerID)
     if playerTeamID == TeamIDMap.Red then
         Framework.Server.Aliza.CastKillCreature(creatureID, killerID)
-        Damage:ApplyDamageToCharacter(killerID, creatureID, 1)
+        Damage:ApplyDamageToCharacter(killerID, 1, Config.Engine.GameInstance.Item.Element_CommonGuide)
     elseif playerTeamID == TeamIDMap.Blue then
 
     end
@@ -448,9 +448,9 @@ end
 ---@param damage number 伤害值
 function Utils.CheckPlayerTakeHurt(playerID, killerID, damage)
     local killerTeamID = Team:GetTeamById(killerID)
-    if killerTeamID == TeamIDMap.Red then
+    if killerTeamID == TeamIDMap.Red and playerID ~= killerID then
         Damage:SetCharacterFinalDamage(playerID, 1)
-    elseif killerTeamID == TeamIDMap.Blue then
+    elseif killerTeamID == TeamIDMap.Blue and playerID ~= killerID then
         Damage:SetCharacterFinalDamage(playerID, 0)
     end
 end
@@ -478,7 +478,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
-    print("OnCharacterEnterSignalBox", playerID, signalBoxID)
+    --print("OnCharacterEnterSignalBox", playerID, signalBoxID)
     Framework.Server.Task.AreaCheck(playerID, signalBoxID, "EnterSignalBox")
 end
 
@@ -488,7 +488,7 @@ end
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
 function Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
-    print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
+    --print("OnCharacterLeaveSignalBox", playerID, signalBoxID)
     Framework.Server.Task.AreaCheck(playerID, signalBoxID, "LeaveSignalBox")
 end
 

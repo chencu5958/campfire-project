@@ -117,6 +117,48 @@ local behaviorActions = {
     end
 }
 
+-- 中文姓氏列表
+local chineseLastNames = {
+    "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈",
+    "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",
+    "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏",
+    "陶", "姜", "戚", "谢", "邹", "喻", "柏", "水", "窦", "章",
+    "云", "苏", "潘", "葛", "奚", "范", "彭", "郎", "鲁", "韦",
+    "昌", "马", "苗", "凤", "花", "方", "俞", "任", "袁", "柳",
+    "酆", "鲍", "史", "唐", "费", "廉", "岑", "薛", "雷", "贺",
+    "倪", "汤", "滕", "殷", "罗", "毕", "郝", "邬", "安", "常",
+    "乐", "于", "时", "傅", "皮", "卞", "齐", "康", "伍", "余",
+    "元", "卜", "顾", "孟", "平", "黄", "和", "穆", "萧", "尹"
+}
+
+-- 中文名字列表（单字）
+local chineseFirstNamesSingle = {
+    "伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军",
+    "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀兰", "霞",
+    "平", "刚", "桂英", "辉", "红", "梅", "飞", "荣", "华", "亮",
+    "成", "琴", "兰", "峰", "洁", "波", "宁", "雪", "丹", "慧",
+    "萍", "莉", "斌", "鑫", "龙", "彬", "玉", "浩", "翔", "文",
+    "俊", "虎", "嘉", "菡", "婕", "茗", "卿", "琦", "绮", "婌",
+    "�", "曦", "翾", "彦", "佑", "佑", "信", "凯", "仲", "修",
+    "哲", "峻", "伟", "展", "哲", "盛", "睿", "圣", "然", "宁"
+}
+
+-- 中文名字列表（双字）
+local chineseFirstNamesDouble = {
+    "伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军",
+    "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀兰", "霞",
+    "平", "刚", "桂英", "辉", "红", "梅", "飞", "荣", "华", "亮",
+    "成", "琴", "兰", "峰", "洁", "波", "宁", "雪", "丹", "慧",
+    "萍", "莉", "斌", "鑫", "龙", "彬", "玉", "浩", "翔", "文",
+    "俊", "虎", "嘉", "菡", "婕", "茗", "卿", "琦", "绮", "�",
+    "", "曦", "翾", "彦", "佑", "佑", "信", "凯", "仲", "修",
+    "哲", "峻", "伟", "展", "哲", "盛", "睿", "圣", "然", "宁",
+    "晓", "冬", "婵", "欢", "翠", "贝", "凝", "阳", "绿", "檀",
+    "凡", "易", "傲", "恨", "梦", "幻", "听", "雨", "寒", "初",
+    "夏", "惜", "雪", "怜", "安", "尔", "曼", "巧", "映", "雁",
+    "香", "醉", "觅", "恨", "山", "桃", "冷", "谷", "夜", "青"
+}
+
 --- AI模型ID生成，根据当前模型ID使用情况均匀分配
 local function aiModelIDGenerate()
     local modelEntries = Config.Engine.GameInstance.NPCModel
@@ -240,6 +282,46 @@ local function getMapRoutinePathByPointType(type, pointType, id)
         -- 如果没找到匹配项，返回nil
         return nil
     end
+end
+
+--- 获取随机NPC名称
+---@return string 随机生成的中文名称
+local function getRandomNpcName()
+    -- 50%概率生成网络梗名称
+    if math.random(100) <= 50 then
+        local memeNames = {
+            "PVP大佬", "五杀选手", "国服第一", "电竞天才", "上分机器",
+            "carry全场", "野王殿下", "辅助之神", "团战噩梦", "操作怪兽",
+            "意识帝", "走A怪", "泉水指挥官", "逆风翻盘王", "KDA之神",
+            "暴击之王", "吸血鬼", "推塔狂魔", "兵线掌控者", "视野之神",
+            "抢人头专业户", "背锅侠", "抗塔先锋", "传送大师", "闪现专家",
+            "蹲坑之王", "反野达人", "偷家能手", "打野哲学家", "辅助艺术家",
+            "牢大"
+        }
+        return memeNames[math.random(#memeNames)]
+    end
+
+    -- 随机选择姓氏
+    local lastName = chineseLastNames[math.random(#chineseLastNames)]
+
+    -- 随机决定是单字名还是双字名 (70%概率单字名, 30%概率双字名)
+    local fullName
+    if math.random(100) <= 70 then
+        -- 单字名
+        local firstName = chineseFirstNamesSingle[math.random(#chineseFirstNamesSingle)]
+        fullName = lastName .. firstName
+    else
+        -- 双字名
+        local firstName1 = chineseFirstNamesDouble[math.random(#chineseFirstNamesDouble)]
+        local firstName2 = chineseFirstNamesDouble[math.random(#chineseFirstNamesDouble)]
+        -- 确保双字名不重复
+        while firstName1 == firstName2 do
+            firstName2 = chineseFirstNamesDouble[math.random(#chineseFirstNamesDouble)]
+        end
+        fullName = lastName .. firstName1 .. firstName2
+    end
+
+    return fullName
 end
 
 --- 实现AI系统元数据管理器，用于均匀分配出生点并记录生成数量
@@ -549,6 +631,7 @@ function AI.SpawnAI(id, spawnPos, spawnRot)
     local npcName = Creature:GetName(npcID)
     local npcTypeID = Creature:GetCreatureTypeID(npcID)
     local npcXID = string.format("DianaAI_%s_%s_%s", npcName, npcID, npcTypeID)
+    Creature:SetCreatureName(npcID, getRandomNpcName())
     Framework.Tools.LightDMS.SetCustomProperty("String", "DianaAI_UUID", npcXID, npcID)
     aiStateMachine(npcID, spawnPos.Z)
     --Log:PrintLog("Spawn AI: " .. tostring(npcXID))
