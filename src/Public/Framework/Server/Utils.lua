@@ -370,17 +370,41 @@ end
 function Utils.PlayerRandomSpawnPos(playerID)
     local spawnPointList = Config.Engine.AI.SpawnPoint
 
-    -- 将所有的出生点放入一个数组中
-    local spawnPoints = {}
-    for _, point in pairs(spawnPointList) do
-        table.insert(spawnPoints, point.Pos)
+    -- 初始化玩家出生点使用计数（如果尚未初始化）
+    if not Utils.playerSpawnPointMeta then
+        Utils.playerSpawnPointMeta = {}
+    end
+    if next(Utils.playerSpawnPointMeta) == nil then
+        for key, point in pairs(spawnPointList) do
+            Utils.playerSpawnPointMeta[key] = {
+                name = key,
+                pos = point.Pos,
+                count = 0
+            }
+        end
     end
 
-    -- 随机选择一个出生点
-    local randomIndex = math.random(1, #spawnPoints)
-    local pos = spawnPoints[randomIndex]
+    -- 查找使用次数最少的出生点
+    local minCount = math.huge
+    local candidatePoints = {}
 
-    Character:SetPosition(playerID, pos)
+    for key, pointData in pairs(Utils.playerSpawnPointMeta) do
+        if pointData.count < minCount then
+            minCount = pointData.count
+            candidatePoints = { pointData }
+        elseif pointData.count == minCount then
+            table.insert(candidatePoints, pointData)
+        end
+    end
+
+    -- 在使用次数最少的出生点中随机选择一个
+    local selectedPoint = candidatePoints[math.random(1, #candidatePoints)]
+
+    -- 更新该出生点的使用次数
+    Utils.playerSpawnPointMeta[selectedPoint.name].count = Utils.playerSpawnPointMeta[selectedPoint.name].count + 1
+
+    -- 设置玩家位置
+    Character:SetPosition(playerID, selectedPoint.pos)
 end
 
 ---| 🎮 - 检查游戏玩家数量
@@ -408,6 +432,25 @@ function Utils.CheckGamePlayerCount()
         end
     end
     return false, commonCode.Unknown
+end
+
+---| 🎮 - 计算存活玩家
+---<br>
+---@param playerIDs table 玩家ID列表
+---@return table, number alivePlayers 存活玩家列表，存活玩家数量
+function Utils.ClacAlivePlayers(playerIDs)
+    local alivePlayers = {}
+    for _, playerID in ipairs(playerIDs) do
+        local isAlive = UDK.Property.GetProperty(
+            playerID,
+            KeyMap.GameState.PlayerStatus[1],
+            KeyMap.GameState.PlayerStatus[2]
+        )
+        if isAlive == Config.Engine.Map.Status.Alive.ID then
+            table.insert(alivePlayers, playerID)
+        end
+    end
+    return alivePlayers, #alivePlayers
 end
 
 ---| 🎮 - 检查生物受击
@@ -497,8 +540,6 @@ end
 ---| `范围`：`服务端`
 ---@param time number 游戏时间
 function Utils.CheckGameVictoryCondition(time)
-    local redTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Red)
-    local blueTeamCount = Team:GetTeamPlayerArray(TeamIDMap.Blue)
     local gameTime = math.floor(time or 0)
     local gameStage = Framework.Tools.Utils.GetGameStage()
     local stageCodeMap = Config.Engine.Map.GameStage
@@ -506,6 +547,8 @@ function Utils.CheckGameVictoryCondition(time)
     local taskCompleted = Config.Engine.Core.Task.TaskCompleted
     local redTeamPlayerIDs = UDK.Player.GetTeamPlayers(TeamIDMap.Red)
     local blueTeamPlayerIDs = UDK.Player.GetTeamPlayers(TeamIDMap.Blue)
+    local redTeamAlivePlayers, redTeamAliveCount = Utils.ClacAlivePlayers(redTeamPlayerIDs)
+    local blueTeamAlivePlayers, blueTeamAliveCount = Utils.ClacAlivePlayers(blueTeamPlayerIDs)
     local victoryTeam, fmt_Message, fmt_Message2
     if gameStage ~= stageCodeMap.Ready and gameStage ~= stageCodeMap.DisableGameFeature and not victoryCheckLock then
         if gameStage == stageCodeMap.Start then
@@ -527,11 +570,11 @@ function Utils.CheckGameVictoryCondition(time)
                     fmt_Message2 = "游戏平局，15秒后游戏结束"
                 end
                 -- 检查团队存活条件
-            elseif blueTeamCount == 0 and redTeamCount >= 1 then
+            elseif blueTeamAliveCount == 0 and redTeamAliveCount >= 1 then
                 fmt_Message = string.format("%s获得最终胜利，15秒后游戏结束", "农场主")
                 fmt_Message2 = "捣蛋鬼已被全部驱逐，游戏结束"
                 victoryTeam = TeamIDMap.Red
-            elseif redTeamCount == 0 and blueTeamCount >= 1 then
+            elseif redTeamAliveCount == 0 and blueTeamAliveCount >= 1 then
                 fmt_Message = string.format("%s获得最终胜利，15秒后游戏结束", "捣蛋鬼")
                 fmt_Message2 = "农场主驱逐捣蛋鬼失败，游戏结束"
                 victoryTeam = TeamIDMap.Blue

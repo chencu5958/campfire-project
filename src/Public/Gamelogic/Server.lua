@@ -18,6 +18,7 @@ function Server.Init()
         UDK.Heartbeat.SetAutoSend(false)
         Framework.Tools.GameState.Init()
         Framework.Server.AI.Init()
+        Framework.Server.Init.InitGameCore()
         for _, v in ipairs(UDK.Player.GetAllPlayers()) do
             Framework.Server.Init.InitGame(v)
             Framework.Server.Utils.PlayerRandomSpawnPos(v)
@@ -33,7 +34,7 @@ function Server.Update()
     local envType = Framework.Tools.Utils.EnvIsServer()
     if not envType then return end
     local playerIDs = UDK.Player.GetAllPlayers()
-    local gameTime = UDK.Timer.GetTimerTime(Config.Engine.Map.Timer.GameRound)
+    local gameTime = UDK.Timer.GetTimerTime(Config.Engine.Map.Timer.GameRound) or 0
     Framework.Server.NetSync.SyncServerGameState()
     Framework.Server.NetSync.SyncRankListData(playerIDs)
     Framework.Server.Utils.CheckGameVictoryCondition(gameTime)

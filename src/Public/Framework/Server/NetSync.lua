@@ -21,7 +21,7 @@ local syncState = {
         timerId = nil
     },
     userProfile = {}, -- 用于存储每个玩家的用户数据状态
-    taskData = {} -- 用于存储每个玩家的任务数据状态
+    taskData = {}     -- 用于存储每个玩家的任务数据状态
 }
 
 -- 序列化表为字符串用于比较
@@ -95,6 +95,10 @@ end
 ---<br>
 ---| `范围`：`服务端`
 function NetSync.SyncServerGameState()
+    local alivePlayersRedTeam, alivePlayersRedTeamCount = Framework.Server.Utils.ClacAlivePlayers(UDK.Player
+    .GetTeamPlayers(TeamIDMap.Red))
+    local alivePlayersBlueTeam, alivePlayersBlueTeamCount = Framework.Server.Utils.ClacAlivePlayers(UDK.Player
+    .GetTeamPlayers(TeamIDMap.Blue))
     local data = {
         Game = {
             PlayTime = UDK.Timer.GetTimerTime(TimerMap.GameRound) or 0,
@@ -104,10 +108,10 @@ function NetSync.SyncServerGameState()
         },
         Team = {
             RedTeam = {
-                Score = #Team:GetTeamPlayerArray(TeamIDMap.Red)
+                Score = alivePlayersRedTeamCount
             },
             BlueTeam = {
-                Score = #Team:GetTeamPlayerArray(TeamIDMap.Blue)
+                Score = alivePlayersBlueTeamCount
             }
         }
     }

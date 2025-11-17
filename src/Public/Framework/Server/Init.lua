@@ -161,14 +161,21 @@ local function gameCoreSystemInit()
     end
 end
 
----| 🎮 服务器游戏逻辑初始化
+---| 🎮 服务器游戏玩家逻辑初始化
 ---<br>
 ---| `范围`：`服务端`
+---@param playerID number 玩家ID
 function ServerInit.InitGame(playerID)
-    gameCoreSystemInit()
     playerLifeInit(playerID)
     playerPropertyInit(playerID)
     playerIMChannelInit(playerID)
+end
+
+---| 🎮 服务器游戏核心逻辑初始化
+---<br>
+---| `范围`：`服务端`
+function ServerInit.InitGameCore()
+    gameCoreSystemInit()
 end
 
 ---| 🎮 重置玩家设置属性数据
