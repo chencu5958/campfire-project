@@ -25,7 +25,7 @@ EngineConf.Core = {
         AutoAssignTime = 8,
         GuideShowLimit = 5,
         GuideAutoDestory = 10,
-        TaskLimit = 15,    -- 数据同步Task系统
+        TaskLimit = 12,    -- 数据同步Task系统
         TaskCompleted = 0, -- 数据同步Task系统
     },
     AI = {
@@ -105,7 +105,7 @@ EngineConf.GameInstance = {
         NPC_6 = 265,
     },
     GuideIcon = {
-        Icon_Target = 10001, -- 120000001
+        Icon_Target = 10001,  -- 120000001
         Icon_Target_Hex = "#FFFF00",
         Icon_Warning = 50002, --120000015
         Icon_Warning_Hex = "#FF0000"
@@ -302,7 +302,7 @@ EngineConf.Task = {
         {
             ID = 1,
             Name = {
-                Default = "TaskName",
+                Default = "前往小铺拿取物品",
             },
             Desc = {
                 Default = "TaskDesc",
@@ -312,14 +312,234 @@ EngineConf.Task = {
             Feature = { IsGuide = true, AlizaNotice = true },
             AlizaNotice = {
                 Type    = "SystemMsg",
-                Message = "玩家完成了测试任务",
+                Message = "小铺的商品被捣蛋鬼拿走了！",
                 Color   = "#FFFFFF"
             },
             Location = { Offset = { X = 0, Y = 0, Z = 100 }, },
             Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
             DestoryItem = { 4165, 4166, 4167 },
+        },
+        {
+            ID = 2,
+            Name = {
+                Default = "破坏农场小屋玻璃",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4384, SignalBox = 5203, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "农场小屋的玻璃被捣蛋鬼打碎了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 100 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4937, 4938 },
+        },
+        {
+            ID = 3,
+            Name = {
+                Default = "前往农场菜地偷菜",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 1563, SignalBox = 5206, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "菜地的菜被捣蛋鬼偷走了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 100 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 1726 },
+        },
+        {
+            ID = 4,
+            Name = {
+                Default = "把农场工具藏起来",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 1679, SignalBox = 5207, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "农场工具被捣蛋鬼藏起来了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4173, 4739 },
+        },
+        {
+            ID = 5,
+            Name = {
+                Default = "拿走农场休息小屋架子上的物品",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4689, SignalBox = 5209, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "农场休息小屋架子上的物品被捣蛋鬼拿走了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4733, 4747, 4748, 4755 },
+        },
+        {
+            ID = 6,
+            Name = {
+                Default = "弄乱电脑里的文件",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4359, SignalBox = 5211, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "电脑里的文件被捣蛋鬼弄乱了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4360, 4364 },
+        },
+        {
+            ID = 7,
+            Name = {
+                Default = "破坏墙壁上的涂鸦",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 2929, SignalBox = 5212, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "墙壁上的涂鸦被捣蛋鬼破坏了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 2924, 3629 },
+        },
+        {
+            ID = 8,
+            Name = {
+                Default = "搬走小屋堆放的草垛",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4346, SignalBox = 5213, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "小屋堆放的草垛被捣蛋鬼搬走了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4349 },
+        },
+        {
+            ID = 9,
+            Name = {
+                Default = "拿走工具放置处的物品",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 1505, SignalBox = 5214, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "工具放置处的物品被捣蛋鬼拿走了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 1501, 1516 },
+        },
+        {
+            ID = 10,
+            Name = {
+                Default = "破坏稻草人",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 1601, SignalBox = 5215, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "稻草人被捣蛋鬼破坏了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 1699, 1609, 1607 },
+        },
+        {
+            ID = 11,
+            Name = {
+                Default = "在花坛上留下标记",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4947, SignalBox = 5216, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "捣蛋鬼在花坛上留下标记！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = {},
+        },
+        {
+            ID = 12,
+            Name = {
+                Default = "拿走放在树下的收音机",
+            },
+            Desc = {
+                Default = "TaskDesc",
+            },
+            Reward = { Coin = 15, Exp = 20, Score = 1 },
+            BindID = { Element = 4024, SignalBox = 5219, Guide = 0 },
+            Feature = { IsGuide = true, AlizaNotice = true },
+            AlizaNotice = {
+                Type    = "SystemMsg",
+                Message = "收音机被捣蛋鬼拿走了！",
+                Color   = "#FFFFFF"
+            },
+            Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
+            Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
+            DestoryItem = { 4173, 4739 },
         }
-    }
+    },
 }
 
 EngineConf.NetMsg = {
@@ -370,7 +590,7 @@ EngineConf.Property = {
             PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
             PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
             PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0 },
-            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 },  -- 暂时不使用
+            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 }, -- 暂时不使用
             PlayerIsInTaskArea = { "Number", "GameState_PlayerIsInTaskArea", 0 },
             PlayerClaimTaskInfo = { "Map", "GameState_PlayerTaskClaimInfo" },
             PlayerIsDoTask = { "Number", "GameState_PlayerIsDoTask", 0 },

@@ -4,8 +4,6 @@
 -- * Info:
 -- * Campfire Project Framework Server Task - GameTask Manager
 -- *
--- * 做任务检查和GamesState对应接口，NetSync还有客户端侧的代码还在开发
--- *
 -- * 2025 © RoidMC Studios | Powered by UniX SDK
 -- ==================================================
 
