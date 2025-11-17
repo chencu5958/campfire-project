@@ -20,7 +20,8 @@ local syncState = {
         lastSerialized = "",
         timerId = nil
     },
-    userProfile = {} -- 用于存储每个玩家的用户数据状态
+    userProfile = {}, -- 用于存储每个玩家的用户数据状态
+    taskData = {} -- 用于存储每个玩家的任务数据状态
 }
 
 -- 序列化表为字符串用于比较
@@ -171,6 +172,31 @@ function NetSync.SyncUserProfile(playerID)
         KeyMap.UserData.AccountProfile[2],
         syncState.userProfile[playerID],
         "UserProfile Synced for player " .. tostring(playerID)
+    )
+end
+
+---| 🎮 - 同步玩家任务数据
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function NetSync.SyncTaskData(playerID)
+    local data = Framework.Server.Task.GetPlayetTaskStatus(playerID)
+
+    -- 确保该玩家的任务数据状态表存在
+    if not syncState.taskData[playerID] then
+        syncState.taskData[playerID] = {
+            lastSerialized = "",
+            timerId = nil
+        }
+    end
+
+    syncDataWithDirtyCheck(
+        data,
+        playerID,
+        KeyMap.UserData.TaskData[1],
+        KeyMap.UserData.TaskData[2],
+        syncState.taskData[playerID],
+        "TaskData Synced for player " .. tostring(playerID)
     )
 end
 

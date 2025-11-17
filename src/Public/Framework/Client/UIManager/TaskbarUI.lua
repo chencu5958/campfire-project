@@ -41,17 +41,23 @@ end
 
 -- 获取任务数据
 local function getServerTaskData()
+    local serverData = UDK.Property.GetProperty(
+        UDK.Player.GetLocalPlayerID(),
+        KeyMap.UserData.TaskData[1],
+        KeyMap.UserData.TaskData[2]
+    )
     local fallback = {
         Player = {
             ID = 0
         },
         Task = {
             IsAssigned = false,
-            TaskID = 1
+            TaskID = 0,
+            IsTaskArea =false,
+            TaskCurrentProgress = 0,
         },
     }
-
-    return fallback
+    return serverData or fallback
 end
 
 ---| 🔩 - 客户端UI更新（Taskbar）

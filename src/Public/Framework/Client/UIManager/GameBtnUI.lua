@@ -25,9 +25,9 @@ local function getServerTaskData()
             ID = 0
         },
         Task = {
-            IsAssigned = true,
+            IsAssigned = false,
             TaskID = 1,
-            IsTaskArea = true,
+            IsTaskArea =false,
             TaskCurrentProgress = 0,
         },
     }

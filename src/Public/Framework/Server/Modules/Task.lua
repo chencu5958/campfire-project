@@ -13,6 +13,7 @@ local Task = {}
 local KeyMap = Config.Engine.Property.KeyMap
 local TeamIDMap = Config.Engine.Map.Team
 local GameStageMap = Config.Engine.Map.GameStage
+local AnimList = Config.Engine.Map.NexAnimate
 
 local taskConfig = Config.Engine.Task
 local guideIcon = Config.Engine.GameInstance.GuideIcon
@@ -95,6 +96,14 @@ local function getTaskClaimInfo(playerID)
     return claimInfo
 end
 
+---| 获取玩家任务领取CD时间
+---@param playerID number 玩家ID
+local function getTackCDTime(playerID)
+    local fmt_TimerName = string.format(Config.Engine.Map.Timer.DoTaskTime .. "_%s", playerID)
+    local time = UDK.Timer.GetTimerTime(fmt_TimerName)
+    return time
+end
+
 ---| 设置玩家任务领取状态
 ---@param playerID number 玩家ID
 ---@param value number 任务领取状态（0:未领取 | 1:已领取）
@@ -130,6 +139,18 @@ local function setPlayerIsInTaskArea(playerID, value)
         playerID,
         KeyMap.GameState.PlayerIsInTaskArea[1],
         KeyMap.GameState.PlayerIsInTaskArea[2],
+        value
+    )
+end
+
+---| 设置玩家是否在做任务
+---@param playerID number 玩家ID
+---@param value number 玩家是否在做任务（0:否 | 1:是）
+local function setPlayerIsDoTask(playerID, value)
+    UDK.Property.SetProperty(
+        playerID,
+        KeyMap.GameState.PlayerIsDoTask[1],
+        KeyMap.GameState.PlayerIsDoTask[2],
         value
     )
 end
@@ -212,7 +233,7 @@ end
 ---@param playerID number 玩家ID
 ---@param rewardTable table 任务奖励表
 local function taskManagerSendReward(playerID, rewardTable)
-    local reward = rewardTable.Reward
+    local reward = rewardTable
     if reward.Exp ~= nil and type(reward.Exp) == "number" then
         Framework.Server.DataManager.PlayerLevelExpManager(playerID, reward.Exp, "Add")
     end
@@ -224,6 +245,8 @@ local function taskManagerSendReward(playerID, rewardTable)
     end
 end
 
+---| 任务自动分配
+---@param playerID number 玩家ID
 local function taskAutoAssign(playerID)
     local ClaimStatus = getTaskClaimStatus(playerID)
     local ClaimColddownStatus = UDK.Property.GetProperty(
@@ -233,11 +256,13 @@ local function taskAutoAssign(playerID)
     )
     local fmt_TimerName = string.format(Config.Engine.Map.Timer.TaskAutoAssign .. "_%s", playerID)
     local AutoAssignTimer = UDK.Timer.GetTimerTime(fmt_TimerName)
-    if ClaimStatus == 0 and ClaimColddownStatus == 0 then
+    local gameFeatureName = Framework.Server.GameFeatureManager.Type.TaskAutoAssign
+    local featureIsEnabled = Framework.Server.GameFeatureManager.IsFeatureEnabled(gameFeatureName)
+    if ClaimStatus == 0 and ClaimColddownStatus == 0 and featureIsEnabled then
         if AutoAssignTimer == 0 or AutoAssignTimer == nil then
             print("[Task] Auto Assign Task for Player: " .. playerID)
             Task.ClaimTask(playerID)
-            UDK.Timer.StartBackwardTimer(fmt_TimerName, 5, false, "s", true)
+            UDK.Timer.StartBackwardTimer(fmt_TimerName, coreConfig.AutoAssignTime, false, "s", true)
         else
             print("[Task] Auto Assign Task for Player: " .. playerID .. " | Timer: " .. AutoAssignTimer)
         end
@@ -256,7 +281,33 @@ end
 local function playerDoTaskCheck(playerID)
     local isDoTask = getPlayerIsDoTask(playerID)
     local isInTaskArea = getPlayerIsInTaskArea(playerID)
-    local task
+    local claimStatus = getTaskClaimStatus(playerID)
+    local taskCDTime = getTackCDTime(playerID)
+    local fmt_TimerName = string.format(Config.Engine.Map.Timer.DoTaskTime .. "_%s", playerID)
+    local confTime = coreConfig.DoTaskCDTime
+    local animPlayPart = "UpperBody"
+    if isDoTask == 1 and isInTaskArea == 1 and claimStatus == 1 then
+        if taskCDTime == 0 or taskCDTime == nil then
+            UDK.Motage.PlayAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.Dance_Fun, animPlayPart)
+            local callback = function()
+                local time = getTackCDTime(playerID)
+                local isInTaskArea_Local = getPlayerIsInTaskArea(playerID)
+                if isInTaskArea_Local == 0 then
+                    setPlayerIsDoTask(playerID, 0)
+                    UDK.Timer.PauseTimer(fmt_TimerName)
+                    UDK.Timer.ResetTimer(fmt_TimerName, 0)
+                elseif time >= confTime then
+                    setPlayerIsDoTask(playerID, 0)
+                    UDK.Motage.StopAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.Dance_Fun, animPlayPart)
+                    UDK.Motage.PlayAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.TouchHead, animPlayPart)
+                    Task.CompleteTask(playerID)
+                    UDK.Timer.PauseTimer(fmt_TimerName)
+                    UDK.Timer.ResetTimer(fmt_TimerName, 0)
+                end
+            end
+            UDK.Timer.StartForwardTimer(fmt_TimerName, 0, "s", true, callback)
+        end
+    end
 end
 
 ---| 🎮 任务更新
@@ -442,8 +493,15 @@ function Task.GetPlayetTaskStatus(playerID)
     local taskClaimInfo = getTaskClaimInfo(playerID)
     local isInTaskArea = getPlayerIsInTaskArea(playerID)
     local isClaimed = getTaskClaimStatus(playerID)
-    local taskCDTime = 1
-    local progress = UDK.Math.Percentage(taskCDTime, coreConfig.DoTaskCDTime)
+    local taskCDTime = getTackCDTime(playerID)
+    local progress = UDK.Math.Percentage(taskCDTime or 0, coreConfig.DoTaskCDTime)
+    if taskClaimInfo ~= nil then
+        taskClaimInfo = taskClaimInfo
+    else
+        taskClaimInfo = {
+            ClaimTaskID = 0,
+        }
+    end
     local returnData = {
         Player = {
             ID = playerID

@@ -44,6 +44,7 @@ function Server.Update()
                 Framework.Server.Utils.PlayerStatusCheck(v)
                 Framework.Server.Utils.PlayerLevelCheck(v)
                 Framework.Server.NetSync.SyncUserProfile(v)
+                Framework.Server.NetSync.SyncTaskData(v)
                 Framework.Server.Task.Update(v)
                 updateLock = false
             end)
