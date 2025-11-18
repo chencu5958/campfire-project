@@ -102,13 +102,51 @@ function GState.SHandle_TaskSysDoTask(playerID)
         KeyMap.GameState.PlayerIsInTaskArea[1],
         KeyMap.GameState.PlayerIsInTaskArea[2]
     )
+    local currentSignalBox = UDK.Property.GetProperty(
+        playerID,
+        KeyMap.GameState.PlayerCurrentSignalBox[1],
+        KeyMap.GameState.PlayerCurrentSignalBox[2]
+    )
+
+    -- 增强验证：确保玩家在正确的任务区域内
+    local canStartTask = false
+    local taskID = 0
+    local correctSignalBox = 0
+
     if isClaim == 1 and isInTaskArea == 1 then
+        -- 验证玩家是否有已领取的任务且在正确的任务区域
+        local taskConfig = Config.Engine.Task
+        for i = #taskConfig.TaskList, 1, -1 do
+            if taskConfig.TaskList[i].Status.TaskCode == taskConfig.TaskCode.Claimed and
+                taskConfig.TaskList[i].Status.ClaimedUIN == playerID then
+                taskID = taskConfig.TaskList[i].ID
+                correctSignalBox = taskConfig.TaskList[i].BindID.SignalBox
+
+                -- 只有当玩家在正确的信号盒内时才允许开始任务
+                if currentSignalBox == correctSignalBox and currentSignalBox ~= 0 then
+                    canStartTask = true
+                end
+                break
+            end
+        end
+    end
+
+    if canStartTask then
         UDK.Property.SetProperty(
             playerID,
             KeyMap.GameState.PlayerIsDoTask[1],
             KeyMap.GameState.PlayerIsDoTask[2],
             1
         )
+        print("[GState] TaskStarted: Player " ..
+        playerID .. " started task " .. taskID .. " in correct area (SignalBox: " .. currentSignalBox .. ")")
+    else
+        print("[GState] TaskStartDenied: Player " ..
+        playerID ..
+        " cannot start task. isClaim=" ..
+        isClaim ..
+        ", isInTaskArea=" ..
+        isInTaskArea .. ", currentSignalBox=" .. (currentSignalBox or "nil") .. ", correctSignalBox=" .. correctSignalBox)
     end
 end
 

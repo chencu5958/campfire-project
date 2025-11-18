@@ -407,6 +407,19 @@ function Utils.PlayerRandomSpawnPos(playerID)
     Character:SetPosition(playerID, selectedPoint.pos)
 end
 
+---| 🎮 - 玩家离开检查
+---<br>
+---| `范围`：`服务端`
+---@param playerID number 玩家ID
+function Utils.PlayerLeaveCheck(playerID)
+    local playerStatus = UDK.Property.GetProperty(playerID, KeyMap.GameState.PlayerStatus[1],
+    KeyMap.GameState.PlayerStatus[2])
+    if playerStatus == Config.Engine.Map.Status.Alive.ID then
+        UDK.Property.SetProperty(playerID, KeyMap.GameState.PlayerStatus[1], KeyMap.GameState.PlayerStatus[2],
+            Config.Engine.Map.Status.Exit.ID)
+    end
+end
+
 ---| 🎮 - 检查游戏玩家数量
 ---<br>
 ---| `范围`：`服务端`

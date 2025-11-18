@@ -141,6 +141,61 @@ local function setPlayerIsInTaskArea(playerID, value)
     )
 end
 
+---| 获取玩家当前所在信号盒ID
+---@param playerID number 玩家ID
+---@return number currentSignalBoxID 当前信号盒ID
+local function getPlayerCurrentSignalBox(playerID)
+    local currentSignalBoxID = UDK.Property.GetProperty(
+        playerID,
+        KeyMap.GameState.PlayerCurrentSignalBox[1],
+        KeyMap.GameState.PlayerCurrentSignalBox[2]
+    )
+    return currentSignalBoxID or 0
+end
+
+---| 设置玩家当前所在信号盒ID
+---@param playerID number 玩家ID
+---@param signalBoxID number 信号盒ID
+local function setPlayerCurrentSignalBox(playerID, signalBoxID)
+    UDK.Property.SetProperty(
+        playerID,
+        KeyMap.GameState.PlayerCurrentSignalBox[1],
+        KeyMap.GameState.PlayerCurrentSignalBox[2],
+        signalBoxID
+    )
+end
+
+---| 验证玩家是否在正确的任务区域
+---@param playerID number 玩家ID
+---@return boolean isInCorrectArea 是否在正确的任务区域
+---@return number taskID 任务ID
+---@return number correctSignalBox 正确的信号盒ID
+---@return number currentSignalBox 当前信号盒ID
+local function validatePlayerTaskArea(playerID)
+    local claimStatus = getTaskClaimStatus(playerID)
+    local isInTaskArea = getPlayerIsInTaskArea(playerID)
+    local currentSignalBox = getPlayerCurrentSignalBox(playerID)
+
+    if claimStatus ~= 1 or isInTaskArea ~= 1 then
+        return false, 0, 0, currentSignalBox
+    end
+
+    local taskID = 0
+    local correctSignalBox = 0
+
+    for i = #taskConfig.TaskList, 1, -1 do
+        if taskConfig.TaskList[i].Status.TaskCode == taskConfig.TaskCode.Claimed and
+            taskConfig.TaskList[i].Status.ClaimedUIN == playerID then
+            taskID = taskConfig.TaskList[i].ID
+            correctSignalBox = taskConfig.TaskList[i].BindID.SignalBox
+            break
+        end
+    end
+
+    local isInCorrectArea = (currentSignalBox == correctSignalBox) and (currentSignalBox ~= 0)
+    return isInCorrectArea, taskID, correctSignalBox, currentSignalBox
+end
+
 ---| 设置玩家是否在做任务
 ---@param playerID number 玩家ID
 ---@param value number 玩家是否在做任务（0:否 | 1:是）
@@ -278,22 +333,33 @@ end
 ---@param playerID number 玩家ID
 local function playerDoTaskCheck(playerID)
     local isDoTask = getPlayerIsDoTask(playerID)
-    local isInTaskArea = getPlayerIsInTaskArea(playerID)
     local claimStatus = getTaskClaimStatus(playerID)
     local taskCDTime = getTackCDTime(playerID)
     local fmt_TimerName = string.format(Config.Engine.Map.Timer.DoTaskTime .. "_%s", playerID)
     local confTime = coreConfig.DoTaskCDTime
     local animPlayPart = "UpperBody"
-    if isDoTask == 1 and isInTaskArea == 1 and claimStatus == 1 then
+
+    -- 使用新的验证函数检查玩家是否在正确的任务区域
+    local isInCorrectArea, taskID, correctSignalBox, currentSignalBox = validatePlayerTaskArea(playerID)
+
+    if isDoTask == 1 and isInCorrectArea and claimStatus == 1 then
         if taskCDTime == 0 or taskCDTime == nil then
             UDK.Motage.PlayAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.Dance_Fun, animPlayPart)
             local callback = function()
                 local time = getTackCDTime(playerID)
-                local isInTaskArea_Local = getPlayerIsInTaskArea(playerID)
-                if isInTaskArea_Local == 0 then
+
+                -- 再次验证玩家是否仍在正确的任务区域内
+                local isInCorrectArea_Local, taskID_Local, correctSignalBox_Local, currentSignalBox_Local =
+                validatePlayerTaskArea(playerID)
+
+                if not isInCorrectArea_Local then
                     setPlayerIsDoTask(playerID, 0)
                     UDK.Timer.PauseTimer(fmt_TimerName)
                     UDK.Timer.ResetTimer(fmt_TimerName, 0)
+                    print("[Task] TaskInterrupted: Player " ..
+                    playerID ..
+                    " left correct task area. Current: " ..
+                    currentSignalBox_Local .. ", Correct: " .. correctSignalBox_Local)
                 elseif time >= confTime then
                     setPlayerIsDoTask(playerID, 0)
                     UDK.Motage.StopAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.Dance_Fun, animPlayPart)
@@ -301,10 +367,19 @@ local function playerDoTaskCheck(playerID)
                     Task.CompleteTask(playerID)
                     UDK.Timer.PauseTimer(fmt_TimerName)
                     UDK.Timer.ResetTimer(fmt_TimerName, 0)
+                    print("[Task] TaskCompleted: Player " ..
+                    playerID .. " completed task " .. taskID_Local .. " in correct area")
                 end
             end
             UDK.Timer.StartForwardTimer(fmt_TimerName, 0, "s", true, callback)
         end
+    elseif isDoTask == 1 and not isInCorrectArea then
+        -- 如果玩家正在做任务但不在正确区域，中断任务
+        setPlayerIsDoTask(playerID, 0)
+        UDK.Timer.PauseTimer(fmt_TimerName)
+        UDK.Timer.ResetTimer(fmt_TimerName, 0)
+        print("[Task] TaskForceInterrupted: Player " ..
+        playerID .. " is in wrong area. Current: " .. currentSignalBox .. ", Correct: " .. correctSignalBox)
     end
 end
 
@@ -322,7 +397,7 @@ function Task.Update(playerID)
         Task.RecycleTask(playerID)
         return
     end
-    if playerTeamID == TeamIDMap.Blue and gameStage == GameStageMap.Start then
+    if playerTeamID == TeamIDMap.Blue then
         taskAutoAssign(playerID)
         playerDoTaskCheck(playerID)
     end
@@ -343,6 +418,7 @@ function Task.ClaimTask(playerID)
                 setTaskClaimStatus(playerUIN, 1)
                 setTackClaimInfo(playerUIN, taskConfig.TaskList[i].ID)
                 taskManagerGuideDisplay(playerUIN, taskConfig.TaskList, i, "Duplicate")
+                break -- 修复：确保只领取一个任务就退出循环
             end
         end
     end
@@ -361,6 +437,9 @@ function Task.CompleteTask(playerID)
                 taskConfig.TaskList[i].Status.ClaimedUIN = playerID
                 setTaskClaimStatus(playerID, 0)
                 setTackClaimInfo(playerID, 0)
+                setPlayerIsInTaskArea(playerID, 0)
+                setPlayerCurrentSignalBox(playerID, 0)
+                setPlayerIsDoTask(playerID, 0)
                 if taskConfig.TaskList[i].Feature.AlizaNotice then
                     local alizaNotice = taskConfig.TaskList[i].AlizaNotice
                     if alizaNotice.Type == "SystemMsg" then
@@ -371,6 +450,9 @@ function Task.CompleteTask(playerID)
                 taskManagerSendReward(playerID, taskConfig.TaskList[i].Reward)
                 taskManagerGuideDisplay(UDK.Player.GetAllPlayers(), taskConfig.TaskList, i, "Warning",
                     coreConfig.GuideAutoDestory)
+                print("[Task] TaskCompleted: Player " ..
+                playerID .. " completed task " .. taskConfig.TaskList[i].ID .. ", all task states reset")
+                break -- 修复：确保只完成一个任务就退出循环
             end
         end
     end
@@ -389,7 +471,12 @@ function Task.RecycleTask(playerID)
                 taskConfig.TaskList[i].Status.ClaimedUIN = 0
                 setTaskClaimStatus(playerID, 0)
                 setTackClaimInfo(playerID, 0)
+                setPlayerIsInTaskArea(playerID, 0)
+                setPlayerCurrentSignalBox(playerID, 0)
+                setPlayerIsDoTask(playerID, 0)
                 taskManagerGuideDisplay(UDK.Player.GetAllPlayers(), taskConfig.TaskList, i, "Destory")
+                print("[Task] TaskRecycled: Player " .. playerID .. " task recycled, all task states reset")
+                break -- 修复：确保只回收一个任务就退出循环
             end
         end
     end
@@ -465,17 +552,45 @@ end
 ---@param eventType string 事件类型（`EnterSignalBox` / `LeaveSignalBox`）
 function Task.AreaCheck(playerID, signalBoxID, eventType)
     local ClaimStatus = getTaskClaimStatus(playerID)
+
+    -- 更新玩家当前所在信号盒
+    if eventType == "EnterSignalBox" then
+        setPlayerCurrentSignalBox(playerID, signalBoxID)
+    elseif eventType == "LeaveSignalBox" then
+        setPlayerCurrentSignalBox(playerID, 0)
+    end
+
     if ClaimStatus == 1 then
+        local isInCorrectTaskArea = false
+        local playerTaskID = 0
+
         for i = #taskConfig.TaskList, 1, -1 do
             if taskConfig.TaskList[i].Status.TaskCode == taskConfig.TaskCode.Claimed and taskConfig.TaskList[i].Status.ClaimedUIN == playerID then
-                local signalBox = taskConfig.TaskList[i].BindID.SignalBox
-                if signalBoxID == signalBox and eventType == "EnterSignalBox" then
-                    setPlayerIsInTaskArea(playerID, 1)
-                    print("[Task] AreaCheckPass: " .. playerID .. " | " .. signalBoxID .. " | " .. eventType)
-                elseif eventType == "LeaveSignalBox" then
-                    setPlayerIsInTaskArea(playerID, 0)
-                    print("[Task] PlayerLeaveSignalBox: " .. playerID .. " | " .. signalBoxID .. " | " .. eventType)
+                local taskSignalBox = taskConfig.TaskList[i].BindID.SignalBox
+                playerTaskID = taskConfig.TaskList[i].ID
+
+                if signalBoxID == taskSignalBox then
+                    isInCorrectTaskArea = true
+                    if eventType == "EnterSignalBox" then
+                        setPlayerIsInTaskArea(playerID, 1)
+                        print("[Task] AreaCheckPass: " ..
+                        playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
+                    elseif eventType == "LeaveSignalBox" then
+                        setPlayerIsInTaskArea(playerID, 0)
+                        print("[Task] PlayerLeaveSignalBox: " ..
+                        playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
+                    end
+                else
+                    -- 如果玩家进入了不属于自己的任务信号盒，确保区域状态为false
+                    if eventType == "EnterSignalBox" then
+                        setPlayerIsInTaskArea(playerID, 0)
+                        print("[Task] WrongTaskArea: " ..
+                        playerID ..
+                        " entered signalBox " ..
+                        signalBoxID .. " but belongs to task " .. playerTaskID .. " with signalBox " .. taskSignalBox)
+                    end
                 end
+                break -- 找到玩家的任务后立即退出循环
             end
         end
     end
@@ -492,7 +607,9 @@ function Task.GetPlayetTaskStatus(playerID)
     local isInTaskArea = getPlayerIsInTaskArea(playerID)
     local isClaimed = getTaskClaimStatus(playerID)
     local taskCDTime = getTackCDTime(playerID)
+    local currentSignalBox = getPlayerCurrentSignalBox(playerID)
     local progress = UDK.Math.Percentage(taskCDTime or 0, coreConfig.DoTaskCDTime)
+
     if taskClaimInfo ~= nil then
         taskClaimInfo = taskClaimInfo
     else
@@ -500,6 +617,19 @@ function Task.GetPlayetTaskStatus(playerID)
             ClaimTaskID = 0,
         }
     end
+
+    -- 获取玩家任务的正确信号盒ID用于验证
+    local correctSignalBox = 0
+    if isClaimed == 1 then
+        for i = #taskConfig.TaskList, 1, -1 do
+            if taskConfig.TaskList[i].Status.TaskCode == taskConfig.TaskCode.Claimed and
+                taskConfig.TaskList[i].Status.ClaimedUIN == playerID then
+                correctSignalBox = taskConfig.TaskList[i].BindID.SignalBox
+                break
+            end
+        end
+    end
+
     local returnData = {
         Player = {
             ID = playerID
@@ -509,6 +639,9 @@ function Task.GetPlayetTaskStatus(playerID)
             TaskID = taskClaimInfo.ClaimTaskID,
             IsTaskArea = isInTaskArea == 1,
             TaskCurrentProgress = progress,
+            CurrentSignalBox = currentSignalBox,
+            CorrectSignalBox = correctSignalBox,
+            IsInCorrectArea = (isInTaskArea == 1) and (currentSignalBox == correctSignalBox),
         },
     }
     return returnData

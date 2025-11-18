@@ -58,6 +58,7 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Server.EventPlayerLeave(playerID)
+    Framework.Server.Utils.PlayerLeaveCheck(playerID)
     Framework.Server.DataManager.PlayerArchiveUpload(playerID)
     local gameFeatureName = Framework.Server.GameFeatureManager.Type.GameMatchDataManager
     local featureIsEnabled = Framework.Server.GameFeatureManager.IsFeatureEnabled(gameFeatureName)

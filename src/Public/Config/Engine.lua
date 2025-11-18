@@ -537,7 +537,7 @@ EngineConf.Task = {
             },
             Location = { Offset = { X = 0, Y = 0, Z = 50 }, },
             Status = { ClaimedUIN = 0, TaskCode = "Unclaim" },
-            DestoryItem = { 4173, 4739 },
+            DestoryItem = { 4037 },
         }
     },
 }
@@ -592,6 +592,7 @@ EngineConf.Property = {
             PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0 },
             PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 }, -- 暂时不使用
             PlayerIsInTaskArea = { "Number", "GameState_PlayerIsInTaskArea", 0 },
+            PlayerCurrentSignalBox = { "Number", "GameState_PlayerCurrentSignalBox", 0 },
             PlayerClaimTaskInfo = { "Map", "GameState_PlayerTaskClaimInfo" },
             PlayerIsDoTask = { "Number", "GameState_PlayerIsDoTask", 0 },
             PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
