@@ -8,7 +8,7 @@
 -- ==================================================
 
 local Server = {}
-local updateLock = false
+local updateLock = {} -- 改为表结构，为每个玩家维护独立的锁
 
 ---| 🎮 服务端初始化
 function Server.Init()
@@ -39,15 +39,15 @@ function Server.Update()
     Framework.Server.NetSync.SyncRankListData(playerIDs)
     Framework.Server.Utils.CheckGameVictoryCondition(gameTime)
     for _, v in ipairs(playerIDs) do
-        if not updateLock then
-            updateLock = true
+        if not updateLock[v] then -- 检查特定玩家的锁
+            updateLock[v] = true  -- 为该玩家设置锁
             TimerManager:AddTimer(0.5, function()
                 Framework.Server.Utils.PlayerStatusCheck(v)
                 Framework.Server.Utils.PlayerLevelCheck(v)
+                Framework.Server.Task.Update(v)
                 Framework.Server.NetSync.SyncUserProfile(v)
                 Framework.Server.NetSync.SyncTaskData(v)
-                Framework.Server.Task.Update(v)
-                updateLock = false
+                updateLock[v] = false -- 解锁该玩家的锁
             end)
         end
     end

@@ -11,12 +11,12 @@ local Toml = {}
 
 Toml.App = [[
 [app]
-name = "Diana X"
+name = "Diana Nex"
 version = "1.0.0"
 version.env = "Dev"
 version.ui = "2.0"
 version.sdk = "0.0.2"
-version.build = "Git #8eb60c (main)"
+version.build = "Git #0771585 (main)"
 
 ]]
 
@@ -27,7 +27,7 @@ default = "zh-CN"
 
 [i18n.en-US]
 language = "English"
-key.mapname = "DIANA X"
+key.mapname = "Impostor Hunt"
 key.account_info = { info1 = "LV.%s", info2 = "Coin %s" }
 key.message = { help = "View the rules or wiki.roidmc.com", wip = "Developing", reset_setting = "Reset Setting" }
 key.toggle = { on = "ON", off = "OFF", global = "All", team = "Team"}
@@ -102,7 +102,7 @@ Target: %s
 
 [i18n.zh-CN]
 language = "简体中文"
-key.mapname = "DIANA X"
+key.mapname = "谁是内鬼！？"
 key.account_info = { info1 = "等级LV.%s", info2 = "金币%s" }
 key.message = { help = "查看玩法说明或wiki.roidmc.com", wip = "开发中", reset_setting = "重置设置" }
 key.toggle = { on = "开启", off = "关闭", global = "全体", team = "队伍"}

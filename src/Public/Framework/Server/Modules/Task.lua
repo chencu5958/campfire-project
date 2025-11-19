@@ -397,7 +397,7 @@ function Task.Update(playerID)
         Task.RecycleTask(playerID)
         return
     end
-    if playerTeamID == TeamIDMap.Blue then
+    if playerTeamID == TeamIDMap.Blue and gameStage == GameStageMap.Start then
         taskAutoAssign(playerID)
         playerDoTaskCheck(playerID)
     end
