@@ -16,7 +16,7 @@ version = "1.0.0"
 version.env = "Dev"
 version.ui = "2.0"
 version.sdk = "0.0.2"
-version.build = "Git #0771585 (main)"
+version.build = "Git #2bfdd6a (main)"
 
 ]]
 

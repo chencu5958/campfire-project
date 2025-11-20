@@ -273,7 +273,7 @@ function Utils.PlayerWeaponAllocate(playerID)
     local playerTeam = Team:GetTeamById(playerID)
     if TeamIDMap.Red == playerTeam then
         Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Hammer, 1)
-        Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Gun, 1)
+        --Inventory:AddCustomItem(playerID, Config.Engine.GameInstance.Item.Item_Weapon_Gun, 1)
     end
 end
 

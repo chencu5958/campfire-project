@@ -350,16 +350,16 @@ local function playerDoTaskCheck(playerID)
 
                 -- 再次验证玩家是否仍在正确的任务区域内
                 local isInCorrectArea_Local, taskID_Local, correctSignalBox_Local, currentSignalBox_Local =
-                validatePlayerTaskArea(playerID)
+                    validatePlayerTaskArea(playerID)
 
                 if not isInCorrectArea_Local then
                     setPlayerIsDoTask(playerID, 0)
                     UDK.Timer.PauseTimer(fmt_TimerName)
                     UDK.Timer.ResetTimer(fmt_TimerName, 0)
                     print("[Task] TaskInterrupted: Player " ..
-                    playerID ..
-                    " left correct task area. Current: " ..
-                    currentSignalBox_Local .. ", Correct: " .. correctSignalBox_Local)
+                        playerID ..
+                        " left correct task area. Current: " ..
+                        currentSignalBox_Local .. ", Correct: " .. correctSignalBox_Local)
                 elseif time >= confTime then
                     setPlayerIsDoTask(playerID, 0)
                     UDK.Motage.StopAnim(Animation.PLAYER_TYPE.Character, playerID, AnimList.Dance_Fun, animPlayPart)
@@ -368,7 +368,7 @@ local function playerDoTaskCheck(playerID)
                     UDK.Timer.PauseTimer(fmt_TimerName)
                     UDK.Timer.ResetTimer(fmt_TimerName, 0)
                     print("[Task] TaskCompleted: Player " ..
-                    playerID .. " completed task " .. taskID_Local .. " in correct area")
+                        playerID .. " completed task " .. taskID_Local .. " in correct area")
                 end
             end
             UDK.Timer.StartForwardTimer(fmt_TimerName, 0, "s", true, callback)
@@ -379,7 +379,7 @@ local function playerDoTaskCheck(playerID)
         UDK.Timer.PauseTimer(fmt_TimerName)
         UDK.Timer.ResetTimer(fmt_TimerName, 0)
         print("[Task] TaskForceInterrupted: Player " ..
-        playerID .. " is in wrong area. Current: " .. currentSignalBox .. ", Correct: " .. correctSignalBox)
+            playerID .. " is in wrong area. Current: " .. currentSignalBox .. ", Correct: " .. correctSignalBox)
     end
 end
 
@@ -451,7 +451,7 @@ function Task.CompleteTask(playerID)
                 taskManagerGuideDisplay(UDK.Player.GetAllPlayers(), taskConfig.TaskList, i, "Warning",
                     coreConfig.GuideAutoDestory)
                 print("[Task] TaskCompleted: Player " ..
-                playerID .. " completed task " .. taskConfig.TaskList[i].ID .. ", all task states reset")
+                    playerID .. " completed task " .. taskConfig.TaskList[i].ID .. ", all task states reset")
                 break -- 修复：确保只完成一个任务就退出循环
             end
         end
@@ -574,20 +574,20 @@ function Task.AreaCheck(playerID, signalBoxID, eventType)
                     if eventType == "EnterSignalBox" then
                         setPlayerIsInTaskArea(playerID, 1)
                         print("[Task] AreaCheckPass: " ..
-                        playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
+                            playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
                     elseif eventType == "LeaveSignalBox" then
                         setPlayerIsInTaskArea(playerID, 0)
                         print("[Task] PlayerLeaveSignalBox: " ..
-                        playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
+                            playerID .. " | " .. signalBoxID .. " | " .. eventType .. " | TaskID: " .. playerTaskID)
                     end
                 else
                     -- 如果玩家进入了不属于自己的任务信号盒，确保区域状态为false
                     if eventType == "EnterSignalBox" then
                         setPlayerIsInTaskArea(playerID, 0)
                         print("[Task] WrongTaskArea: " ..
-                        playerID ..
-                        " entered signalBox " ..
-                        signalBoxID .. " but belongs to task " .. playerTaskID .. " with signalBox " .. taskSignalBox)
+                            playerID ..
+                            " entered signalBox " ..
+                            signalBoxID .. " but belongs to task " .. playerTaskID .. " with signalBox " .. taskSignalBox)
                     end
                 end
                 break -- 找到玩家的任务后立即退出循环

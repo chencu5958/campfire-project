@@ -9,6 +9,8 @@
 
 local AlizaClient = {}
 
+local  alizaDebugLog = false
+
 -- 统一消息队列（用于处理所有类型的消息）
 local messageQueue = {}
 
@@ -51,6 +53,13 @@ local function generateUniqueMessageId(msgType, msgContent)
     end
 
     return baseId
+end
+
+-- WIP
+local function alizaLog(msg)
+    if alizaDebugLog then
+        Log:PrintLog(msg)
+    end
 end
 
 ---| 🎮 初始化Aliza通知系统客户端逻辑
