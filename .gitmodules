@@ -1,0 +1,4 @@
+[submodule "RoidMC/UniX-SDK"]
+	path = src/Public/UniX-SDK
+	url = https://github.com/roidmc/UniX-SDK.git
+	active = true
