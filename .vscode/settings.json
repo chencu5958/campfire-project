@@ -1,5 +1,5 @@
 {
-    "lua_analyzer.codeLinting.ignoreGlobal": "Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK;Framework;Config;Gamelogic",
+    "lua_analyzer.codeLinting.ignoreGlobal": "Achievement;AICharacter;Animation;Archive;Array;Audio;Camera;Character;Chat;Creature;Currency;CustomItem;CustomProperty;Damage;Element;Engine;Events;FakeCharacter;FuncElement;Guide;Inventory;Log;LogicElement;MiscService;Music;Particle;PhysicsElement;PlayInteractive;PublicDB;Rank;Setting;Share;Shop;Skill;SkyBox;Social;Story;System;Task;Team;TimerManager;TriggerBox;UI;UMath;Voice;UDK;Framework;Config;Gamelogic;LighterCreature",
     "Lua.diagnostics.globals": [
         "Achievement",
         "AICharacter",
@@ -49,7 +49,8 @@
         "UDK,",
         "Framework",
         "Config",
-        "Gamelogic"
+        "Gamelogic",
+        "LighterCreature"
     ],
     "Lua.completion.showWord": "Disable",
     "lua_analyzer.codeLinting.maxLineLength": 200,
