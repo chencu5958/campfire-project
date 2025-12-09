@@ -56,7 +56,7 @@ local function updateMatchData(updPlayerID, updType, updMode, updValue)
 end
 
 ---| 🎮 玩家对局数据管理
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param type string 玩家对局数据类型（Win | Lose | Draw | Escape）
@@ -67,7 +67,7 @@ function DataManager.PlayerMatchDataManager(playerID, type, mode, value)
 end
 
 ---| 🎮 玩家团队分数管理
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param value number 玩家团队分数值
@@ -85,7 +85,7 @@ function DataManager.PlayerTeamScoreManager(playerID, value, mode)
 end
 
 ---| 🎮 玩家等级经验管理
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param value number 玩家等级经验值
@@ -104,7 +104,7 @@ function DataManager.PlayerLevelExpManager(playerID, value, mode)
 end
 
 ---| 🎮 玩家经济管理
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param type string 玩家经济类型（Coin）
@@ -124,7 +124,7 @@ function DataManager.PlayerEcomonyManager(playerID, type, value, mode)
 end
 
 ---| 🎮 玩家存档上传
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function DataManager.PlayerArchiveUpload(playerID)

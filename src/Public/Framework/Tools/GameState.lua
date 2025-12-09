@@ -78,7 +78,7 @@ function GameState.Init()
 end
 
 ---|🧰 - 向服务器发送游戏状态同步消息
----<br>
+---
 ---| `范围`：`客户端`
 ---@param playerID number 玩家ID
 ---@param action string 状态动作
@@ -94,7 +94,7 @@ function GameState.SendToServer(playerID, action, ...)
 end
 
 ---|🧰 - 向客户端发送游戏状态同步消息
----<br>
+---
 ---@param playerID number 玩家ID
 ---@param action string 状态动作
 ---@param ... any? 可变参数，包含需要同步的数据
@@ -109,7 +109,7 @@ function GameState.SendToClient(playerID, action, ...)
 end
 
 ---|🧰 - 向所有客户端发送游戏状态同步消息
----<br>
+---
 ---@param action string 状态动作
 ---@param ... any? 可变参数，包含需要同步的数据
 function GameState.SendToAllClients(playerID, action, ...)

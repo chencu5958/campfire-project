@@ -11,7 +11,7 @@ local UI = {}
 local KeyMap = Config.Engine.Property.KeyMap
 
 ---| 🧰 - 获取主菜单UI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@return boolean isOpen 主菜单UI打开状态
 function UI.GetMainMenuUIOpenState()
@@ -19,7 +19,7 @@ function UI.GetMainMenuUIOpenState()
 end
 
 ---| 🧰 - 获取主菜单UI打开的子页面ID
----<br>
+---
 ---| `范围`： `客户端`
 ---@return number pid 子页面ID
 function UI.GetMainMenuUIOpenPID()
@@ -30,9 +30,9 @@ function UI.GetMainMenuUIOpenPID()
 end
 
 ---| 🧰 - 获取通用页面UI打开的页面ID
----<br>
+---
 ---| `说明`： `该函数实现基于LightDMS，遵从EnginePropertyKeyMap规则`
----<br>
+---
 ---| `范围`： `客户端`
 ---@param layoutName table 页面数据 { "Type类型", "LayoutName名称" }
 ---@return number pid 页面ID
@@ -41,7 +41,7 @@ function UI.GetLayoutUIOpenPID(layoutName)
 end
 
 ---| 🧰 - 获取任务栏UI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@return boolean isOpen 任务栏UI打开状态
 function UI.GetTaskbarUIOpenState()
@@ -49,7 +49,7 @@ function UI.GetTaskbarUIOpenState()
 end
 
 ---| 🧰 - 获取IMUtilsUI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@return boolean isOpen IMUtilsUI打开状态
 function UI.GetIMUtilsUIOpenState()
@@ -57,7 +57,7 @@ function UI.GetIMUtilsUIOpenState()
 end
 
 ---| 🧰 - 获取IMUtilsUI打开的页面ID
----<br>
+---
 ---| `范围`： `客户端`
 ---@return number pid 聊天工具UI打开的页面ID
 function UI.GetIMUtilsOpenPID()
@@ -65,7 +65,7 @@ function UI.GetIMUtilsOpenPID()
 end
 
 ---| 🧰 - 获取队伍信息弹出框打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@return boolean isOpen 队伍信息弹出框打开状态
 function UI.GetTeamPopOpenState()
@@ -73,7 +73,7 @@ function UI.GetTeamPopOpenState()
 end
 
 ---| 🧰 - 设置主菜单UI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@param state boolean 主菜单UI打开状态
 function UI.SetMainMenuUIOpenState(state)
@@ -81,7 +81,7 @@ function UI.SetMainMenuUIOpenState(state)
 end
 
 ---| 🧰 - 设置主菜单UI打开的子页面ID
----<br>
+---
 ---| `范围`： `客户端`
 ---@param pid number 子页面ID
 function UI.SetMainMenuUIOpenPID(pid)
@@ -89,7 +89,7 @@ function UI.SetMainMenuUIOpenPID(pid)
 end
 
 ---| 🧰 - 设置任务栏UI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@param state boolean 任务栏UI打开状态
 function UI.SetTaskbarUIOpenState(state)
@@ -97,9 +97,9 @@ function UI.SetTaskbarUIOpenState(state)
 end
 
 ---| 🧰 - 设置通用页面UI打开的页面ID
----<br>
+---
 ---| `说明`： `该函数实现基于LightDMS，遵从EnginePropertyKeyMap规则`
----<br>
+---
 ---| `范围`： `客户端`
 ---@param layoutName table 页面数据 { "Type类型", "LayoutName名称" }
 ---@param pid number 页面ID
@@ -108,7 +108,7 @@ function UI.SetLayoutUIOpenPID(layoutName, pid)
 end
 
 ---| 🧰 - 设置IMUtilsUI打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@param state boolean IMUtilsUI打开状态
 function UI.SetIMUtilsUIOpenState(state)
@@ -116,7 +116,7 @@ function UI.SetIMUtilsUIOpenState(state)
 end
 
 ---| 🧰 - 设置IMUtilsUI打开的页面ID
----<br>
+---
 ---| `范围`： `客户端`
 ---@param pid number 页面ID
 function UI.SetIMUtilsOpenPID(pid)
@@ -124,7 +124,7 @@ function UI.SetIMUtilsOpenPID(pid)
 end
 
 ---| 🧰 - 设置队伍信息弹出框打开状态
----<br>
+---
 ---| `范围`： `客户端`
 ---@param state boolean 队伍信息弹出框打开状态
 function UI.SetTeamPopOpenState(state)

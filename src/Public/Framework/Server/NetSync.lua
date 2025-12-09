@@ -92,7 +92,7 @@ local function getPlayerExpReq(playerID)
 end
 
 ---| 🎮 - 同步服务器游戏状态数据
----<br>
+---
 ---| `范围`：`服务端`
 function NetSync.SyncServerGameState()
     local alivePlayersRedTeam, alivePlayersRedTeamCount = Framework.Server.Utils.ClacAlivePlayers(UDK.Player
@@ -127,7 +127,7 @@ function NetSync.SyncServerGameState()
 end
 
 ---| 🎮 - 同步玩家个人信息
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function NetSync.SyncUserProfile(playerID)
@@ -180,7 +180,7 @@ function NetSync.SyncUserProfile(playerID)
 end
 
 ---| 🎮 - 同步玩家任务数据
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function NetSync.SyncTaskData(playerID)
@@ -205,7 +205,7 @@ function NetSync.SyncTaskData(playerID)
 end
 
 ---| 🎮 - 同步局内排行榜数据
----<br>
+---
 ---| `范围`：`服务端`
 function NetSync.SyncRankListData(playerIDs)
     -- 委托给Rank模块处理排行榜同步

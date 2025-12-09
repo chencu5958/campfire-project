@@ -553,9 +553,7 @@ EngineConf.NetMsg = {
 }
 
 --- 属性配置（1为类型，2为属性名称，3是默认值）
---- <br>
---- 说明：LightDMS如果管理玩家属性，对应调用名称为PropertyName_PlayerID拼接，例如：GameRoundTotal_PlayerID
---- <br>
+---
 --- 无特殊说明则使用属性名称，例如UIState下面的所有属性
 EngineConf.Property = {
     KeyMap = {

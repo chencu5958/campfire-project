@@ -384,7 +384,7 @@ local function playerDoTaskCheck(playerID)
 end
 
 ---| 🎮 任务更新
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Task.Update(playerID)
@@ -404,7 +404,7 @@ function Task.Update(playerID)
 end
 
 ---| 🎮 领取任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Task.ClaimTask(playerID)
@@ -425,7 +425,7 @@ function Task.ClaimTask(playerID)
 end
 
 ---| 🎮 完成任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Task.CompleteTask(playerID)
@@ -459,7 +459,7 @@ function Task.CompleteTask(playerID)
 end
 
 ---| 🎮 回收任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Task.RecycleTask(playerID)
@@ -483,7 +483,7 @@ function Task.RecycleTask(playerID)
 end
 
 ---| 🎮 添加任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param name string 任务名称
 ---@param desc string 任务描述
@@ -532,7 +532,7 @@ function Task.AddTask(name, desc, reward, bindID, feature, alizaNotice, posOffse
 end
 
 ---| 🎮 移除任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param target number 任务ID或任务名称
 function Task.RemoveTask(target)
@@ -545,7 +545,7 @@ function Task.RemoveTask(target)
 end
 
 ---| 🎮 任务区域检测
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 信号触发盒ID
@@ -598,7 +598,7 @@ function Task.AreaCheck(playerID, signalBoxID, eventType)
 end
 
 ---| 🎮 获取玩家任务状态
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@return table returnData 返回数据

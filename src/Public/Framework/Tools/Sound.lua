@@ -20,7 +20,7 @@ local function getSoundEnableStatus(playerID)
 end
 
 ---| 🧰 - 播放2D音效
----<br>
+---
 ---| `范围`：`客户端`
 ---| `功能`：`播放2D音效`
 ---@param soundID number 音效ID
@@ -37,7 +37,7 @@ function SoundTools.Play2DSound(soundID, volume, duration, tune)
 end
 
 ---| 🧰 - 切换音效启用状态
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 function SoundTools.SoundToggle(playerID)
@@ -52,7 +52,7 @@ function SoundTools.SoundToggle(playerID)
 end
 
 ---| 🧰 - 获取音效启用状态
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID\
 ---@return boolean isEnable 启用状态

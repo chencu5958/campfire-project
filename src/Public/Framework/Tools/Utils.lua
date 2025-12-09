@@ -24,7 +24,7 @@ UtilsTools.Conf = {
 }
 
 ---| 🧰 - 环境检查
----<br>
+---
 ---| `范围`：`服务端` `客户端`
 ---@return table {
 ---     envID: number,       -- 环境ID（Server=1, Client=2, Standalone=0）
@@ -60,7 +60,7 @@ local function getCurrentLang(playerID)
 end
 
 ---| 🧰 - 环境是否为服务端
----<br>
+---
 ---@return boolean isServer 是否为服务端
 function UtilsTools.EnvIsServer()
     local envInfo = envCheck()
@@ -74,7 +74,7 @@ function UtilsTools.EnvIsServer()
 end
 
 ---| 🧰 - 环境是否为客户端
----<br>
+---
 ---@return boolean isClient 是否为客户端
 function UtilsTools.EnvIsClient()
     local envInfo = envCheck()
@@ -88,7 +88,7 @@ function UtilsTools.EnvIsClient()
 end
 
 ---| 🧰 - 获取环境信息
----<br>
+---
 ---@return table {
 ---     envID: number,       -- 环境ID（Server=1, Client=2, Standalone=0）
 ---     envName: string,     -- 环境名称（"Server", "Client", "Standalone"）
@@ -99,7 +99,7 @@ function UtilsTools.GetEnvInfo()
 end
 
 ---| 🧰 - 获取I18N文本
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param key string 键值
 ---@param playerID number 玩家ID
@@ -115,7 +115,7 @@ function UtilsTools.GetI18NKey(key, playerID, lang)
 end
 
 ---| 🧰 - 切换I18N语言
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 function UtilsTools.I18NLangToggle(playerID)
@@ -126,7 +126,7 @@ function UtilsTools.I18NLangToggle(playerID)
 end
 
 ---| 🧰 - 获取App信息文本
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param key string 键值
 ---@return string langText 语言文本
@@ -136,7 +136,7 @@ function UtilsTools.GetAppInfoKey(key)
 end
 
 ---| 🧰 - IM频道切换
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 ---@param channelType string 频道类型 ("Voice", "Chat")
@@ -161,7 +161,7 @@ function UtilsTools.IMChannelToggle(playerID, channelType)
 end
 
 ---| 🧰 - 获取IM语音是否为团队频道
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 ---@return boolean isTeamChannel 是否为团队频道
@@ -174,7 +174,7 @@ function UtilsTools.GetIMVoiceIsTeamChannel(playerID)
 end
 
 ---| 🧰 - 获取IM聊天是否为团队频道
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 ---@return boolean isTeamChannel 是否为团队频道
@@ -187,7 +187,7 @@ function UtilsTools.GetIMChatIsTeamChannel(playerID)
 end
 
 ---| 🧰 - 获取玩家队伍Hex代码
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param playerID number 玩家ID
 ---@return string teamHex 队伍Hex代码
@@ -203,7 +203,7 @@ function UtilsTools.GetTeamHexByPlayerID(playerID)
 end
 
 ---| 🧰 - 获取队伍名称Hex代码
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param code string 队伍名称
 ---@return string teamHex 队伍Hex代码
@@ -223,7 +223,7 @@ function UtilsTools.GetTeamHexByCode(code)
 end
 
 ---| 🧰 - 设置游戏阶段
----<br>
+---
 ---| `范围`：`服务端`
 function UtilsTools.SetGameStage(stageCode)
     if type(stageCode) ~= "number" then
@@ -240,7 +240,7 @@ function UtilsTools.SetGameStage(stageCode)
 end
 
 ---| 🧰 - 获取游戏阶段
----<br>
+---
 ---| `范围`：`服务端`
 function UtilsTools.GetGameStage()
     return UDK.Property.GetProperty(

@@ -599,7 +599,7 @@ local function aiStateMachine(creatureID, spawnZ)
 end
 
 ---| 🎮 初始化AI
----<br>
+---
 ---| `范围`：`服务端`
 function AI.Init()
     local i = 0
@@ -621,7 +621,7 @@ function AI.Init()
 end
 
 ---| 🎮 生成NPC
----<br>
+---
 ---| `范围`：`服务端`
 ---@param id number 生物ID
 ---@param spawnPos table 出生点位置

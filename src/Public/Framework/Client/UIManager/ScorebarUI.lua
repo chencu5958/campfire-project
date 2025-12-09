@@ -40,13 +40,13 @@ local function getServerData()
 end
 
 ---| 🔩 - 客户端UI更新（Scorebar）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`ScoreBar.Tmp_ToolBar.T_TimeCount` - `TimeCountUI`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function ScorebarUI.TimeCountUI()
     local serverData = getServerData()
@@ -55,13 +55,13 @@ function ScorebarUI.TimeCountUI()
 end
 
 ---| 🔩 - 客户端UI更新（Scorebar）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`ScoreBar.Tmp_*Team.T_ScoreCount` - `TeamScoreUI`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function ScorebarUI.TeamScoreUI()
     local serverData = getServerData()
@@ -71,13 +71,13 @@ function ScorebarUI.TeamScoreUI()
 end
 
 ---| 🔩 - 客户端UI更新（Scorebar）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`ScoreBar.Tmp_ContentBar.Fc_ProgressBar` - `ContentBarUI`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function ScorebarUI.ContentBarUI()
     local serverData = getServerData()

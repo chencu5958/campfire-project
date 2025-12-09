@@ -60,14 +60,14 @@ GameFeatureManager.Type = {
 }
 
 ---| 🎮 获取功能列表
----<br>
+---
 ---| `范围`：`服务端`
 function GameFeatureManager.GetFeatureList()
     return gameFeatureList
 end
 
 ---| 🎮 检查特定功能是否启用
----<br>
+---
 ---| `范围`：`服务端`
 ---@param featureType string 功能类型
 function GameFeatureManager.IsFeatureEnabled(featureType)
@@ -75,7 +75,7 @@ function GameFeatureManager.IsFeatureEnabled(featureType)
 end
 
 ---| 🎮 设置特定功能的启用状态
----<br>
+---
 ---| `范围`：`服务端`
 ---@param featureType string 功能类型
 ---@param enabled boolean 是否启用
@@ -86,7 +86,7 @@ function GameFeatureManager.SetFeatureEnabled(featureType, enabled)
 end
 
 ---| 🎮 获取功能类型列表
----<br>
+---
 ---| `范围`：`服务端`
 function GameFeatureManager.GetFeatureTypes()
     local types = {}
@@ -97,7 +97,7 @@ function GameFeatureManager.GetFeatureTypes()
 end
 
 ---| 🎮 根据游戏阶段自动初始化功能开关
----<br>
+---
 ---| `范围`：`服务端`
 ---@param gameStage number 游戏阶段
 function GameFeatureManager.AutoInit(gameStage)
@@ -115,7 +115,7 @@ function GameFeatureManager.AutoInit(gameStage)
 end
 
 ---| 🎮 获取当前阶段的功能配置
----<br>
+---
 ---| `范围`：`服务端`
 ---@param gameStage number 游戏阶段
 function GameFeatureManager.GetStageConfig(gameStage)

@@ -64,13 +64,13 @@ local function updateChannelInfo(isTChat, playerIsTeamChannel, playerTeam, envIn
 end
 
 ---| 🔩 - 客户端UI更新（IMUtils）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`IMUtils` - `UI Base`
----<br>
+---
 ---| `是否从服务器获取数据`：`false`
 function IMUtilsUI.BaseUI()
     local playerID = UDK.Player.GetLocalPlayerID()

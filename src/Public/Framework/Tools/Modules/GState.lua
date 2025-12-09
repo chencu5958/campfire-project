@@ -25,7 +25,7 @@ local function GStateLogGenerate(log)
 end
 
 ---| 🎮 - 游戏设置 - 重置设置
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param data table 请求数据
@@ -58,7 +58,7 @@ function GState.SHandle_ResetSetting(playerID, data)
 end
 
 ---| 🎮 - 聊天系统 - 聊天范围切换
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param data table 请求数据
@@ -88,7 +88,7 @@ function GState.SHandle_IMRecvToggle(playerID, data)
 end
 
 ---| 🎮 - 任务系统 - 做任务
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function GState.SHandle_TaskSysDoTask(playerID)
@@ -151,7 +151,7 @@ function GState.SHandle_TaskSysDoTask(playerID)
 end
 
 ---| 🎮 - 角色系统 - 设置角色模型
----<br>
+---
 ---| `范围`：`客户端`
 ---@param playerID number 玩家ID
 ---@param data table 请求数据

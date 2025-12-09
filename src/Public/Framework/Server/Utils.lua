@@ -132,7 +132,7 @@ local function playerModelIDGenerate()
 end
 
 ---| 🎮 - 玩家状态检查
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerStatusCheck(playerID)
@@ -181,7 +181,7 @@ function Utils.PlayerStatusCheck(playerID)
 end
 
 ---| 🎮 - 玩家图标显示器初始化
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerInGameDisplay(playerID)
@@ -266,7 +266,7 @@ function Utils.PlayerInGameDisplay(playerID)
 end
 
 ---| 🎮 - 玩家武器分配
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerWeaponAllocate(playerID)
@@ -278,7 +278,7 @@ function Utils.PlayerWeaponAllocate(playerID)
 end
 
 ---| 🎮 - 玩家模型分配
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerModelAllocate(playerID)
@@ -295,7 +295,7 @@ function Utils.PlayerModelAllocate(playerID)
 end
 
 ---| 🎮 - 玩家等级检查
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerLevelCheck(playerID)
@@ -364,7 +364,7 @@ function Utils.PlayerLevelCheck(playerID)
 end
 
 ---| 🎮 - 玩家随机出生点
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerRandomSpawnPos(playerID)
@@ -408,7 +408,7 @@ function Utils.PlayerRandomSpawnPos(playerID)
 end
 
 ---| 🎮 - 玩家离开检查
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerLeaveCheck(playerID)
@@ -421,7 +421,7 @@ function Utils.PlayerLeaveCheck(playerID)
 end
 
 ---| 🎮 - 检查游戏玩家数量
----<br>
+---
 ---| `范围`：`服务端`
 ---@return boolean isEnough 是否足够
 ---@return number reasonCode 原因
@@ -448,7 +448,7 @@ function Utils.CheckGamePlayerCount()
 end
 
 ---| 🎮 - 计算存活玩家
----<br>
+---
 ---@param playerIDs table 玩家ID列表
 ---@return table, number alivePlayers 存活玩家列表，存活玩家数量
 function Utils.ClacAlivePlayers(playerIDs)
@@ -467,7 +467,7 @@ function Utils.ClacAlivePlayers(playerIDs)
 end
 
 ---| 🎮 - 检查生物受击
----<br>
+---
 ---| `范围`：`服务端`
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
@@ -482,7 +482,7 @@ function Utils.CheckCreatureTakeHurt(creatureID, killerID, damage)
 end
 
 ---| 🎮 - 检查生物击杀
----<br>
+---
 ---| `范围`：`服务端`
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
@@ -497,7 +497,7 @@ function Utils.CheckCreatureKilled(creatureID, killerID)
 end
 
 ---| 🎮 - 检查玩家受击
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param killerID number 击杀者ID
@@ -512,7 +512,7 @@ function Utils.CheckPlayerTakeHurt(playerID, killerID, damage)
 end
 
 ---| 🎮 - 检查玩家击杀
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param killerID number 击杀者ID
@@ -529,7 +529,7 @@ function Utils.CheckPlayerKilled(playerID, killerID)
 end
 
 ---| 🎮 - 检查玩家进入触发盒
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
@@ -539,7 +539,7 @@ function Utils.CheckPlayerEnterSignalBox(playerID, signalBoxID)
 end
 
 ---| 🎮 - 检查玩家离开触发盒
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
@@ -549,7 +549,7 @@ function Utils.CheckPlayerLeaveSignalBox(playerID, signalBoxID)
 end
 
 ---| 🎮 - 检查游戏胜利条件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param time number 游戏时间
 function Utils.CheckGameVictoryCondition(time)
@@ -639,7 +639,7 @@ function Utils.CheckGameVictoryCondition(time)
 end
 
 ---| 🎮 - 游戏对局数据自动管理
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.GameMatchDataAutoManager(playerID)

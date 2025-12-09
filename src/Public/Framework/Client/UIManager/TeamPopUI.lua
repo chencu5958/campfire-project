@@ -45,13 +45,13 @@ local function getTeamdescByTeamID(teamID)
 end
 
 ---| 🔩 - 客户端UI更新（TeamPop）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`TeamPop` - `UI Base`
----<br>
+---
 ---| `是否从服务器获取数据`：`false`
 function TeamPopUI.BaseUI()
     local playerID = UDK.Player.GetLocalPlayerID()

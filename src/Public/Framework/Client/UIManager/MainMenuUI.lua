@@ -194,13 +194,13 @@ local function getTeamdescByTeamID(teamID)
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`MainMenu.Tmp_UIBase` - `UI Base`
----<br>
+---
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.BaseUI()
     local playerID = UDK.Player.GetLocalPlayerID()
@@ -219,13 +219,13 @@ function MainMenuUI.BaseUI()
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新账户信息UI`
----<br>
+---
 ---| `更新范围`：`MainMenu.Tmp_UserAccount` - `User Account`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function MainMenuUI.UserAccountPanelUI()
     local serverData = getServerPlayerProfileData()
@@ -244,13 +244,13 @@ function MainMenuUI.UserAccountPanelUI()
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新生涯数据UI`
----<br>
+---
 ---| `更新范围`：`MainMenu.Tmp_MyProfile` - `My Profile`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function MainMenuUI.UserProfileUI()
     local serverData = getServerPlayerProfileData()
@@ -285,13 +285,13 @@ function MainMenuUI.UserProfileUI()
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新设置UI`
----<br>
+---
 ---| `更新范围`：`MainMenu.Tmp_Settings` - `Settings`
----<br>
+---
 ---| `是否从服务器获取数据`：`false`
 function MainMenuUI.UserSettingsUI()
     local playerID            = UDK.Player.GetLocalPlayerID()
@@ -329,13 +329,13 @@ function MainMenuUI.UserSettingsUI()
 end
 
 ---| 🔩 - 客户端UI更新（MainMenu）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新排行榜UI`
----<br>
+---
 ---| `更新范围`：`MainMenu.Tmp_Rank` - `Rank List`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function MainMenuUI.RankListUI()
     local serverRankData = getServerRankListData()

@@ -35,13 +35,13 @@ local function getServerTaskData()
 end
 
 ---| 🔩 - 客户端UI更新（GameBtn）
----<br>
+---
 ---| `范围`：`客户端`
----<br>
+---
 ---| `功能`：`更新基础UI`
----<br>
+---
 ---| `更新范围`：`GameBtn` - `UI Base`
----<br>
+---
 ---| `是否从服务器获取数据`：`true`
 function GameBtnUI.BaseUI()
     local serverData = getServerTaskData()

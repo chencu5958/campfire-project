@@ -54,7 +54,7 @@ function Server.Update()
 end
 
 ---| 👾 - 玩家离开事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Server.EventPlayerLeave(playerID)
@@ -68,7 +68,7 @@ function Server.EventPlayerLeave(playerID)
 end
 
 ---| 👾 - 玩家销毁事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Server.EventPlayerDestory(playerID)
@@ -80,7 +80,7 @@ function Server.EventPlayerDestory(playerID)
 end
 
 ---| 👾 - 玩家死亡事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param killerID number 击杀者ID
 ---@param victimID number 被击杀者ID
@@ -89,7 +89,7 @@ function Server.EventPlayerKilled(killerID, victimID)
 end
 
 ---| 👾 - 生物死亡事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
@@ -98,7 +98,7 @@ function Server.EventCreatureKilled(creatureID, killerID)
 end
 
 ---| 👾 - 玩家进入触发盒事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
@@ -107,7 +107,7 @@ function Server.EventPlayerEnterSignalBox(playerID, signalBoxID)
 end
 
 ---| 👾 - 玩家离开触发盒事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param signalBoxID number 触发盒ID
@@ -116,7 +116,7 @@ function Server.EventPlayerLeaveSignalBox(playerID, signalBoxID)
 end
 
 ---| 👾 - 玩家受伤事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param killerID number 击杀者ID
@@ -132,7 +132,7 @@ function Server.EventPlayerTakeHurt(playerID, killerID, damage)
 end
 
 ---| 👾 - 生物受伤事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param creatureID number 生物ID
 ---@param killerID number 击杀者ID
@@ -148,7 +148,7 @@ function Server.EventCreatureTakeHurt(creatureID, killerID, damage)
 end
 
 ---| 👾 - 断线重连事件
----<br>
+---
 ---| `范围`：`服务端`
 ---@param player number 玩家ID
 ---@param levelID number 场景ID

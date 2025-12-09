@@ -47,9 +47,9 @@ local function GenerateQueryNameByPlayerID(propertyName, playerID)
 end
 
 ---| 🧰 - 设置自定义属性
----<br>
+---
 ---| `警告`：`该工具不支持C/S同步`
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
@@ -72,9 +72,9 @@ function LightDMS.SetCustomProperty(propertyType, propertyName, value, playerID)
 end
 
 ---| 🧰 - 获取自定义属性
----<br>
+---
 ---| `警告`：`该工具不支持C/S同步`
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称
@@ -108,9 +108,9 @@ function LightDMS.GetCustomProperty(propertyType, propertyName, preferArray, pla
 end
 
 ---| 🧰 - 获取自定义属性数组
----<br>
+---
 ---| `警告`：`该工具不支持C/S同步`
----<br>
+---
 ---| `范围`：`服务端` | `客户端`
 ---@param propertyType string 属性类型
 ---@param propertyName string|number 属性名称

@@ -162,7 +162,7 @@ local function gameCoreSystemInit()
 end
 
 ---| 🎮 服务器游戏玩家逻辑初始化
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function ServerInit.InitGame(playerID)
@@ -172,14 +172,14 @@ function ServerInit.InitGame(playerID)
 end
 
 ---| 🎮 服务器游戏核心逻辑初始化
----<br>
+---
 ---| `范围`：`服务端`
 function ServerInit.InitGameCore()
     gameCoreSystemInit()
 end
 
 ---| 🎮 重置玩家设置属性数据
----<br>
+---
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 ---@param resetType string 重置类型（PSetting, PState, All）
