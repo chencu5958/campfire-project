@@ -23,8 +23,8 @@ local function updateMatchData(updPlayerID, updType, updMode, updValue)
         queryTypeKeyMap = KeyMap.PState.GameRoundEscape
     end
 
-    totalRound = UDK.Property.GetProperty(updPlayerID, KeyMap.PState.GameRoundTotal[1], KeyMap.PState.GameRoundTotal[2])
-    matchData = UDK.Property.GetProperty(updPlayerID, queryTypeKeyMap[1], queryTypeKeyMap[2])
+    totalRound = UDK.Property.GetProperty(updPlayerID, KeyMap.PState.GameRoundTotal[1], KeyMap.PState.GameRoundTotal[2], KeyMap.PState.GameRoundTotal[4])
+    matchData = UDK.Property.GetProperty(updPlayerID, queryTypeKeyMap[1], queryTypeKeyMap[2],queryTypeKeyMap[4])
     if updMode == "Add" then
         matchData = matchData + updValue
         totalRound = totalRound + updValue
@@ -91,7 +91,7 @@ end
 ---@param value number 玩家等级经验值
 ---@param mode string 玩家等级经验模式（Add | Sub | Set）
 function DataManager.PlayerLevelExpManager(playerID, value, mode)
-    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2])
+    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], KeyMap.PState.PlayerExp[4])
     if mode == "Add" then
         playerExp = playerExp + value
     elseif mode == "Sub" then
@@ -136,10 +136,10 @@ function DataManager.PlayerArchiveUpload(playerID)
     end
     -- 遍历PState中的所有属性并上传
     for _, value in pairs(KeyMap.PState) do
-        local uploadValue = UDK.Property.GetProperty(playerID, value[1], value[2])
+        local uploadValue = UDK.Property.GetProperty(playerID, value[1], value[2], value[4])
         UDK.Storage.ArchiveUpload(playerID, value[1], value[2], uploadValue)
         if value == KeyMap.PState.PlayerLevel then
-            local playerLevel = UDK.Property.GetProperty(playerID, value[1], value[2])
+            local playerLevel = UDK.Property.GetProperty(playerID, value[1], value[2], value[4])
             local rankIndex = Config.Engine.Map.Rank.GRank_Level
             Rank:SetRankById(rankIndex, playerID, playerLevel)
         end

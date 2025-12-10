@@ -16,8 +16,8 @@ function Client.Init()
     if not envType then return end
     Framework.Client.Init.InitUI()
     Framework.Client.Init.InitGame()
-    Framework.Client.Aliza.InitNet()
-    Framework.Tools.GameState.Init()
+    --Framework.Client.Aliza.InitNet()
+    --Framework.Tools.GameState.Init()
 end
 
 ---| 🎮 客户端更新

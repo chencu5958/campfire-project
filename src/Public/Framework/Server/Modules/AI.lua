@@ -632,7 +632,7 @@ function AI.SpawnAI(id, spawnPos, spawnRot)
     local npcTypeID = Creature:GetCreatureTypeID(npcID)
     local npcXID = string.format("DianaAI_%s_%s_%s", npcName, npcID, npcTypeID)
     Creature:SetCreatureName(npcID, getRandomNpcName())
-    Framework.Tools.LightDMS.SetCustomProperty("String", "DianaAI_UUID", npcXID, npcID)
+    UDK.Property.SetProperty(npcID,"String", "DianaAI_UUID", npcXID, "Isolate")
     aiStateMachine(npcID, spawnPos.Z)
     --Log:PrintLog("Spawn AI: " .. tostring(npcXID))
 end

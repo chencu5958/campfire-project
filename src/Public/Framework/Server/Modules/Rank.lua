@@ -39,7 +39,8 @@ local function rankDataColumnGenerate(playerID)
     local playerStatus = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerStatus[1],
-        KeyMap.GameState.PlayerStatus[2]
+        KeyMap.GameState.PlayerStatus[2],
+        KeyMap.GameState.PlayerStatus[4]
     )
     local status
     if type(playerStatus) == "number" then

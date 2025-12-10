@@ -74,12 +74,14 @@ end
 
 -- 获取玩家的经验需求值
 local function getPlayerExpReq(playerID)
+    local accessLevel = UDK.Property.AccessLevel.Isolate
     local playerLevelIsMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
-        KeyMap.PState.PlayerLevelIsMax[2])
+        KeyMap.PState.PlayerLevelIsMax[2], accessLevel)
     local playerExpReq = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerExpReq[1],
-        KeyMap.GameState.PlayerExpReq[2]
+        KeyMap.GameState.PlayerExpReq[2],
+        accessLevel
     )
     if type(playerExpReq) == "number" then
         if playerLevelIsMax then
@@ -96,9 +98,9 @@ end
 ---| `范围`：`服务端`
 function NetSync.SyncServerGameState()
     local alivePlayersRedTeam, alivePlayersRedTeamCount = Framework.Server.Utils.ClacAlivePlayers(UDK.Player
-    .GetTeamPlayers(TeamIDMap.Red))
+        .GetTeamPlayers(TeamIDMap.Red))
     local alivePlayersBlueTeam, alivePlayersBlueTeamCount = Framework.Server.Utils.ClacAlivePlayers(UDK.Player
-    .GetTeamPlayers(TeamIDMap.Blue))
+        .GetTeamPlayers(TeamIDMap.Blue))
     local data = {
         Game = {
             PlayTime = UDK.Timer.GetTimerTime(TimerMap.GameRound) or 0,
@@ -131,16 +133,18 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function NetSync.SyncUserProfile(playerID)
+    local accessLevel = UDK.Property.AccessLevel.Isolate
     local data = {
         Player = {
             ID = playerID,
             TeamID = Team:GetTeamById(playerID)
         },
         GameData = {
-            Level = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2]),
+            Level = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2],
+                accessLevel),
             LevelIsMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
-                KeyMap.PState.PlayerLevelIsMax[2]),
-            Exp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2]),
+                KeyMap.PState.PlayerLevelIsMax[2], accessLevel),
+            Exp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2], accessLevel),
             ReqExp = getPlayerExpReq(playerID),
             Currency = {
                 Coin = Currency:GetCurrencyCount(playerID),
@@ -150,13 +154,16 @@ function NetSync.SyncUserProfile(playerID)
         },
         CloudData = {
             Match = {
-                Win = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundWin[1], KeyMap.PState.GameRoundWin[2]),
-                Lose = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundLose[1], KeyMap.PState.GameRoundLose[2]),
-                Draw = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundDraw[1], KeyMap.PState.GameRoundDraw[2]),
+                Win = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundWin[1], KeyMap.PState.GameRoundWin[2],
+                    accessLevel),
+                Lose = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundLose[1], KeyMap.PState.GameRoundLose[2],
+                    accessLevel),
+                Draw = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundDraw[1], KeyMap.PState.GameRoundDraw[2],
+                    accessLevel),
                 Escape = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundEscape[1],
-                    KeyMap.PState.GameRoundEscape[2]),
+                    KeyMap.PState.GameRoundEscape[2], accessLevel),
                 TotalRound = UDK.Property.GetProperty(playerID, KeyMap.PState.GameRoundTotal[1],
-                    KeyMap.PState.GameRoundTotal[2]),
+                    KeyMap.PState.GameRoundTotal[2], accessLevel),
             },
         }
     }

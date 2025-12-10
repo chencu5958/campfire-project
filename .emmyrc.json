@@ -16,7 +16,7 @@
     "version": "Lua5.3"
   },
   "hover": {
-    "enable": false
+    "enable": true
   },
   "workspace": {
     "ignoreDir": [

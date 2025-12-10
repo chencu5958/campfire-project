@@ -92,20 +92,24 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function GState.SHandle_TaskSysDoTask(playerID)
+    local accessLevel = UDK.Property.AccessLevel.Isolate
     local isClaim = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerTaskClaimStatus[1],
-        KeyMap.GameState.PlayerTaskClaimStatus[2]
+        KeyMap.GameState.PlayerTaskClaimStatus[2],
+        accessLevel
     )
     local isInTaskArea = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerIsInTaskArea[1],
-        KeyMap.GameState.PlayerIsInTaskArea[2]
+        KeyMap.GameState.PlayerIsInTaskArea[2],
+        accessLevel
     )
     local currentSignalBox = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerCurrentSignalBox[1],
-        KeyMap.GameState.PlayerCurrentSignalBox[2]
+        KeyMap.GameState.PlayerCurrentSignalBox[2],
+        accessLevel
     )
 
     -- 增强验证：确保玩家在正确的任务区域内
@@ -136,17 +140,19 @@ function GState.SHandle_TaskSysDoTask(playerID)
             playerID,
             KeyMap.GameState.PlayerIsDoTask[1],
             KeyMap.GameState.PlayerIsDoTask[2],
-            1
+            1,
+            accessLevel
         )
         print("[GState] TaskStarted: Player " ..
-        playerID .. " started task " .. taskID .. " in correct area (SignalBox: " .. currentSignalBox .. ")")
+            playerID .. " started task " .. taskID .. " in correct area (SignalBox: " .. currentSignalBox .. ")")
     else
         print("[GState] TaskStartDenied: Player " ..
-        playerID ..
-        " cannot start task. isClaim=" ..
-        isClaim ..
-        ", isInTaskArea=" ..
-        isInTaskArea .. ", currentSignalBox=" .. (currentSignalBox or "nil") .. ", correctSignalBox=" .. correctSignalBox)
+            playerID ..
+            " cannot start task. isClaim=" ..
+            isClaim ..
+            ", isInTaskArea=" ..
+            isInTaskArea ..
+            ", currentSignalBox=" .. (currentSignalBox or "nil") .. ", correctSignalBox=" .. correctSignalBox)
     end
 end
 

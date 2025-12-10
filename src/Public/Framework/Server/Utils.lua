@@ -24,7 +24,7 @@ local function playerDisconnectCheck(playerID)
         --Log:PrintServerLog("Heartbeat check already exists for player: " .. playerID)
         return
     end
-    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    local accessLevel = UDK.Property.AccessLevel.Isolate
 
     local timeoutCallback = function()
         --Log:PrintServerLog("Player:", UDK.Player.GetPlayerNickName(playerID), "is disconnected")
@@ -76,17 +76,20 @@ local function playerBindDisplayUpdate(playerID)
     local playerStatus = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerStatus[1],
-        KeyMap.GameState.PlayerStatus[2]
+        KeyMap.GameState.PlayerStatus[2],
+        KeyMap.GameState.PlayerStatus[4]
     )
     local playerHPTagID = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerBindHPBarID[1],
-        KeyMap.GameState.PlayerBindHPBarID[2]
+        KeyMap.GameState.PlayerBindHPBarID[2],
+        KeyMap.GameState.PlayerBindHPBarID[4]
     )
     local playerTeamTagID = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerBindTeamTagID[1],
-        KeyMap.GameState.PlayerBindTeamTagID[2]
+        KeyMap.GameState.PlayerBindTeamTagID[2],
+        KeyMap.GameState.PlayerBindTeamTagID[4]
     )
     if type(playerHPTagID) == "number" and isExist then
         if playerStatus == StatusCodeMap.Alive.ID then
@@ -138,11 +141,12 @@ end
 function Utils.PlayerStatusCheck(playerID)
     playerDisconnectCheck(playerID)
     local playerLife = Damage:GetCharacterLifeCount(playerID)
-    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    local accessLevel = UDK.Property.AccessLevel.Isolate
     local playerIsDisconnect = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerIsDisconnect[1],
-        KeyMap.GameState.PlayerIsDisconnect[2]
+        KeyMap.GameState.PlayerIsDisconnect[2],
+        accessLevel
     )
     local playerIsExist = MiscService:IsObjectExist(MiscService.EQueryableObjectType.Player, playerID)
     if playerLife <= 0 and not playerIsDisconnect then
@@ -185,7 +189,7 @@ end
 ---| `范围`：`服务端`
 ---@param playerID number 玩家ID
 function Utils.PlayerInGameDisplay(playerID)
-    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    local accessLevel = UDK.Property.AccessLevel.Isolate
     -- 为不同元素创建专门的绑定回调函数
     local function createCallBack(elementType)
         return function(elementID)
@@ -235,12 +239,14 @@ function Utils.PlayerInGameDisplay(playerID)
     local playerHPTagID = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerBindHPBarID[1],
-        KeyMap.GameState.PlayerBindHPBarID[2]
+        KeyMap.GameState.PlayerBindHPBarID[2],
+        KeyMap.GameState.PlayerBindHPBarID[4]
     )
     local playerTeamTagID = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerBindTeamTagID[1],
-        KeyMap.GameState.PlayerBindTeamTagID[2]
+        KeyMap.GameState.PlayerBindTeamTagID[2],
+        KeyMap.GameState.PlayerBindTeamTagID[4]
     )
 
     if type(playerHPTagID) ~= "number" and playerTeam ~= TeamIDMap.Blue then
@@ -307,13 +313,15 @@ function Utils.PlayerLevelCheck(playerID)
     local levelBaseExp = Config.Engine.Core.Level.BaseExp
     local levelRatio = Config.Engine.Core.Level.Ratio
     local levelMax = Config.Engine.Core.Level.MaxLevel
-    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
+    local accessLevel = UDK.Property.AccessLevel.Isolate
 
     -- 获取玩家等级属性
-    local playerLevel = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2])
+    local playerLevel = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevel[1], KeyMap.PState.PlayerLevel[2],
+        KeyMap.PState.PlayerLevel[4])
     local playerLevelMax = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerLevelIsMax[1],
-        KeyMap.PState.PlayerLevelIsMax[2])
-    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2])
+        KeyMap.PState.PlayerLevelIsMax[2], KeyMap.PState.PlayerLevelIsMax[4])
+    local playerExp = UDK.Property.GetProperty(playerID, KeyMap.PState.PlayerExp[1], KeyMap.PState.PlayerExp[2],
+        KeyMap.PState.PlayerExp[4])
     local expReq = UDK.Math.CalcExpRequirement(levelBaseExp, levelRatio, playerLevel)
     UDK.Property.SetProperty(
         playerID,
@@ -413,7 +421,7 @@ end
 ---@param playerID number 玩家ID
 function Utils.PlayerLeaveCheck(playerID)
     local playerStatus = UDK.Property.GetProperty(playerID, KeyMap.GameState.PlayerStatus[1],
-    KeyMap.GameState.PlayerStatus[2])
+        KeyMap.GameState.PlayerStatus[2], KeyMap.GameState.PlayerStatus[4])
     if playerStatus == Config.Engine.Map.Status.Alive.ID then
         UDK.Property.SetProperty(playerID, KeyMap.GameState.PlayerStatus[1], KeyMap.GameState.PlayerStatus[2],
             Config.Engine.Map.Status.Exit.ID)
@@ -457,7 +465,8 @@ function Utils.ClacAlivePlayers(playerIDs)
         local isAlive = UDK.Property.GetProperty(
             playerID,
             KeyMap.GameState.PlayerStatus[1],
-            KeyMap.GameState.PlayerStatus[2]
+            KeyMap.GameState.PlayerStatus[2],
+            KeyMap.GameState.PlayerStatus[4]
         )
         if isAlive == Config.Engine.Map.Status.Alive.ID then
             table.insert(alivePlayers, playerID)

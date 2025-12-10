@@ -229,14 +229,8 @@ function UtilsTools.SetGameStage(stageCode)
     if type(stageCode) ~= "number" then
         Log:PrintError("[Utils] 设置游戏阶段参数错误")
     end
-    local accessLevel = UDK.Property.ACCESS_LEVEL.ServerOnly
-    UDK.Property.SetProperty(
-        KeyMap.GameState.NameSpace,
-        KeyMap.GameState.GameStage[1],
-        KeyMap.GameState.GameStage[2],
-        stageCode,
-        accessLevel
-    )
+    local queryKey = KeyMap.GameState.GameStage
+    UDK.Property.SetProperty(KeyMap.GameState.NameSpace, queryKey[1], queryKey[2], stageCode, queryKey[4])
 end
 
 ---| 🧰 - 获取游戏阶段
@@ -246,7 +240,8 @@ function UtilsTools.GetGameStage()
     return UDK.Property.GetProperty(
         KeyMap.GameState.NameSpace,
         KeyMap.GameState.GameStage[1],
-        KeyMap.GameState.GameStage[2]
+        KeyMap.GameState.GameStage[2],
+        KeyMap.GameState.GameStage[4]
     )
 end
 

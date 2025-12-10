@@ -14,13 +14,10 @@ local TimerMap = Config.Engine.Map.Timer
 
 -- 初始化客户端属性数据
 local function clientPropretyInit()
+    local playerID = UDK.Player.GetLocalPlayerID()
     -- 遍历 UIState 中的所有属性并初始化
-    for _, value in pairs(KeyMap.UIState) do
-        Framework.Tools.LightDMS.SetCustomProperty(
-            value[1], -- 类型
-            value[2], -- 属性名称
-            value[3]  -- 默认值
-        )
+    for _, v in pairs(KeyMap.UIState) do
+        UDK.Property.SetProperty(playerID, v[1], v[2], v[3], v[4])
     end
 end
 

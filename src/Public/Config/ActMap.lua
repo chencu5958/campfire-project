@@ -18,6 +18,8 @@ local isMainMenuSwitching = false
 local isSettingsPageSwitching = false
 local isIMUtilsSwitching = false
 
+local startFrameIndex = 0
+
 -- 统一处理主菜单项按钮切换逻辑
 local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
     -- 如果正在切换中，则忽略新的切换请求
@@ -33,8 +35,8 @@ local function handleMainMenuSwitch(itemUID, pagePID, showGroup, hideGroups)
         { showGroup },
         hideGroups
     )
-    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
-    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, 1)
+    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, startFrameIndex)
+    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_MyProfile.MenuCardScale, startFrameIndex)
 
     -- 0.3秒后解锁
     TimerManager:AddTimer(0.3, function()
@@ -56,8 +58,8 @@ local function handleSettingsPageSwitch(itemUID, showGroup, hideGroup)
         { showGroup },
         { hideGroup }
     )
-    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
-    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, 1)
+    UI:PlayUIAnimation(itemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, startFrameIndex)
+    UI:PlayUIAnimation(showGroup, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.MenuCardScale, startFrameIndex)
 
     -- 0.3秒后解锁
     TimerManager:AddTimer(0.3, function()
@@ -79,7 +81,7 @@ local function handleIMUtilsSwitch(targetPID)
     if targetPID == IMUtilsPID.TChat then
         -- 切换到TCHAT
         Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.TChat)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, startFrameIndex)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root)
         TimerManager:AddTimer(0.3, function()
             isIMUtilsSwitching = false
@@ -88,7 +90,7 @@ local function handleIMUtilsSwitch(targetPID)
     elseif targetPID == IMUtilsPID.VChat then
         -- 切换到VCHAT
         Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.VChat)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, startFrameIndex)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_VChat.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root)
         TimerManager:AddTimer(0.3, function()
             isIMUtilsSwitching = false
@@ -112,7 +114,7 @@ local function handleIMUtilsOpen(targetPID)
         -- 打开TCHAT
         Framework.Tools.UI.SetIMUtilsUIOpenState(true)
         Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.TChat)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIOpen, startFrameIndex)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Grp_Root, true)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_TChat.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root)
         TimerManager:AddTimer(0.3, function()
@@ -123,7 +125,7 @@ local function handleIMUtilsOpen(targetPID)
         -- 打开VCHAT
         Framework.Tools.UI.SetIMUtilsUIOpenState(true)
         Framework.Tools.UI.SetIMUtilsOpenPID(IMUtilsPID.VChat)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIOpen, startFrameIndex)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Grp_Root, true)
         UDK.UI.SetUIVisibility(CoreUI.IMUtils.Tmp_VChat.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root)
         TimerManager:AddTimer(0.3, function()
@@ -147,7 +149,7 @@ local function handleIMUtilsClose(targetPID)
     if targetPID == IMUtilsPID.TChat then
         -- 关闭TCHAT
         Framework.Tools.UI.SetIMUtilsUIOpenState(false)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIClose, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_TChat.Grp_Root, UIAnim.IMUtils.UIClose, startFrameIndex)
         TimerManager:AddTimer(0.3, function()
             UDK.UI.SetUIVisibility("", { CoreUI.IMUtils.Grp_Root, CoreUI.IMUtils.Tmp_TChat.Grp_Root })
             isIMUtilsSwitching = false
@@ -156,7 +158,7 @@ local function handleIMUtilsClose(targetPID)
     elseif targetPID == IMUtilsPID.VChat then
         -- 关闭VCHAT
         Framework.Tools.UI.SetIMUtilsUIOpenState(false)
-        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIClose, 1)
+        UI:PlayUIAnimation(CoreUI.IMUtils.Tmp_VChat.Grp_Root, UIAnim.IMUtils.UIClose, startFrameIndex)
         TimerManager:AddTimer(0.3, function()
             UDK.UI.SetUIVisibility("", { CoreUI.IMUtils.Grp_Root, CoreUI.IMUtils.Tmp_VChat.Grp_Root })
             isIMUtilsSwitching = false
@@ -200,7 +202,7 @@ ActMap.MainMenu = {
     [CoreUI.MainMenu.Tmp_MenuItem.Btn_EShop] = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_MenuItem.BtnPress, startFrameIndex)
             UDK.Event.FireSignEvent(EngineConf.Map.SignalEvent.OpenStore)
         end
     },
@@ -236,7 +238,7 @@ ActMap.MainMenu = {
         Pressed = function(ItemUID)
             Framework.Tools.Utils.I18NLangToggle(UDK.Player.GetLocalPlayerID())
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_BtnGroup.BtnPress, startFrameIndex)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Btn_Reset] = {
@@ -253,7 +255,7 @@ ActMap.MainMenu = {
         Pressed = function(ItemUID)
             Framework.Tools.Sound.SoundToggle(UDK.Player.GetLocalPlayerID())
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_MicMode] = {
@@ -266,7 +268,7 @@ ActMap.MainMenu = {
                 isTeam = value
             }
             Framework.Tools.GameState.SendToServer(playerID, "Act_IMRecvToggle", reqMsg)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_GeneralPage.Btn_ChatMode] = {
@@ -279,7 +281,7 @@ ActMap.MainMenu = {
                 isTeam = value
             }
             Framework.Tools.GameState.SendToServer(playerID, "Act_IMRecvToggle", reqMsg)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     -- Settings Page (Misc Page)
@@ -288,7 +290,7 @@ ActMap.MainMenu = {
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Version
             Framework.Tools.UI.SetLayoutUIOpenPID(layoutProp, layoutID)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Credits] = {
@@ -296,7 +298,7 @@ ActMap.MainMenu = {
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Credits
             Framework.Tools.UI.SetLayoutUIOpenPID(layoutProp, layoutID)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     [CoreUI.MainMenu.Tmp_Settings.Tmp_MiscPage.Btn_Feedback] = {
@@ -304,7 +306,7 @@ ActMap.MainMenu = {
             local layoutProp = Config.Engine.Property.KeyMap.UIState.LayoutSettingMiscPID
             local layoutID = Config.Engine.GameUI.UI.Layout_SettingMisc.Feedback
             Framework.Tools.UI.SetLayoutUIOpenPID(layoutProp, layoutID)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, 1)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_Settings.Tmp_PageLayout.BtnPress, startFrameIndex)
         end
     },
     -- Rank Page (Btn Group / UIBase)
@@ -334,8 +336,8 @@ ActMap.MainMenu = {
             if Framework.Tools.UI.GetMainMenuUIOpenState() then
                 Framework.Tools.UI.SetMainMenuUIOpenState(false)
             end
-            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIClose, 1)
-            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_UIBase.BtnPress, 1)
+            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIClose, startFrameIndex)
+            UI:PlayUIAnimation(ItemUID, UIAnim.MainMenu.Tmp_UIBase.BtnPress, startFrameIndex)
             TimerManager:AddTimer(0.4, function()
                 UDK.UI.SetUIVisibility("", CoreUI.MainMenu.Grp_Root)
             end)
@@ -349,8 +351,8 @@ ActMap.ScoreBar = {
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(CoreUI.MainMenu.Grp_Root)
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)
-            UI:PlayUIAnimation(ItemUID, 1, 1)
+            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, startFrameIndex)
+            UI:PlayUIAnimation(ItemUID, 1, startFrameIndex)
 
             -- 打开后切换到MyProfile子菜单
             handleMainMenuSwitch(
@@ -366,8 +368,8 @@ ActMap.ScoreBar = {
             Framework.Tools.Sound.Play2DSound(EngineConf.Sound.UI.CommonClick)
             UDK.UI.SetUIVisibility(CoreUI.MainMenu.Grp_Root)
             Framework.Tools.UI.SetMainMenuUIOpenState(true)
-            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, 1)
-            UI:PlayUIAnimation(ItemUID, 1, 1)
+            UI:PlayUIAnimation(CoreUI.MainMenu.Grp_Root, UIAnim.MainMenu.UIOpen, startFrameIndex)
+            UI:PlayUIAnimation(ItemUID, 1, startFrameIndex)
 
             -- 打开后切换到Rank子菜单
             handleMainMenuSwitch(
@@ -430,7 +432,7 @@ ActMap.Taskbar = {
                     CoreUI.TaskBar.Tmp_UIBase.Btn_Expand
                 }
             )
-            UI:PlayUIAnimation(CoreUI.TaskBar.Tmp_Expand.Grp_Root, UIAnim.TaskBar.UIOpen, 1)
+            UI:PlayUIAnimation(CoreUI.TaskBar.Tmp_Expand.Grp_Root, UIAnim.TaskBar.UIOpen, startFrameIndex)
         end
     },
     [CoreUI.TaskBar.Tmp_UIBase.Btn_Collapse] = {
@@ -446,7 +448,7 @@ ActMap.Taskbar = {
                     }
                 )
             end)
-            UI:PlayUIAnimation(CoreUI.TaskBar.Tmp_Expand.Grp_Root, UIAnim.TaskBar.UIClose, 1)
+            UI:PlayUIAnimation(CoreUI.TaskBar.Tmp_Expand.Grp_Root, UIAnim.TaskBar.UIClose, startFrameIndex)
         end
     }
 }

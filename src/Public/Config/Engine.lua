@@ -552,7 +552,7 @@ EngineConf.NetMsg = {
     }
 }
 
---- 属性配置（1为类型，2为属性名称，3是默认值）
+--- 属性配置（1为类型，2为属性名称，3是默认值，4为ACL权限）
 ---
 --- 无特殊说明则使用属性名称，例如UIState下面的所有属性
 EngineConf.Property = {
@@ -568,56 +568,50 @@ EngineConf.Property = {
             AccountProfile = { "Map", "UserData_AccountProfile" },
             TaskData = { "Map", "UserData_TaskData" },
         },
-        -- 云存储同步，ACL规则为ServerOnly
+        -- PState数据云存储同步（仅服务端）
         PState = {
-            GameRoundTotal = { "Number", "PState_GameRoundTotal", 0 },
-            GameRoundWin = { "Number", "PState_GameRoundWin", 0 },
-            GameRoundLose = { "Number", "PState_GameRoundLose", 0 },
-            GameRoundDraw = { "Number", "PState_GameRoundDraw", 0 },
-            GameRoundEscape = { "Number", "PState_GameRoundEscape", 0 },
-            PlayerLevel = { "Number", "PState_PlayerLevel", 1 },
-            PlayerLevelIsMax = { "Boolean", "PState_PlayerLevelIsMax", false },
-            PlayerExp = { "Number", "PState_PlayerExp", 0 },
+            GameRoundTotal = { "Number", "PState_GameRoundTotal", 0, "Isolate" },
+            GameRoundWin = { "Number", "PState_GameRoundWin", 0, "Isolate" },
+            GameRoundLose = { "Number", "PState_GameRoundLose", 0, "Isolate" },
+            GameRoundDraw = { "Number", "PState_GameRoundDraw", 0, "Isolate" },
+            GameRoundEscape = { "Number", "PState_GameRoundEscape", 0, "Isolate" },
+            PlayerLevel = { "Number", "PState_PlayerLevel", 1, "Isolate" },
+            PlayerLevelIsMax = { "Boolean", "PState_PlayerLevelIsMax", false, "Isolate" },
+            PlayerExp = { "Number", "PState_PlayerExp", 0, "Isolate" },
+            CloudSaveInit = { "Boolean", "PState_CloudSaveInit", false, "Isolate" },
         },
-        -- GameState由UDK Property管理，ACL规则ServerOnly
+        -- GameState（仅服务端）
         GameState = {
             NameSpace = "GameState",
-            PlayerIsDisconnect = { "Boolean", "GameState_PlayerIsDisconnect", false },
-            PlayerStatus = { "Number", "GameState_PlayerStatus", 0 },
-            PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID" },
-            PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID" },
-            PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0 },
-            PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0 },
-            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0 }, -- 暂时不使用
-            PlayerIsInTaskArea = { "Number", "GameState_PlayerIsInTaskArea", 0 },
-            PlayerCurrentSignalBox = { "Number", "GameState_PlayerCurrentSignalBox", 0 },
-            PlayerClaimTaskInfo = { "Map", "GameState_PlayerTaskClaimInfo" },
-            PlayerIsDoTask = { "Number", "GameState_PlayerIsDoTask", 0 },
-            PlayerModelID = { "Number", "GameState_PlayerModelID" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
-            GameStage = { "Number", "GameState_GameStage" }          -- 由NameSpace管理
+            PlayerIsDisconnect = { "Boolean", "GameState_PlayerIsDisconnect", false, "Isolate" },
+            PlayerStatus = { "Number", "GameState_PlayerStatus", 0, "Isolate" },
+            PlayerBindTeamTagID = { "Number", "GameState_PlayerBindTeamTagID", nil, "Isolate" },
+            PlayerBindHPBarID = { "Number", "GameState_PlayerBindHPBarID", nil, "Isolate" },
+            PlayerExpReq = { "Number", "GameState_PlayerExpRequire", 0, "Isolate" },
+            PlayerTaskClaimStatus = { "Number", "GameState_PlayerTaskClaimStatus", 0, "Isolate" },
+            PlayerTaskColddownStatus = { "Number", "GameState_PlayerTaskColddownStatus", 0, "Isolate" }, -- 暂时不使用
+            PlayerIsInTaskArea = { "Number", "GameState_PlayerIsInTaskArea", 0, "Isolate" },
+            PlayerCurrentSignalBox = { "Number", "GameState_PlayerCurrentSignalBox", 0, "Isolate" },
+            PlayerClaimTaskInfo = { "Map", "GameState_PlayerTaskClaimInfo", nil, "Isolate" },
+            PlayerIsDoTask = { "Number", "GameState_PlayerIsDoTask", 0, "Isolate" },
+            PlayerModelID = { "Number", "GameState_PlayerModelID", nil, "Isolate" }, -- 这个ID是NPC模型ID，正常红队是不会被分配到这个数据的
+            GameStage = { "Number", "GameState_GameStage", nil, "Isolate" }          -- 由NameSpace管理
         },
-        -- UIState全部由客户端的LightDMS管理，UDK Property不参与管理
+        -- UIState（仅客户端）
         UIState = {
-            MainMenuIsOpen = { "Boolean", "UIState_MainMenuIsOpen", false },
-            MainMenuOpenPID = { "Number", "UIState_MainMenuOpenPID", 1 },
-            LayoutSettingMiscPID = { "Number", "UIState_LayoutSettingMiscPID", 1 },
-            TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false },
-            IMUtilsIsOpen = { "Boolean", "UIState_IMUtilsIsOpen", false },
-            IMUtilsOpenPID = { "Number", "UIState_IMUtilsOpenPID", 1 },
-            TeamPopIsOpen = { "Boolean", "UIState_TeamPopIsOpen", true }
-        },
-        -- ClientState全部由客户端的LightDMS管理，UDK Property不参与管理
-        ClientState = {
-            ClientIsInit = { "Boolean", "ClientState_ClientIsInit" },
+            MainMenuIsOpen = { "Boolean", "UIState_MainMenuIsOpen", false, "Isolate" },
+            MainMenuOpenPID = { "Number", "UIState_MainMenuOpenPID", 1, "Isolate" },
+            LayoutSettingMiscPID = { "Number", "UIState_LayoutSettingMiscPID", 1, "Isolate" },
+            TaskbarIsOpen = { "Boolean", "UIState_TaskbarIsOpen", false, "Isolate" },
+            IMUtilsIsOpen = { "Boolean", "UIState_IMUtilsIsOpen", false, "Isolate" },
+            IMUtilsOpenPID = { "Number", "UIState_IMUtilsOpenPID", 1, "Isolate" },
+            TeamPopIsOpen = { "Boolean", "UIState_TeamPopIsOpen", true, "Isolate" }
         },
         ServerState = {
             NameSpace = "ServerState",
             GameState = { "Map", "ServerState_GameState" },
             RankList = { "Map", "ServerState_RankList" },
-        },
-        CloudData = {
-            InitStatus = { "Boolean", "CloudData_InitStatus", true }
-        },
+        }
     }
 }
 

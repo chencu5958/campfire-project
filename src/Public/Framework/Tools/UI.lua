@@ -15,7 +15,10 @@ local KeyMap = Config.Engine.Property.KeyMap
 ---| `范围`： `客户端`
 ---@return boolean isOpen 主菜单UI打开状态
 function UI.GetMainMenuUIOpenState()
-    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.MainMenuIsOpen[1], KeyMap.UIState.MainMenuIsOpen[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.MainMenuIsOpen
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取主菜单UI打开的子页面ID
@@ -23,21 +26,22 @@ end
 ---| `范围`： `客户端`
 ---@return number pid 子页面ID
 function UI.GetMainMenuUIOpenPID()
-    return Framework.Tools.LightDMS.GetCustomProperty(
-        KeyMap.UIState.MainMenuOpenPID[1],
-        KeyMap.UIState.MainMenuOpenPID[2]
-    )
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.MainMenuOpenPID
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取通用页面UI打开的页面ID
----
----| `说明`： `该函数实现基于LightDMS，遵从EnginePropertyKeyMap规则`
 ---
 ---| `范围`： `客户端`
 ---@param layoutName table 页面数据 { "Type类型", "LayoutName名称" }
 ---@return number pid 页面ID
 function UI.GetLayoutUIOpenPID(layoutName)
-    return Framework.Tools.LightDMS.GetCustomProperty(layoutName[1], layoutName[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = layoutName
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取任务栏UI打开状态
@@ -45,7 +49,10 @@ end
 ---| `范围`： `客户端`
 ---@return boolean isOpen 任务栏UI打开状态
 function UI.GetTaskbarUIOpenState()
-    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.TaskbarIsOpen[1], KeyMap.UIState.TaskbarIsOpen[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.TaskbarIsOpen
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取IMUtilsUI打开状态
@@ -53,7 +60,10 @@ end
 ---| `范围`： `客户端`
 ---@return boolean isOpen IMUtilsUI打开状态
 function UI.GetIMUtilsUIOpenState()
-    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.IMUtilsIsOpen[1], KeyMap.UIState.IMUtilsIsOpen[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.IMUtilsIsOpen
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取IMUtilsUI打开的页面ID
@@ -61,7 +71,10 @@ end
 ---| `范围`： `客户端`
 ---@return number pid 聊天工具UI打开的页面ID
 function UI.GetIMUtilsOpenPID()
-    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.IMUtilsOpenPID
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 获取队伍信息弹出框打开状态
@@ -69,7 +82,10 @@ end
 ---| `范围`： `客户端`
 ---@return boolean isOpen 队伍信息弹出框打开状态
 function UI.GetTeamPopOpenState()
-    return Framework.Tools.LightDMS.GetCustomProperty(KeyMap.UIState.TeamPopIsOpen[1], KeyMap.UIState.TeamPopIsOpen[2])
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.TeamPopIsOpen
+    local data = UDK.Property.GetProperty(playerID, queryKey[1], queryKey[2], queryKey[4])
+    return data
 end
 
 ---| 🧰 - 设置主菜单UI打开状态
@@ -77,7 +93,9 @@ end
 ---| `范围`： `客户端`
 ---@param state boolean 主菜单UI打开状态
 function UI.SetMainMenuUIOpenState(state)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.MainMenuIsOpen[1], KeyMap.UIState.MainMenuIsOpen[2], state)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.MainMenuIsOpen
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], state, queryKey[4])
 end
 
 ---| 🧰 - 设置主菜单UI打开的子页面ID
@@ -85,7 +103,9 @@ end
 ---| `范围`： `客户端`
 ---@param pid number 子页面ID
 function UI.SetMainMenuUIOpenPID(pid)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.MainMenuOpenPID[1], KeyMap.UIState.MainMenuOpenPID[2], pid)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.MainMenuOpenPID
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], pid, queryKey[4])
 end
 
 ---| 🧰 - 设置任务栏UI打开状态
@@ -93,18 +113,20 @@ end
 ---| `范围`： `客户端`
 ---@param state boolean 任务栏UI打开状态
 function UI.SetTaskbarUIOpenState(state)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.TaskbarIsOpen[1], KeyMap.UIState.TaskbarIsOpen[2], state)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.TaskbarIsOpen
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], state, queryKey[4])
 end
 
 ---| 🧰 - 设置通用页面UI打开的页面ID
----
----| `说明`： `该函数实现基于LightDMS，遵从EnginePropertyKeyMap规则`
 ---
 ---| `范围`： `客户端`
 ---@param layoutName table 页面数据 { "Type类型", "LayoutName名称" }
 ---@param pid number 页面ID
 function UI.SetLayoutUIOpenPID(layoutName, pid)
-    Framework.Tools.LightDMS.SetCustomProperty(layoutName[1], layoutName[2], pid)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = layoutName
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], pid, queryKey[4])
 end
 
 ---| 🧰 - 设置IMUtilsUI打开状态
@@ -112,7 +134,9 @@ end
 ---| `范围`： `客户端`
 ---@param state boolean IMUtilsUI打开状态
 function UI.SetIMUtilsUIOpenState(state)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.IMUtilsIsOpen[1], KeyMap.UIState.IMUtilsIsOpen[2], state)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.IMUtilsIsOpen
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], state, queryKey[4])
 end
 
 ---| 🧰 - 设置IMUtilsUI打开的页面ID
@@ -120,7 +144,9 @@ end
 ---| `范围`： `客户端`
 ---@param pid number 页面ID
 function UI.SetIMUtilsOpenPID(pid)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.IMUtilsOpenPID[1], KeyMap.UIState.IMUtilsOpenPID[2], pid)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.IMUtilsOpenPID
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], pid, queryKey[4])
 end
 
 ---| 🧰 - 设置队伍信息弹出框打开状态
@@ -128,7 +154,9 @@ end
 ---| `范围`： `客户端`
 ---@param state boolean 队伍信息弹出框打开状态
 function UI.SetTeamPopOpenState(state)
-    Framework.Tools.LightDMS.SetCustomProperty(KeyMap.UIState.TeamPopIsOpen[1], KeyMap.UIState.TeamPopIsOpen[2], state)
+    local playerID = UDK.Player.GetLocalPlayerID()
+    local queryKey = KeyMap.UIState.TeamPopIsOpen
+    UDK.Property.SetProperty(playerID, queryKey[1], queryKey[2], state, queryKey[4])
 end
 
 return UI

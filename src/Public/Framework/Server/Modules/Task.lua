@@ -26,7 +26,8 @@ local function getTaskClaimStatus(playerID)
     local isClaim = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerTaskClaimStatus[1],
-        KeyMap.GameState.PlayerTaskClaimStatus[2]
+        KeyMap.GameState.PlayerTaskClaimStatus[2],
+        KeyMap.GameState.PlayerTaskClaimStatus[4]
     )
     return isClaim
 end
@@ -38,7 +39,8 @@ local function getPlayerStatus(playerID)
     local status = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerStatus[1],
-        KeyMap.GameState.PlayerStatus[2]
+        KeyMap.GameState.PlayerStatus[2],
+        KeyMap.GameState.PlayerStatus[4]
     )
     return status
 end
@@ -65,7 +67,8 @@ local function getPlayerIsDoTask(playerID)
     local isDoTask = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerIsDoTask[1],
-        KeyMap.GameState.PlayerIsDoTask[2]
+        KeyMap.GameState.PlayerIsDoTask[2],
+        KeyMap.GameState.PlayerIsDoTask[4]
     )
     return isDoTask
 end
@@ -77,7 +80,8 @@ local function getPlayerIsInTaskArea(playerID)
     local isInTaskArea = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerIsInTaskArea[1],
-        KeyMap.GameState.PlayerIsInTaskArea[2]
+        KeyMap.GameState.PlayerIsInTaskArea[2],
+        KeyMap.GameState.PlayerIsInTaskArea[4]
     )
     return isInTaskArea
 end
@@ -89,7 +93,8 @@ local function getTaskClaimInfo(playerID)
     local claimInfo = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerClaimTaskInfo[1],
-        KeyMap.GameState.PlayerClaimTaskInfo[2]
+        KeyMap.GameState.PlayerClaimTaskInfo[2],
+        KeyMap.GameState.PlayerClaimTaskInfo[4]
     )
     return claimInfo
 end
@@ -148,7 +153,8 @@ local function getPlayerCurrentSignalBox(playerID)
     local currentSignalBoxID = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerCurrentSignalBox[1],
-        KeyMap.GameState.PlayerCurrentSignalBox[2]
+        KeyMap.GameState.PlayerCurrentSignalBox[2],
+        KeyMap.GameState.PlayerCurrentSignalBox[4]
     )
     return currentSignalBoxID or 0
 end
@@ -305,7 +311,8 @@ local function taskAutoAssign(playerID)
     local ClaimColddownStatus = UDK.Property.GetProperty(
         playerID,
         KeyMap.GameState.PlayerTaskColddownStatus[1],
-        KeyMap.GameState.PlayerTaskColddownStatus[2]
+        KeyMap.GameState.PlayerTaskColddownStatus[2],
+        KeyMap.GameState.PlayerTaskColddownStatus[4]
     )
     local fmt_TimerName = string.format(Config.Engine.Map.Timer.TaskAutoAssign .. "_%s", playerID)
     local AutoAssignTimer = UDK.Timer.GetTimerTime(fmt_TimerName)
